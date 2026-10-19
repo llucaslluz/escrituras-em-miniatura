@@ -1,7 +1,7 @@
 {
   "name": "Escrituras em Miniatura — Histórias de fé em movimento",
-  "version": "1.2.0",
-  "exported_at_utc": "2026-10-19T03:03:43.797424+00:00",
+  "version": "1.3.0",
+  "exported_at_utc": "2026-10-19T03:17:47.950324+00:00",
   "scene_count": 72,
   "scenes_by_book": {
     "bible": 32,
@@ -27,38 +27,38 @@
     },
     {
       "path": "README.md",
-      "bytes": 7953,
-      "sha256": "cca7f3c8feb787aa5780c121f3d7ebebd10e9decedea0c5192c4e761d487e8cc"
+      "bytes": 8264,
+      "sha256": "76793a21d4d674ba35506a2a1a987f2cd6d12b0264f49ecbceb9821a10871b6d"
     },
     {
-      "path": "dist/assets/bible-C1yXWlQ3.js",
+      "path": "dist/assets/bible-iJCkHo-6.js",
       "bytes": 51887,
-      "sha256": "24d8c8fde2ad72f3f3ed006daff64fea9f48efe257e4986cf0d6408cfb9065fe"
+      "sha256": "135b70ea7b4938cfc0c794b33469219783b3669c477efd312e8d25777439eb6f"
     },
     {
-      "path": "dist/assets/dc-aO4QH9at.js",
+      "path": "dist/assets/dc-C2YiKfPd.js",
       "bytes": 19329,
-      "sha256": "1936f03c9d4bc127e2cba074f5a4f265a3e8569a5036356b2c479ff3698a68e0"
+      "sha256": "1323b25dffe32e23ac98a4f83e923075b5d36cf5d7c9b4fcb2a9811729678de9"
     },
     {
-      "path": "dist/assets/index-BLb-BCjA.css",
-      "bytes": 77456,
-      "sha256": "6f957b2dd66156e9a7ef2cb60438a399eafb6d54fd444eaefe85613a95f9fdaf"
+      "path": "dist/assets/index-CIRBLSie.js",
+      "bytes": 923416,
+      "sha256": "769edccc0e97609a55de2004cdc7579d2b7937ae5f3303c935329a8a127b217d"
     },
     {
-      "path": "dist/assets/index-C3JRuQd_.js",
-      "bytes": 923440,
-      "sha256": "c6b52e158a43e6467e42e8bacb4872684485321ca23cf51ad511f864c56cce66"
+      "path": "dist/assets/index-TnmQgiSQ.css",
+      "bytes": 81716,
+      "sha256": "40d7a63cff3644e9939d2b12cfe392761fa6fc021057ae177537500a94f4fac2"
     },
     {
-      "path": "dist/assets/mormon-DjLxAQ7n.js",
+      "path": "dist/assets/mormon-CFtk3tzG.js",
       "bytes": 43145,
-      "sha256": "8cb53055888d29ae3bdf53fea292864590ee120b2de455ca637e8be739fea6ef"
+      "sha256": "ce42323bb3dcaea470b9e036fca18a5b46740ed59fcae6f1649af3a8b60a0dcc"
     },
     {
-      "path": "dist/assets/pearl-CvAYVGbD.js",
+      "path": "dist/assets/pearl-DyQI5-AT.js",
       "bytes": 17621,
-      "sha256": "25d0fa04a1ab527652e9a0a8d31785b63db639cabf4a4d705f7866e571be7d2e"
+      "sha256": "350e346f6a4961b8fd5479dabaf30bbcb6d76e2cc61050369d5adabba1520378"
     },
     {
       "path": "dist/favicon.svg",
@@ -68,7 +68,7 @@
     {
       "path": "dist/index.html",
       "bytes": 791,
-      "sha256": "42c5d78a6107a50ff3aa06a8c19d676523295e72829ccb27c4c5efce9acfc2c8"
+      "sha256": "ecda75d7637bda434e01fbe46f1658b6e622b855e208bff27a04893f97e3eba6"
     },
     {
       "path": "dist/thumbnails/B01.jpg",
@@ -456,6 +456,11 @@
       "sha256": "757d7d31128d82e79d7b8beb6d14dbbb2eb977ac161e28a24d138651a684ee97"
     },
     {
+      "path": "docs/PAINEIS-1.3.md",
+      "bytes": 2456,
+      "sha256": "afd90990d99fe067f666d5c80142a24eda53ffa496571c8815af14a4ee4741c9"
+    },
+    {
       "path": "docs/REDESIGN-1.1.md",
       "bytes": 4125,
       "sha256": "e54ba5c5ae9e298aa97b7decad5cf9d60b963acd596f8200bdeb3a863d0cafea"
@@ -518,12 +523,12 @@
     {
       "path": "package-lock.json",
       "bytes": 26136,
-      "sha256": "24a0c08c06cb504e243e8ae2d3d19dbe113e6c914ea0eb74f2da7dff2aeae358"
+      "sha256": "98d63fdc37ae5c3cff92581818df34c54ed751e31a4dcda67f4f5ceffbd3488f"
     },
     {
       "path": "package.json",
       "bytes": 474,
-      "sha256": "6218af254a35ef6d938db31b67b49ea012e003a2d0bbfe8d423a8925b1b2ec8e"
+      "sha256": "becf8c966ba9889d3c4b17eff8f510bc45cf9328f1aa226eec39c6f3ce8e375a"
     },
     {
       "path": "public/favicon.svg",
@@ -957,13 +962,13 @@
     },
     {
       "path": "src/immersive.css",
-      "bytes": 37154,
-      "sha256": "24af1206a13e1f2c2d1348faa0c80d2ce32dd36af26b9357fead4f5f8a83ece5"
+      "bytes": 41686,
+      "sha256": "c50c1d7ea53d13c671f11cc87a742110e118552ed96e80d222bb2ec9077952a4"
     },
     {
       "path": "src/main.js",
-      "bytes": 32568,
-      "sha256": "61bcfccb074634d6243985ff41d5a7024fcaa81aeb1950894d0fa5cb75253ef0"
+      "bytes": 31899,
+      "sha256": "ede763bfa6d3684ab8f3188ca310c1dbfede33ec78498ea254cb38eba59ad015"
     },
     {
       "path": "src/print.css",
@@ -1022,13 +1027,13 @@
     },
     {
       "path": "src/ui/immersive.js",
-      "bytes": 12805,
-      "sha256": "d3ed1194311ad2ebe66281f3a1f200498964a06054908550d67563668797e980"
+      "bytes": 12293,
+      "sha256": "6f18cd6a827e4486335328e95eb7f16db061a261311a0c3fc981656dfc35a3ca"
     },
     {
-      "path": "src/ui/scene-copy.js",
-      "bytes": 1993,
-      "sha256": "7cc775ed8a51271ff1912b5abdbc5b4ace6da7b0bae90a0c79075373bff7df2d"
+      "path": "src/ui/scene-panels.js",
+      "bytes": 3067,
+      "sha256": "b205fe974f07da95a19ff48cfc43f9bf4f0467c43f26521078c222a9f2612c9f"
     },
     {
       "path": "tests/atmosphere.test.mjs",
