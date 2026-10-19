@@ -1,0 +1,20 @@
+# Scene API (shared contract)
+Each scene module exports `builders = { B01(k) {...}, ... }`. Only edit your book files. Import THREE from three for additional geometries. Engine passes a Kit with a group already containing a radius 6 circular handcrafted terrain pedestal. Units: humans 1.6 high, y up, x horizontal, z depth; camera defaults [9,7,11] target [0,1,0].
+
+Methods automatically add created objects to k.group unless parent specified:
+- k.person(name,x,z,{y=0,robe='#...',mantle='#...',hair='#...',skin='#...',scale=1,beard=true,age=0,rotation=0}) returns rig: root, head (group), leftArm/rightArm (shoulder Groups), leftForearm/rightForearm (elbow Groups), leftLeg/rightLeg, handL/handR (hand Groups), robe. root.position.y = y. Legs grounded at y=0. Shoulders y=1.1 and arms point DOWN; arm.rotation.z gives reaching, x gives forward. Head y=1.4. `k.people` has rigs.
+- k.animate((t,p)=>{}) deterministic animation; t seconds (0..32 then holds), p=t/32. Entire scene freezes because only engine advances time. Always derive positions from t/p, don't accumulate per frame. `k.ambient((t,p)=>{})` same time continues after narrative end for wind etc. Engine sends same time to pause all.
+- k.walk(rig,[x,z],[x,z],startSeconds,endSeconds) animates rooted walking, legs alternate and stop.
+- k.box(w,h,d,color,x,y,z), k.sphere(radius,color,x,y,z), k.cylinder(radius,height,color,x,y,z), k.rock(x,z,scale=1), k.tree(x,z,scale=1,kind='olive'), k.water(width,length,x=0,z=0,options={}) return Object3D; tree animated leaves; water deformed river/sea current. Options river:true, color, y.
+- k.groupAt(x=0,y=0,z=0) returns group added to scene. k.add(object) returns object.
+- k.mat(color,options={}) creates felt textured MeshStandardMaterial. k.mesh(geometry,material,x=0,y=0,z=0,parent=k.group) returns mesh.
+- k.fire(x,y,z,scale=1), k.cloud(x,y,z,scale=1), k.lamp(x,y,z), k.animal(kind,x,z,scale=1), k.boat(x,z,scale=1) return group. Animals lion/sheep/donkey/fish/bird supported. Every helper has own coherent ambient animation. k.dove(x,y,z) articulated bird. k.ray(x,y,z,height=5) warm translucent light column. k.stars() deterministic sky points.
+- k.label(object,text) registers 3D labels. k.select(object,name,role,reference,summary) registers selectable entry (name can be same as story characters). Every person auto selectable. IMPORTANT selecting custom objects use precise info.
+- k.light is key DirectionalLight (can change intensity/color); k.fill hemisphere; k.background Color; k.ground terrain mesh; k.config.camera / target arrays can be assigned. k.config.night=true for night (set during build, engine applies). k.config.ground='#hex'.
+- k.flag(x,y,z,color) fabric group. k.book(x,y,z), k.plates(x,y,z), k.basket(x,y,z), k.vase(x,y,z), k.table(x,y,z,width=4,depth=1.5) return meshes/groups.
+- k.finish(config={}) merges config (optional).
+Use own geometry and distinct compositions and 4 narrative phases for every episode. Distinct environment, principal articulated action, secondary reactions, ambient state changes. No generic scene reused only changing title. Use k.animate for main action; props may be reparented to handR/handL (Object3D.attach or add + local positions).
+
+Data module exports `stories = [...]`. Per story shape:
+{id:'B01',book:'bible'|'mormon'|'dc'|'pearl',testament:'old'|'new' (Bible only), title, subtitle (short poetic phrase), reference:'...', sources:[{label,url}], summary:'original Portuguese paragraph', theme:'...', place:'...', type:'relato'|'parábola'|'visão'|'doutrina', era:'date label with approximation', year:number (for sort, ancient negative; unknown use -9999), base:boolean, characters:[{name,role,description}], moments:[{at:0,title,caption},{at:8,...},{at:16,...},{at:24,...}], artistic:'...', accent:'#hex', duration:32}
+No direct scripture quotation necessary. Verify official scripture chapters online and add docs/curation-YOURBOOK.md with verified URLs and nuanced decisions. Data split src/data/bible.js etc. Scenes src/scenes/bible.js etc. Tell root when ready and any helper not yet supported or errors. Do not edit engine/UI/package. No publishing native calls from agents.

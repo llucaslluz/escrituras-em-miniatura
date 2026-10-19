@@ -1,0 +1,176 @@
+import { THREE, ease, mix, masonry, beam, prayer, teaching, thought, kneel, token, temple, grass, ring, colors, bag, reach } from './utils.js';
+
+function arrow(k, color='#8b6841') {
+  const g=k.groupAt();beam(k,[0,0,-.38],[0,0,.35],.012,color,g);
+  const tip=k.mesh(new THREE.ConeGeometry(.045,.14,6),k.mat('#9ca19a',{metalness:.35}),0,0,.41,g);tip.rotation.x=Math.PI/2;
+  for(const side of[-1,1]){const feather=k.mesh(new THREE.BoxGeometry(.1,.012,.15),k.mat('#b5a58b'),side*.035,0,-.29,g);feather.rotation.z=side*.5;}
+  return g;
+}
+
+function projectile(k, object, from, to, start, end, height = 1.7) {
+  object.userData.samuelProjectile=true;
+  const origin=new THREE.Vector3(...from),target=new THREE.Vector3(...to),axis=new THREE.Vector3(0,0,1);
+  k.animate(t=>{
+    const raw=(t-start)/(end-start),u=Math.max(0,Math.min(1,raw));object.visible=raw>=0&&raw<=1;
+    object.position.copy(origin).lerp(target,u);object.position.y+=Math.sin(u*Math.PI)*height;
+    const tangent=target.clone().sub(origin);tangent.y+=Math.PI*height*Math.cos(u*Math.PI);object.quaternion.setFromUnitVectors(axis,tangent.normalize());
+  });
+}
+
+export const builders = {
+  M15(k) {
+    k.finish({ground:'#b6a27c',camera:[10,7.2,12],target:[0,1.8,-.25]});k.background.set('#dbd6ba');
+    const wall=masonry(k,0,-1.6,7.4,2.7,1.05);token(k,wall,'Muralha de Zaraenla','Lugar da pregação','Helamã 13:4','Impedido de entrar, Samuel sobe à muralha e anuncia o que o Senhor lhe põe no coração.');
+    k.box(7.5,.16,1.15,'#bdac8c',0,2.78,-1.6);
+    // A broad parapet walkway and a masonry stair give the miniature a physical access route.
+    for(let i=0;i<7;i++)k.box(1.05,(i+1)*.39,.46,'#a58e6a',-3.1,(i+1)*.195,-4.25+i*.4);
+    for(const z of[-2.2,-1])for(const x of[-3.65,3.65])k.box(.5,3,.5,'#ad9674',x,1.5,z);
+    for(let i=0;i<9;i++)for(const side of[-1,1]){const tie=k.box(.1,.035,.015,'#d1bd99',-3.2+i*.8,1.1+(i%2)*.4,-1.6+side*.54);tie.rotation.z=.12;}
+    k.box(1.1,1.8,.12,'#775737',2.8,.9,-1.02);for(let i=0;i<6;i++)k.box(.035,1.72,.035,'#b5935c',2.35+i*.18,.9,-.94);
+    k.tree(-4.6,-1.8,.8);k.tree(4.7,-1.9,.8);grass(k,-4.5,2.5,1);grass(k,4.6,1.7,.9);
+    const samuel=k.person('Samuel',0,-1.6,{y:2.87,robe:'#b47854',mantle:'#d0b88c',hair:'#3f352b'});
+    const believers=[k.person('Ouvintes que acreditam',-2.45,.55,{robe:'#9da387',rotation:Math.PI}),k.person('Ouvintes que acreditam',-3.3,1.8,{robe:'#c9ba92',beard:false,rotation:Math.PI}),k.person('Ouvintes que acreditam',-1.4,2,{robe:'#baa077',rotation:Math.PI})];
+    const archer=k.person('Opositor com arco',2.35,2.15,{robe:'#a08a65',rotation:Math.PI});
+    const thrower=k.person('Opositor com pedras',.7,3,{robe:'#a68161',rotation:Math.PI});
+    const skeptic=k.person('Opositores',3.6,.85,{robe:'#9b9b7d',rotation:Math.PI});
+    // Bow and string are attached to the articulated hand, independent of the fired arrows.
+    const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,-.43,0),new THREE.Vector3(.18,0,0),new THREE.Vector3(0,.43,0)]);
+    k.mesh(new THREE.TubeGeometry(curve,24,.025,6),k.mat('#7b5331'),0,0,0,archer.handL);beam(k,[0,-.43,0],[0,.43,0],.007,'#dfc89b',archer.handL);
+    const stoneHeld=k.mesh(new THREE.DodecahedronGeometry(.09),k.mat('#91866e'),0,-.03,0,thrower.handR);
+    // All destinations clear Samuel by >0.7 world units. No arrow or stone intersects the figure.
+    for(let i=0;i<4;i++){
+      const a=arrow(k);token(k,a,`Flecha ${i+1}`,'Projétil que não atinge Samuel','Helamã 16:2','O relato afirma que flechas e pedras não conseguiam atingi-lo.');
+      projectile(k,a,[2.25,1.42,2.1],[i%2?1.7:2.6,4.8,-3.3],16+i*2,18.9+i*2,.8);
+    }
+    for(let i=0;i<4;i++){
+      const stone=k.mesh(new THREE.DodecahedronGeometry(.09+(i%2)*.015),k.mat('#9b8e74'));
+      projectile(k,stone,[.65,1.3,3],[i%2?2:-1.8,3.1,-3.4],17+i*2,20+i*2,1.9);
+    }
+    k.animate(t=>{
+      teaching(samuel,t,.8+ease(1,6,t)*.2);samuel.leftArm.rotation.z=-.4-.3*ease(8,14,t);samuel.head.rotation.y=Math.sin(t*.4)*.22;
+      believers.forEach((r,i)=>{const trust=ease(7+i*.7,13+i*.7,t);r.head.rotation.x=-.2*trust;r.rightForearm.rotation.x=-.9*trust;r.leftArm.rotation.z=-.25*trust;const retreat=ease(27,32,t);r.root.position.x=([-2.45,-3.3,-1.4][i])-retreat*.8;r.root.position.z=([.55,1.8,2][i])+retreat*.45;const stride=t>27&&t<32?Math.sin(t*6+i)*.22:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;});
+      const aiming=ease(12,15,t)*(1-ease(25,29,t));archer.leftArm.rotation.x=-1.2*aiming;archer.rightArm.rotation.x=-1.1*aiming;archer.rightForearm.rotation.x=-1.1*aiming;archer.rightArm.rotation.z=.25*aiming;
+      const throwPhase=t>=16&&t<26?Math.sin((t-16)*Math.PI):0;thrower.rightArm.rotation.x=(-.5-throwPhase*.8)*aiming;thrower.rightForearm.rotation.x=-.8*aiming;stoneHeld.visible=throwPhase<.4;
+      skeptic.rightArm.rotation.z=.8*ease(6,12,t)*(1-ease(24,30,t));skeptic.head.rotation.y=Math.sin(t*.9)*.3;
+      k.light.intensity=3.1+.35*ease(24,31,t);
+    });k.cloud(-1,6,-4,1.1);k.cloud(3.5,5,-4,.8);
+  },
+
+  M16(k) {
+    k.finish({ground:'#bdb695',camera:[10,8,12],target:[0,2,0]});k.background.set('#d8dfd2');
+    const building=temple(k,0,-3.4);token(k,building,'Templo em Abundância','Lugar da reunião','3 Néfi 11:1','A multidão estava reunida nos arredores do templo. A arquitetura é uma escolha artística.');
+    for(let i=0;i<7;i++)for(let j=0;j<3;j++)k.box(.7,.035,.8,(i+j)%2?'#c9bea0':'#b7ac8c',-2.4+i*.8,.02,-.7+j*.85);
+    k.tree(-4.1,-1.4,1);k.tree(4.2,-1.6,.85);
+    const christ=k.person('Jesus Cristo',0,-.25,{y:5.6,robe:'#f2ecd7',mantle:'#e5d9b6',hair:'#67513b'});
+    const ray=k.ray(0,0,-.25,7);const cloudL=k.cloud(-1,6,-1.3,1),cloudR=k.cloud(1,6,-1.3,1);
+    const nephi=k.person('Néfi, discípulo de Cristo',-1.7,1.7,{robe:'#9ba78c',rotation:Math.PI});
+    const witnesses=[nephi];for(let i=0;i<7;i++){const a=(i/7)*Math.PI*1.5-Math.PI*.25;const r=k.person('Povo de Néfi',Math.sin(a)*3.15,Math.cos(a)*2+1,{robe:colors[i%6],beard:i%2===0,scale:i===5?.7:1,rotation:Math.atan2(-Math.sin(a)*3.15,-Math.cos(a)*2-1)});witnesses.push(r);}
+    const points=witnesses.map(r=>r.root.position.clone());
+    k.animate(t=>{
+      const descend=ease(8,16,t);christ.root.position.y=mix(5.6,0,descend);christ.root.visible=t>=7;christ.leftArm.rotation.z=-.5*descend;christ.rightArm.rotation.z=.6*descend;
+      if(t>16)teaching(christ,t,.8);
+      cloudL.position.x=-1-ease(4,13,t)*1.7;cloudR.position.x=1+ease(4,13,t)*1.7;ray.visible=t>4;k.light.intensity=2.4+ease(5,16,t)*1.2;
+      witnesses.forEach((r,i)=>{r.head.rotation.x=-.35*ease(1,5,t)*(1-ease(15,18,t));const bow=ease(17,20,t)*(1-ease(23,26,t));kneel(r,bow);r.leftForearm.rotation.x=-.6*bow;r.rightForearm.rotation.x=-.6*bow;if(t>23){r.head.rotation.x=.08;}
+        if(i===0){const approach=ease(24,29,t);r.root.position.x=mix(points[i].x,-.65,approach);r.root.position.z=mix(points[i].z,.5,approach);r.rightArm.rotation.x=-.8*approach;r.rightForearm.rotation.x=-.7*approach;const stride=t>24&&t<29?Math.sin(t*6)*.2:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;}
+        if(i===1){const approach=ease(28,32,t);r.root.position.x=mix(points[i].x,.75,approach);r.root.position.z=mix(points[i].z,.7,approach);r.leftArm.rotation.x=-.65*approach;const stride=t>28&&t<32?Math.sin(t*6)*.2:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;}
+      });
+    });
+  },
+
+  M17(k) {
+    k.finish({ground:'#acb28b',camera:[9,6.7,11],target:[0,1,0]});k.background.set('#d9e2cd');
+    // An intimate garden edge is deliberately separate from the descent and children's compositions.
+    temple(k,1.8,-4);k.tree(-3.8,-2.1,1.25);k.tree(4.3,-.8,1);k.tree(-4.3,2,.8);
+    for(let i=0;i<7;i++){const b=k.box(.8,.05,.7,i%2?'#c9bea0':'#c1b18c',-.6+i*.35,.025,-2.6+i*.8);b.rotation.y=-.25;}
+    k.rock(-1.8,-2.6,.8);k.rock(3.9,2.7,.65);for(let i=0;i<8;i++)grass(k,-3.1+(i%2)*.3,-1.6+i*.55,1.1);
+    const christ=k.person('Jesus Cristo',.3,-.8,{robe:'#f2ecd7',mantle:'#dfd6ba',hair:'#67513b'});
+    const patient=k.person('Pessoa enferma',-2.15,2.8,{robe:'#9dad96',hair:'#71634d'}),helper=k.person('Acompanhante',-2.9,2.7,{robe:'#bfaa82',beard:false});
+    const second=k.person('Outra pessoa enferma',2.8,2.1,{robe:'#ba9c80',beard:false}),family=k.person('Pessoas reunidas',3.4,.5,{robe:'#a49e78'});
+    const staff=beam(k,[0,-.2,0],[0,.65,0],.032,'#8b6a45',patient.handL);token(k,staff,'Apoio de madeira','Detalhe artístico','3 Néfi 17:5–10','O apoio sugere uma dificuldade de locomoção sem identificar uma enfermidade específica.');
+    const starting={p:patient.root.position.clone(),h:helper.root.position.clone()};
+    k.animate(t=>{
+      const move=ease(6,15,t),heal=ease(17,23,t);patient.root.position.x=mix(starting.p.x,-.35,move);patient.root.position.z=mix(starting.p.z,-.4,move);patient.root.rotation.y=2.6;helper.root.position.x=mix(starting.h.x,-1.3,move);helper.root.position.z=mix(starting.h.z,.1,move);helper.root.rotation.y=2.6;
+      const walking=t>6&&t<15;patient.leftLeg.rotation.x=walking?Math.sin(t*4)*.12:0;patient.rightLeg.rotation.x=-patient.leftLeg.rotation.x;helper.leftLeg.rotation.x=walking?Math.sin(t*4)*.2:0;helper.rightLeg.rotation.x=-helper.leftLeg.rotation.x;
+      patient.root.rotation.z=.12*(1-heal);patient.head.rotation.x=.2*(1-heal);patient.leftArm.rotation.x=-.4*(1-heal);patient.leftForearm.rotation.x=-.4;helper.rightArm.rotation.z=.8*(1-ease(20,24,t));helper.rightForearm.rotation.x=-.6;
+      const care=ease(14,18,t);christ.leftArm.rotation.z=-1*care;christ.leftForearm.rotation.x=-.5*care;christ.rightArm.rotation.x=-.55*care;christ.head.rotation.y=-.45*care;
+      reach(christ,'left',[patient.root.position.x,1.08,patient.root.position.z],care*(1-ease(24,27,t)));
+      second.head.rotation.y=-.5;second.leftForearm.rotation.x=-.5*ease(15,20,t);family.rightArm.rotation.z=.65*ease(22,27,t);
+      if(t>25){kneel(patient,ease(25,29,t));prayer(patient,1);kneel(helper,ease(26,30,t));prayer(helper,1);kneel(second,ease(26,31,t));prayer(second,1);}
+      staff.visible=t<24;k.light.intensity=3+heal*.5;k.light.color.setRGB(1,.92,.75+heal*.12);
+    });k.cloud(0,5.5,-3,1.1);
+  },
+
+  M18(k) {
+    k.finish({ground:'#aab18a',camera:[9,7.3,11],target:[0,1.4,0]});k.background.set('#dfe4d2');
+    temple(k,0,-4);k.tree(-4,-1.8,1);k.tree(4,-1.8,1);for(let i=0;i<12;i++)grass(k,Math.cos(i)*4.6,Math.sin(i)*4.5,.8);
+    const christ=k.person('Jesus Cristo',0,-.4,{robe:'#f2ecd7',mantle:'#e2d8bb',hair:'#67513b'});
+    const children=[];for(let i=0;i<5;i++){const a=(i/4-.5)*Math.PI*.85,from=[Math.sin(a)*3.6,Math.cos(a)*2.7+.2],to=[Math.sin(a)*1.3,Math.cos(a)*1.15-.15];const r=k.person('Crianças',...from,{robe:colors[i],scale:.5+(i%2)*.07,beard:false});r.root.userData.blessingPlace=to;k.walk(r,from,to,1+i*.4,8+i*.4);children.push(r);}
+    const parents=[];for(let i=0;i<5;i++){const a=(i/4-.5)*Math.PI*1.05;const r=k.person('Famílias',Math.sin(a)*3.4,Math.cos(a)*2.5+.6,{robe:colors[(i+3)%6],beard:i%2===1,rotation:Math.PI});parents.push(r);}
+    const angels=[];for(let i=0;i<4;i++){const a=i/4*Math.PI*2+.5;const r=k.person('Anjos',Math.sin(a)*2.05,Math.cos(a)*1.65-.1,{y:4.8,robe:'#f1e9ce',mantle:'#dfd7bb',hair:'#ad9c73',beard:false,scale:.9,rotation:-a});angels.push(r);}
+    // A luminous circle represents the scriptural fire without literal flames reaching the children.
+    const halo=ring(k,0,.06,-.05,2.35,'#eed38c');halo.material=k.mat('#f3d88c',{emissive:'#e8b95c',emissiveIntensity:.9,transparent:true,opacity:.15,depthWrite:false});
+    const sparks=[];for(let i=0;i<26;i++){const a=i/26*Math.PI*2;const g=k.sphere(.035,'#f5dda0',Math.sin(a)*2.35,.15,Math.cos(a)*2.35-.05);g.material=k.mat('#f5dda0',{emissive:'#e5af4f',emissiveIntensity:1.1,transparent:true,opacity:.85});sparks.push(g);}
+    token(k,halo,'Manifestação de fogo','Representação luminosa','3 Néfi 17:24–25','Os pequeninos são circundados por fogo enquanto anjos ministram entre eles.');
+    k.animate(t=>{
+      const pray=ease(9,12,t)*(1-ease(14,16,t));kneel(christ,pray);prayer(christ,pray);parents.forEach((r,i)=>{kneel(r,ease(9+i*.1,13+i*.1,t));prayer(r,ease(9,13,t));r.head.rotation.x=.2;});
+      if(t>=16){const index=Math.min(4,Math.floor((t-16)/1.6)),target=children[index];christ.head.rotation.y=Math.atan2(target.root.position.x,target.root.position.z+.4)*.4;christ.leftArm.rotation.z=-.6;christ.rightArm.rotation.z=.6;christ.leftForearm.rotation.x=-.8;christ.rightForearm.rotation.x=-.8;children.forEach((r,i)=>{const start=16+i*1.6,visit=ease(start,start+.5,t)*(1-ease(start+1,start+1.6,t)),to=r.root.userData.blessingPlace;r.root.position.x=mix(to[0],.15,visit);r.root.position.z=mix(to[1],.05,visit);r.root.rotation.y=Math.PI;r.head.rotation.x=i===index?-.17:0;r.leftForearm.rotation.x=i===index?-.6:0;r.rightForearm.rotation.x=i===index?-.6:0;const gait=visit>0&&visit<.99?Math.sin(t*9)*.2:0;r.leftLeg.rotation.x=gait;r.rightLeg.rotation.x=-gait;if(i===index)reach(christ,'right',[r.root.position.x,1.61*r.root.scale.y,r.root.position.z],visit);});}
+      const descend=ease(24,30,t);angels.forEach((r,i)=>{r.root.visible=t>=24;r.root.position.y=mix(4.8,.15,descend);r.leftArm.rotation.z=-.55;r.rightArm.rotation.z=.55;r.head.rotation.x=.18;});
+      halo.visible=t>=24;halo.material.opacity=.15+.5*descend;sparks.forEach((g,i)=>{g.visible=t>=24;g.position.y=.1+descend*(.1+(i%4)*.13)+Math.sin(t*2+i)*.04;});k.light.intensity=3+descend*.7;
+    });
+  },
+
+  M19(k) {
+    k.finish({night:true,ground:'#8e8d7f',camera:[9,7.4,11],target:[0,1.5,0]});k.background.set('#202b3a');k.stars();
+    // A mountain shelf is raised above rough slopes. The luminous objects below are exactly 16.
+    const mountain=k.mesh(new THREE.ConeGeometry(3.7,2.6,7,2),k.mat('#7f8175'),0,.8,-1.2);mountain.rotation.y=.22;
+    const shelf=k.cylinder(2.05,.35,'#aaa99a',0,1.55,-.15);shelf.scale.z=.95;
+    for(let i=0;i<8;i++){const r=k.rock(Math.sin(i*2)*3.6,Math.cos(i*2)*2.2-1,.65+(i%3)*.25);r.position.y=.2;}
+    const brother=k.person('Irmão de Jarede',-.1,1.1,{y:1.75,robe:'#b9b3a0',mantle:'#8b968b',hair:'#685b45'});
+    const tray=k.groupAt(0,1.76,-.8);k.mesh(new THREE.BoxGeometry(2.25,.045,.92),k.mat('#a99c7b'),0,0,0,tray);
+    const stones=[];for(let i=0;i<16;i++){
+      const x=(i%8-3.5)*.255,z=Math.floor(i/8)*.34-.17;
+      const material=k.mat('#d8e1db',{emissive:'#ffe1a2',emissiveIntensity:0,roughness:.22,metalness:.12,transparent:true,opacity:.92}).clone();
+      const stone=k.mesh(new THREE.DodecahedronGeometry(.095,1),material,x,.11,z,tray);stone.name=`Pedra luminosa ${i+1}`;stone.userData.jaredStone=i+1;stones.push(stone);
+      token(k,stone,`Pedra ${i+1} de 16`,'Pedra para iluminar os barcos','Éter 3:1–6','Uma das dezesseis pequenas pedras apresentadas ao Senhor.');
+    }
+    token(k,tray,'Dezesseis pedras','Luz para oito barcos','Éter 3:1–6','Há duas pedras de iluminação para cada um dos oito barcos; esta composição inclui exatamente dezesseis.');
+    const lord=k.person('Senhor',.15,-1.8,{y:1.75,robe:'#eae7d7',mantle:'#d4d6cb',hair:'#a19b84'});lord.root.traverse(o=>{if(o.isMesh)o.material=o.material.clone();});const veil=k.ray(.2,1.5,-1.8,5);
+    const handTip=k.groupAt(0,2.2,-1);k.mesh(new THREE.SphereGeometry(.1,16,12),k.mat('#e6c8a0'),0,.16,0,handTip).scale.set(.75,1,.6);
+    beam(k,[0,.13,.01],[0,-.05,.02],.024,'#e6c8a0',handTip);for(let i=0;i<3;i++)beam(k,[-.055+i*.045,.19,-.01],[-.05+i*.04,.06,-.025],.018,'#e6c8a0',handTip);
+    token(k,handTip,'Toque do Senhor','Ação descrita no relato','Éter 3:6','O Senhor toca as pedras uma por uma. A trajetória é uma escolha de encenação.');
+    const pool=new THREE.PointLight('#ffda91',0,7,2);pool.position.set(0,2,-.6);k.add(pool);
+    k.animate(t=>{
+      const pray=ease(1,5,t);kneel(brother,pray,1.75);prayer(brother,pray);brother.head.rotation.x=.28;
+      const touch=Math.max(0,Math.min(15,(t-14)/.82)),index=Math.min(15,Math.floor(touch)),fraction=touch-index,next=Math.min(15,index+1);
+      stones.forEach((s,i)=>{const power=ease(14+i*.82,14.2+i*.82,t);s.material.emissiveIntensity=power*2.4;s.material.color.setRGB(mix(.75,1,power),mix(.8,.95,power),mix(.78,.78,power));});
+      const a=stones[index].position,b=stones[next].position;handTip.position.set(mix(a.x,b.x,fraction),1.76+.11+.1+Math.sin(fraction*Math.PI)*.15,-.8+mix(a.z,b.z,fraction));handTip.visible=t>=13&&t<=27;
+      const reveal=ease(27,31,t);lord.root.visible=t>=27;lord.root.position.y=1.75;lord.rightArm.rotation.x=-.9;lord.rightForearm.rotation.x=-.6;lord.leftArm.rotation.z=-.35;lord.root.traverse(o=>{if(o.isMesh){o.material.transparent=true;o.material.opacity=mix(.15,.8,reveal);}});
+      const fall=ease(26,28,t)*(1-ease(29,31,t));brother.root.rotation.x=.65*fall;brother.root.position.y=1.75-.18*pray-.15*fall;brother.head.rotation.x=.28+.3*fall;
+      pool.intensity=ease(14,28,t)*3;k.light.intensity=.75+ease(14,28,t)*.55;veil.visible=t>=13;
+    });
+    k.select(mountain,'Monte Selém','Lugar do encontro','Éter 3:1','O texto identifica o nome do monte, sem estabelecer uma localização moderna.');
+  },
+
+  M20(k) {
+    k.finish({night:true,ground:'#93947d',camera:[8,6.3,10],target:[0,1,0]});k.background.set('#28333c');k.stars();
+    // Unlocated shelter: deliberately no modern map, named hill, or archaeological claim.
+    k.rock(-3.1,-2,2);k.rock(1.7,-3,2.6);k.rock(3.5,-1.6,1.7);k.tree(-4.1,.8,.8);
+    const desk=k.groupAt(-.4,0,0);for(const side of[-1,1])k.mesh(new THREE.BoxGeometry(.17,.7,.17),k.mat('#7e6949'),side*.67,.35,0,desk);k.mesh(new THREE.BoxGeometry(1.7,.13,.85),k.mat('#a68b60'),0,.77,0,desk);
+    const plates=k.plates(-.4,.88,0);token(k,plates,'Registro de Morôni','Placas preservadas','Mórmon 8; Morôni 10','Morôni continua o registro e dirige suas palavras a leitores futuros.');
+    const moroni=k.person('Morôni',-.35,-.6,{robe:'#b9b395',mantle:'#87947c',hair:'#6d6851'});moroni.root.rotation.y=0;
+    const stylus=k.groupAt();beam(k,[0,.04,0],[0,-.16,0],.014,'#9c9074',stylus);
+    const caseGroup=k.groupAt(1.8,0,.65);const cloth=k.mesh(new THREE.BoxGeometry(1.1,.06,.9),k.mat('#a09372'),0,.09,0,caseGroup);
+    for(const side of[-1,1])beam(k,[side*.48,.12,-.34],[side*.48,.12,.34],.014,'#c8b58b',caseGroup);
+    const lamp=k.lamp(-1.2,.85,0);const glimmer=new THREE.PointLight('#ffe0a0',1,3);glimmer.position.set(-1.2,1.1,0);k.add(glimmer);
+    const initial=new THREE.Vector3(-.4,.88,0),carry=new THREE.Vector3();
+    k.animate(t=>{
+      const write=1-ease(17,20,t);moroni.rightArm.rotation.x=-.9*write;moroni.rightForearm.rotation.x=(-.6+Math.sin(t*3)*.06)*write;moroni.head.rotation.x=.25*write;stylus.visible=t<20;reach(moroni,'right',[-.35+Math.sin(t*2)*.05,1.18,-.12+Math.cos(t*3)*.02],write);
+      k.group.updateMatrixWorld(true);moroni.handR.getWorldPosition(stylus.position);
+      const finish=ease(17,21,t);moroni.leftArm.rotation.x=-.75*finish;moroni.leftForearm.rotation.x=-.4*finish;
+      const move=ease(22,28,t);moroni.root.position.x=mix(-.35,1.25,move);moroni.root.position.z=mix(-.6,.1,move);const stride=t>22&&t<28?Math.sin(t*6)*.2:0;moroni.leftLeg.rotation.x=stride;moroni.rightLeg.rotation.x=-stride;
+      const lift=ease(20,23,t),place=ease(28,31,t);k.group.updateMatrixWorld(true);moroni.handL.getWorldPosition(carry);plates.position.copy(initial).lerp(carry,lift);plates.position.lerp(new THREE.Vector3(1.8,.15,.65),place);plates.rotation.y=.2*lift*(1-place);if(t>=20)moroni.rightArm.rotation.x=-.65*lift*(1-place);
+      moroni.head.rotation.y=-.25*ease(8,13,t)*(1-finish);k.light.color.setRGB(.8+place*.2,.82+place*.08,1-place*.17);k.light.intensity=.9+place*.45;
+    });
+    token(k,caseGroup,'Recolhimento dos registros','Composição artística','Morôni 10:2,34','A embalagem e o lugar são escolhas visuais, sem alegação de localização histórica.');
+  },
+};
