@@ -1,6 +1,6 @@
 # Escrituras em Miniatura
 
-**Histórias de fé em movimento — versão 1.1.0**
+**Histórias de fé em movimento — versão 1.2.0**
 
 Aplicação independente em português do Brasil, com **72 dioramas 3D procedurais**: Bíblia (32), Livro de Mórmon (20), Doutrina e Convênios (10) e Pérola de Grande Valor (10). Reconstruída do zero. Não recupera a fonte de “Gólgota em Miniatura” nem altera seu site ou identificador.
 
@@ -36,7 +36,7 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 
 - Início direto em uma experiência imersiva que ocupa a viewport inteira, com a última história visitada ou o Batismo.
 - Menu flutuante central com as quatro obras, seleção das histórias e anterior/próxima dentro da obra.
-- Painel de exploração recolhível: enquadramento, zoom, nomes, animação e luz da história/manhã/entardecer/noite. A luz de exploração é artística e não altera o relato.
+- Painel de exploração recolhível: enquadramento, zoom, nomes, animação, repetição contínua e luz da história/manhã/entardecer/noite. A luz de exploração é artística e não altera o relato.
 - A apresentação editorial anterior continua em `/#apresentacao`; biblioteca, linha do tempo, personagens e fontes permanecem no menu do projeto.
 - Biblioteca com busca insensível a acentos, filtros por obra/tipo e testamentos da Bíblia.
 - Visualizador com giro por arraste/toque, zoom, restauração, vistas específicas, pausa, repetição, velocidade, progresso e quatro momentos narrativos.
@@ -47,7 +47,7 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 - Tela cheia inclui os controles de reprodução. Fallback textual quando WebGL 2 não está disponível.
 - Sem áudio nesta edição. Nenhum recurso de áudio é simulado ou reproduzido automaticamente.
 
-**Câmera pelo teclado:** focalize o diorama e use as setas para girar/inclinar e `+` / `−` para aproximar/afastar. Todos os controles também são botões e seletores nativos. A pausa congela o tempo compartilhado de personagens, água, tecidos, partículas e luzes; a câmera continua manualmente ajustável. Após 32 segundos, a ação narrativa termina e o ambiente continua vivo até ser pausado.
+**Câmera pelo teclado:** focalize o diorama e use as setas para girar/inclinar e `+` / `−` para aproximar/afastar. Todos os controles também são botões e seletores nativos. A pausa congela o tempo compartilhado de personagens, água, tecidos, partículas e luzes; a câmera continua manualmente ajustável. Todas as cenas repetem a narrativa de 32 segundos continuamente por padrão. Em **Seu olhar → Repetir em loop**, é possível desligar a repetição; nesse caso, a ação narrativa termina e o ambiente continua vivo até ser pausado. A escolha fica salva entre histórias. Movimento reduzido mantém a cena inicialmente pausada.
 
 ## Organização
 
@@ -55,6 +55,7 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 src/
   main.js                 telas, navegação e interações
   ui/immersive.js          composição do visualizador em tela inteira
+  ui/scene-copy.js         ajuste dos títulos ao espaço real da coluna
   immersive.css            painéis flutuantes e layout móvel imersivo
   style.css, print.css    apresentação responsiva, foco e impressão
   storage.js              preferências, favoritos, histórico e continuação
@@ -102,3 +103,5 @@ python scripts/export.py
 ```
 
 O script gera ZIP, manifesto e SHA-256 em `../entrega/`, testa o CRC de todas as entradas e exclui dependências instaladas, Git, caches, logs, segredos e arquivos temporários. O ZIP contém fonte, recursos locais, testes, documentação, dependências travadas e `dist/`. O arquivo `.openai/hosting.json` é metadado público da nova hospedagem; não contém credenciais e pode ser ignorado por outros provedores.
+
+A versão 1.2.0 corrige a sobreposição de títulos longos e acrescenta repetição contínua por padrão. Ver [docs/CORRECOES-1.2.md](docs/CORRECOES-1.2.md).

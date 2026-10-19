@@ -186,4 +186,18 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
 @media(max-height:600px) and (min-width:761px){.immersive-page .scene-poetic-title.compact-title{font-size:44px}.immersive-page .scene-poetic-title.long-title{font-size:35px}}
 @media(max-height:540px) and (max-width:760px){.immersive-page .scene-poetic-title.compact-title{font-size:34px}.immersive-page .scene-poetic-title.long-title{font-size:28px}}
 @media(prefers-reduced-motion:reduce){.scene-book-tabs a,.scene-switch input[type=checkbox],.scene-switch input[type=checkbox]:before{transition:none}}
-@media print{body.immersive-mode{overflow:visible}.immersive-page{height:auto;min-height:100vh;overflow:visible}.scene-navigator,.scene-settings,.scene-toolbar,.scene-touch-hint,.scene-panel-toggle,.scene-topbar{display:none}.scene-editorial,.scene-character-intro{position:relative;left:auto;top:auto;bottom:auto;margin:30px;width:auto}.scene-description,.scene-character-intro{display:block}.scene-craft-note{display:none}.scene-poetic-title{font-size:40pt;max-width:none}.immersive-canvas{position:relative;height:450px;z-index:auto}}
+/* The copy shares one vertical flow, including when a title wraps. */
+.scene-copy{position:absolute;z-index:1;top:max(16.3%,140px);bottom:6.5%;left:4%;width:min(23vw,330px);display:flex;flex-direction:column;gap:28px;overflow:auto;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--scene-line) transparent;overscroll-behavior:contain;pointer-events:none}
+.scene-copy[data-scrollable=true]{pointer-events:auto}
+.scene-copy .scene-editorial,.scene-copy .scene-character-intro{position:static;inset:auto;width:100%;flex:0 0 auto}
+.scene-copy .scene-character-intro{margin-top:auto;max-width:285px}
+.scene-copy .scene-poetic-title{overflow-wrap:anywhere}
+.scene-copy[data-compact-copy] .scene-craft-note,.scene-copy[data-hide-invitation] .scene-character-intro{display:none}
+@media(max-width:1439px) and (min-width:1100px){.scene-copy{left:3.3%;width:260px}}
+@media(max-width:1099px){.scene-copy{top:max(24%,200px);bottom:7%;width:235px}}
+@media(max-height:740px) and (min-width:1100px){.scene-copy{top:max(22%,150px);width:240px;bottom:5%}}
+@media(max-height:600px) and (min-width:761px){.scene-copy{top:max(30%,140px);width:225px;bottom:30px}}
+@media(max-width:760px){.scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + 183px);left:21px;bottom:42%;width:min(60%,270px);gap:0}.scene-copy .scene-character-intro{display:none}}
+@media(max-width:390px){.scene-copy{left:18px;width:70%;top:calc(max(14px,env(safe-area-inset-top)) + 180px)}}
+@media(max-height:540px) and (max-width:760px){.scene-copy{top:116px;left:20px;bottom:80px;width:30%;max-width:210px}}
+@media print{.scene-copy{position:relative;inset:auto;width:auto;overflow:visible;display:block}.scene-copy .scene-character-intro{display:block}body.immersive-mode{overflow:visible}.immersive-page{height:auto;min-height:100vh;overflow:visible}.scene-navigator,.scene-settings,.scene-toolbar,.scene-touch-hint,.scene-panel-toggle,.scene-topbar{display:none}.scene-editorial,.scene-character-intro{position:relative;left:auto;top:auto;bottom:auto;margin:30px;width:auto}.scene-description,.scene-character-intro{display:block}.scene-craft-note{display:none}.scene-poetic-title{font-size:40pt;max-width:none}.immersive-canvas{position:relative;height:450px;z-index:auto}}
