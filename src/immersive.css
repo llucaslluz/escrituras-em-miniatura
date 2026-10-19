@@ -268,3 +268,9 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
  .scene-copy .scene-character-intro .eyebrow{font-size:.52rem}
  .scene-copy .scene-source-link{font-size:.66rem;min-height:44px}
 }
+
+.scene-doctrine h2{text-wrap:balance}
+.scene-doctrine .scene-source-link{line-height:1.7}
+.scene-study .doctrine-heading{font-family:Georgia,'Times New Roman',serif;font-size:1.3rem;font-weight:400;line-height:1.25;margin:13px 0 9px;color:inherit}
+.scene-study .doctrine-reference{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;line-height:1.7;text-decoration:underline;text-underline-offset:4px;margin-top:8px}
+.scene-study .doctrine-reference .icon{width:13px;height:13px;flex:0 0 13px}

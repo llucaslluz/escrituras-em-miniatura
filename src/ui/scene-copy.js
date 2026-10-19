@@ -1,4 +1,4 @@
-// Keep the editorial and character invitation in one flow. Fit the display
+// Keep the editorial and doctrinal teaching in one flow. Fit the display
 // heading to the actual wrapped text, rather than guessing from its length.
 export function observeSceneCopy(page) {
  const rail=page.querySelector('.scene-copy'),editorial=rail.querySelector('.scene-editorial'),heading=rail.querySelector('h1'),intro=rail.querySelector('.scene-character-intro');

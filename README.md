@@ -1,6 +1,6 @@
 # Escrituras em Miniatura
 
-**Histórias de fé em movimento — versão 1.3.1**
+**Histórias de fé em movimento — versão 1.4.0**
 
 Aplicação independente em português do Brasil, com **72 dioramas 3D procedurais**: Bíblia (32), Livro de Mórmon (20), Doutrina e Convênios (10) e Pérola de Grande Valor (10). Reconstruída do zero. Não recupera a fonte de “Gólgota em Miniatura” nem altera seu site ou identificador.
 
@@ -36,7 +36,7 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 
 - Início direto em uma experiência imersiva que ocupa a viewport inteira, com a última história visitada ou o Batismo.
 - Botão central “Histórias” abre as quatro obras, seleção das histórias e anterior/próxima dentro da obra. O menu fecha depois da escolha.
-- A apresentação da história permanece em texto na lateral, com título, tema, personagens e referência. Os menus e painéis de controles começam recolhidos. “Seu olhar” abre a exploração: enquadramento, zoom, nomes, animação, repetição contínua e luz da história/manhã/entardecer/noite. A luz de exploração é artística e não altera o relato.
+- A apresentação da história permanece em texto na lateral, com título, contexto, ensinamento doutrinário próprio e referência. Os menus e painéis de controles começam recolhidos. “Seu olhar” abre a exploração: enquadramento, zoom, nomes, animação, repetição contínua e luz da história/manhã/entardecer/noite. A luz de exploração é artística e não altera o relato.
 - A apresentação editorial anterior continua em `/#apresentacao`; biblioteca, linha do tempo, personagens e fontes permanecem no menu do projeto.
 - Biblioteca com busca insensível a acentos, filtros por obra/tipo e testamentos da Bíblia.
 - Visualizador com giro por arraste/toque, zoom, restauração, vistas específicas, pausa, repetição, velocidade, progresso e quatro momentos narrativos.
@@ -62,6 +62,8 @@ src/
   storage.js              preferências, favoritos, histórico e continuação
   icons.js                ícones SVG locais
   data/                   catálogo, personagens derivados e fontes por obra
+  data/editorial.js       72 ensinamentos próprios com versículos de apoio
+  data/editorial/         textos autorais por obra
   engine/kit.js           modelos, materiais/fibras, terreno e animações comuns
   engine/viewer.js        renderer, câmera, seleção e ciclo de vida
   scenes/bible.js         32 composições e ações bíblicas
@@ -112,3 +114,5 @@ A versão 1.3.0 recolhe menus, textos e controles em botões. Os painéis fecham
 A versão 1.3.1 restaura os textos editoriais na estrutura da cena, preservando os botões e o fechamento automático dos menus. Em telas curtas, a coluna de texto pode ser rolada sem esconder a descrição, o convite dos personagens ou a referência.
 
 Detalhes desta restauração e validação: [docs/TEXTOS-1.3.1.md](docs/TEXTOS-1.3.1.md).
+
+A versão 1.4.0 substitui a chamada repetida por 72 ensinamentos doutrinários próprios, com versículos de apoio e links oficiais. A lateral e “Sobre a cena” exibem o mesmo conteúdo específico. Curadoria e verificação: [docs/DOUTRINA-1.4.md](docs/DOUTRINA-1.4.md).

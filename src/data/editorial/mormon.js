@@ -1,0 +1,123 @@
+// Sínteses autorais das passagens indicadas, conferidas na edição oficial em português.
+export const editorial = {
+  M01: {
+    title: 'Um coração disposto a ouvir',
+    text: 'Na partida da família, Néfi busca o Senhor para compreender as palavras de Leí. A resposta enternece seu coração: sua obediência nasce de uma fé que ele próprio procura desenvolver.',
+    reference: '1 Néfi 2:16–19',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/1-ne/2?lang=por&id=p16-p19#p16',
+  },
+  M02: {
+    title: 'Alegria que se deseja compartilhar',
+    text: 'Depois de provar o fruto, Leí deseja que sua família também participe daquela alegria. Seu convite revela um cuidado espiritual que procura aproximar as pessoas amadas das bênçãos de Deus.',
+    reference: '1 Néfi 8:10–15',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/1-ne/8?lang=por&id=p10-p15#p10',
+  },
+  M03: {
+    title: 'Escrituras preservam a fé',
+    text: 'Néfi reconhece que as gerações futuras precisariam dos registros para conhecer a lei do Senhor. A busca pelas placas destaca o valor das escrituras na preservação da fé de um povo.',
+    reference: '1 Néfi 4:14–16',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/1-ne/4?lang=por&id=p14-p16#p14',
+  },
+  M04: {
+    title: 'Fé atenta à orientação',
+    text: 'Os ponteiros da Liahona funcionam conforme a fé, a diligência e a atenção da família. Néfi aprende que o Senhor pode realizar grandes coisas por meios pequenos, que pedem uma resposta cuidadosa.',
+    reference: '1 Néfi 16:28–29',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/1-ne/16?lang=por&id=p28-p29#p28',
+  },
+  M05: {
+    title: 'Revelação também conduz o trabalho',
+    text: 'Néfi trabalha a madeira e busca o Senhor em oração nas montanhas. A construção do navio une esforço e revelação: ele aprende aos poucos a realizar a obra segundo a orientação recebida.',
+    reference: '1 Néfi 18:1–4',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/1-ne/18?lang=por&id=p1-p4#p1',
+  },
+  M06: {
+    title: 'O perdão amplia a oração',
+    text: 'Enos recebe o perdão por sua fé em Cristo. Sua oração então se volta aos nefitas e aos lamanitas: a experiência com a misericórdia de Deus desperta nele o desejo de buscar o bem de outros.',
+    reference: 'Enos 1:5–11',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/enos/1?lang=por&id=p5-p11#p5',
+  },
+  M07: {
+    title: 'Tomar sobre si o nome de Cristo',
+    text: 'Ao ouvir Benjamim, o povo relata uma mudança de coração produzida pelo Espírito. Fazer convênio significa assumir o nome de Cristo e expressar essa nova disposição por meio da obediência e das boas obras.',
+    reference: 'Mosias 5:2–8, 15',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/5?lang=por&id=p2-p15#p2',
+  },
+  M08: {
+    title: 'O Salvador intercede por nós',
+    text: 'Diante da corte, Abinádi ensina que Cristo se submeteria à morte e a venceria. O centro de seu testemunho é o Redentor que toma sobre si os pecados e intercede com misericórdia pela humanidade.',
+    reference: 'Mosias 15:7–9',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/15?lang=por&id=p7-p9#p7',
+  },
+  M09: {
+    title: 'Um convênio de carregar fardos',
+    text: 'Nas águas de Mórmon, Alma associa o batismo ao compromisso de servir a Deus. Pertencer a seu povo inclui consolar quem sofre, compartilhar fardos e testemunhar dele nas circunstâncias da vida.',
+    reference: 'Mosias 18:8–10',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/18?lang=por&id=p8-p10#p8',
+  },
+  M10: {
+    title: 'Nascer de Deus e mudar de direção',
+    text: 'Alma declara que se arrependeu e foi redimido pelo Senhor. Seu renascimento espiritual muda a direção de sua vida: aquele que antes combatia a Igreja passa a anunciar a redenção que recebeu.',
+    reference: 'Mosias 27:24–26, 32',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/27?lang=por&id=p24-p32#p24',
+  },
+  M11: {
+    title: 'Serviço que conduz a Cristo',
+    text: 'Depois de servir a Lamôni, Amon ensina com o Espírito sobre a Criação, a Queda e o plano de redenção. O encontro leva o rei a conhecer Cristo e a pedir misericórdia por seu povo.',
+    reference: 'Alma 18:34–41',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/18?lang=por&id=p34-p41#p34',
+  },
+  M12: {
+    title: 'Abandonar o pecado com ações',
+    text: 'Gratos pelo perdão recebido por meio de Cristo, os ânti-néfi-leítas enterram suas armas. O arrependimento se torna um compromisso concreto: abandonar a violência e passar a dar, trabalhar e preservar a paz.',
+    reference: 'Alma 24:10–18',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/24?lang=por&id=p10-p18#p10',
+  },
+  M13: {
+    title: 'Lembrar a Deus e guardar o convênio',
+    text: 'O estandarte recorda Deus, a religião, a liberdade, a paz e as famílias. Ao reunir o povo, Morôni liga a defesa desses valores ao compromisso de não abandonar o Senhor nem seus mandamentos.',
+    reference: 'Alma 46:12–21',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/46?lang=por&id=p12-p21#p12',
+  },
+  M14: {
+    title: 'A fé recebida em casa',
+    text: 'Os jovens de Helamã recordam a confiança em Deus ensinada por suas mães. Em meio ao perigo, essa herança espiritual sustenta sua coragem e sua disposição de agir pela liberdade de suas famílias.',
+    reference: 'Alma 56:46–48',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/56?lang=por&id=p46-p48#p46',
+  },
+  M15: {
+    title: 'A profecia convida ao arrependimento',
+    text: 'Samuel anuncia os sinais da vinda de Cristo para despertar fé em seu nome. Sua mensagem chama o povo ao arrependimento e ensina que a remissão dos pecados vem pelos méritos do Salvador.',
+    reference: 'Helamã 14:11–13',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/hel/14?lang=por&id=p11-p13#p11',
+  },
+  M16: {
+    title: 'O Ressuscitado é o Redentor',
+    text: 'Jesus se apresenta como aquele que tomou sobre si os pecados do mundo. Ao convidar cada pessoa a tocar suas marcas, permite que a multidão testemunhe individualmente sua ressurreição e reconheça o Redentor.',
+    reference: '3 Néfi 11:10–15',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/11?lang=por&id=p10-p15#p10',
+  },
+  M17: {
+    title: 'A compaixão que se aproxima',
+    text: 'Cristo percebe o sofrimento do povo e convida os aflitos à sua presença. A multidão participa conduzindo quem precisa de auxílio; a cura é recebida com gratidão e adoração ao Salvador.',
+    reference: '3 Néfi 17:6–10',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=por&id=p6-p10#p6',
+  },
+  M18: {
+    title: 'Cada criança recebe atenção',
+    text: 'Jesus toma as crianças uma a uma, abençoa cada uma e ora por elas ao Pai. A ministração dos anjos acompanha esse cuidado pessoal, revelando o lugar dos pequeninos no amor do Salvador.',
+    reference: '3 Néfi 17:21–24',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/3-ne/17?lang=por&id=p21-p24#p21',
+  },
+  M19: {
+    title: 'O Redentor antes de seu nascimento',
+    text: 'Ao apresentar as pedras com fé, o irmão de Jarede recebe mais que luz. Cristo se revela como o Redentor preparado desde o princípio e mostra seu corpo espiritual, antes de nascer na mortalidade.',
+    reference: 'Éter 3:13–16',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/ether/3?lang=por&id=p13-p16#p13',
+  },
+  M20: {
+    title: 'Perguntar a Deus com real intenção',
+    text: 'Ao concluir o registro, Morôni convida o leitor a lembrar a misericórdia de Deus, ponderar e orar em nome de Cristo. A confirmação da verdade é atribuída ao poder do Espírito Santo.',
+    reference: 'Morôni 10:2–5',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/moro/10?lang=por&id=p2-p5#p2',
+  },
+};
