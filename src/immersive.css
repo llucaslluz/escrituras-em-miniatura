@@ -255,3 +255,16 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
  .scene-settings{top:auto;bottom:10px;max-height:84dvh}
 }
 @media print{.scene-history-toggle,.scene-controls-toggle{display:none}}
+
+/* Editorial text stays in the page; short viewports can scroll this column. */
+.immersive-page .scene-copy .scene-character-intro{display:block}
+.scene-copy .scene-description{display:block}
+@media(max-width:760px){
+ .scene-copy{gap:20px}
+ .scene-copy .scene-description{font-size:.73rem;line-height:1.65;margin-top:16px}
+ .scene-copy .scene-character-intro{margin-top:0}
+ .scene-copy .scene-character-intro h2{font-size:1.35rem;line-height:1.12;margin:8px 0}
+ .scene-copy .scene-character-intro p{font-size:.7rem;line-height:1.65;margin-bottom:8px}
+ .scene-copy .scene-character-intro .eyebrow{font-size:.52rem}
+ .scene-copy .scene-source-link{font-size:.66rem;min-height:44px}
+}
