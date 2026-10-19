@@ -1,4 +1,6 @@
-# Conferência do pacote exportado
+# Conferência do pacote exportado — versão 1.0.0
+
+Registro histórico da primeira entrega. A atualização 1.1.0 tem verificações em `REDESIGN-1.1.md`.
 
 Extração em pasta nova, independente da instalação de desenvolvimento.
 

@@ -1,6 +1,6 @@
 # Inventário das 72 cenas
 
-Versão 1.0.0. Todas implementadas e verificadas por construção/animação/reinício/descarte e abertura WebGL no navegador. A inspeção visual aprofundada concentrou-se nas oito prioridades; as demais tiveram abertura e captura real. Nenhum cartão é contado como implementação.
+Versão 1.1.0. Catálogo preservado da entrega 1.0.0. Todas implementadas e verificadas por construção/animação/reinício/descarte e abertura WebGL no navegador. A inspeção visual aprofundada concentrou-se nas oito prioridades; as demais tiveram abertura e captura real. Nenhum cartão é contado como implementação.
 
 Cada episódio tem composição própria, ação narrativa, ambiente, elementos selecionáveis e informações acessíveis. As 18 entradas da base estão marcadas.
 

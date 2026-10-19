@@ -1,6 +1,6 @@
 # Ponto de continuidade
 
-Versão 1.0.0. As 72 cenas previstas estão implementadas; não há episódios planejados ou substituídos por cópias genéricas para completar contagem.
+Versão 1.1.0. A navegação e o visualizador foram adaptados à referência imersiva; consulte `docs/REDESIGN-1.1.md`. As 72 cenas previstas estão implementadas; não há episódios planejados ou substituídos por cópias genéricas para completar contagem.
 
 Arquivos e arquitetura: README, `docs/engine-api.md`, catálogo em `src/data/`, cenas por obra em `src/scenes/`, modelos e ciclo do visualizador em `src/engine/`. Inventário completo em `docs/INVENTARIO.md`.
 

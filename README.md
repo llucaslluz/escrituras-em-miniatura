@@ -1,6 +1,6 @@
 # Escrituras em Miniatura
 
-**Histórias de fé em movimento — versão 1.0.0**
+**Histórias de fé em movimento — versão 1.1.0**
 
 Aplicação independente em português do Brasil, com **72 dioramas 3D procedurais**: Bíblia (32), Livro de Mórmon (20), Doutrina e Convênios (10) e Pérola de Grande Valor (10). Reconstruída do zero. Não recupera a fonte de “Gólgota em Miniatura” nem altera seu site ou identificador.
 
@@ -34,7 +34,10 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 
 ## Experiência
 
-- Início com diorama animado e acesso equilibrado às quatro obras.
+- Início direto em uma experiência imersiva que ocupa a viewport inteira, com a última história visitada ou o Batismo.
+- Menu flutuante central com as quatro obras, seleção das histórias e anterior/próxima dentro da obra.
+- Painel de exploração recolhível: enquadramento, zoom, nomes, animação e luz da história/manhã/entardecer/noite. A luz de exploração é artística e não altera o relato.
+- A apresentação editorial anterior continua em `/#apresentacao`; biblioteca, linha do tempo, personagens e fontes permanecem no menu do projeto.
 - Biblioteca com busca insensível a acentos, filtros por obra/tipo e testamentos da Bíblia.
 - Visualizador com giro por arraste/toque, zoom, restauração, vistas específicas, pausa, repetição, velocidade, progresso e quatro momentos narrativos.
 - Seleção de personagens/objetos no 3D e alternativa por lista acessível; referências e histórias relacionadas.
@@ -50,7 +53,9 @@ Não abra `index.html` por `file://`: módulos JavaScript exigem um servidor HTT
 
 ```text
 src/
-  main.js                 interface, telas, navegação e interações
+  main.js                 telas, navegação e interações
+  ui/immersive.js          composição do visualizador em tela inteira
+  immersive.css            painéis flutuantes e layout móvel imersivo
   style.css, print.css    apresentação responsiva, foco e impressão
   storage.js              preferências, favoritos, histórico e continuação
   icons.js                ícones SVG locais

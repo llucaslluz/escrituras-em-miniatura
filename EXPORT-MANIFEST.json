@@ -1,7 +1,7 @@
 {
   "name": "Escrituras em Miniatura — Histórias de fé em movimento",
-  "version": "1.0.0",
-  "exported_at_utc": "2026-10-19T01:37:20.998179+00:00",
+  "version": "1.1.0",
+  "exported_at_utc": "2026-10-19T02:47:15.387232+00:00",
   "scene_count": 72,
   "scenes_by_book": {
     "bible": 32,
@@ -27,38 +27,38 @@
     },
     {
       "path": "README.md",
-      "bytes": 6825,
-      "sha256": "ac9c28db1ff4a9a455fd7dcf2a9c5b06faf4841653db9fdbce07b7aec8506f4d"
+      "bytes": 7453,
+      "sha256": "5e8f9a3f38f9317bf89bf2cba6783fdc026e5ae248ff7ef5c3e39f263519e3d7"
     },
     {
-      "path": "dist/assets/bible-B4GQmmq6.js",
+      "path": "dist/assets/bible-DMtzqZDJ.js",
       "bytes": 51887,
-      "sha256": "4279b12cfbf1bae32c02f658dfd8ac7dbabbe3570641e040bb82af87df043dff"
+      "sha256": "692bff14973d124ece6225b807423b488d78a95702b639d93f7b6ffbae0eb6e7"
     },
     {
-      "path": "dist/assets/dc-CotgFCta.js",
+      "path": "dist/assets/dc-CkTL6Ssc.js",
       "bytes": 19329,
-      "sha256": "faa7580e69b150312b4912a95d505f4f5bce7409691204c5ec732d189caad820"
+      "sha256": "659081715edd738a5db27d52e1d5ba8d7d40bb23d12ec9c3dde1ab4700b16540"
     },
     {
-      "path": "dist/assets/index-BDZVvikL.js",
-      "bytes": 906379,
-      "sha256": "d5e14f258bd4c991bc03b62db01c6d8c53f87edb313074279171d370b9fe8e72"
+      "path": "dist/assets/index-C9pucj-e.js",
+      "bytes": 921284,
+      "sha256": "d80d75e611752a7bff6d57e15f476dafab91212cb0a90e6596bc8768f11910c4"
     },
     {
-      "path": "dist/assets/index-CkqzvnP-.css",
-      "bytes": 41352,
-      "sha256": "d565d4890241d9cb55cd163b98dffac1932d33d9abb48976aaad538024e58fb2"
+      "path": "dist/assets/index-IEOU0aop.css",
+      "bytes": 75862,
+      "sha256": "51cccad31fcdc2f682d1744bc120e10b3e3122fca84f6f140342fe17a83334d2"
     },
     {
-      "path": "dist/assets/mormon-COzEVVv0.js",
+      "path": "dist/assets/mormon-BHNmMgYE.js",
       "bytes": 43145,
-      "sha256": "022b2cfc4e04e5423687092f01ee0739b9e2300ae3ad6e8bdd781f35fa2b0175"
+      "sha256": "1faea5036e2ca6ad64c3016ac89186de7f702da67aa9229885607c67f0282302"
     },
     {
-      "path": "dist/assets/pearl-cxjMdu60.js",
+      "path": "dist/assets/pearl-D_6TrRO8.js",
       "bytes": 17621,
-      "sha256": "3ff856ff1f4dd2bc40ff138aad23fe34b2588ac3bc0153ac0e7481c129181063"
+      "sha256": "03b62a4ff48ce4e1f39950c3acc44a04e81554d9f6a55c93ea6877cfae56f438"
     },
     {
       "path": "dist/favicon.svg",
@@ -68,7 +68,7 @@
     {
       "path": "dist/index.html",
       "bytes": 791,
-      "sha256": "0ad1cb9af8eb5a802593cbfed0d1455b5b5cc2cc992a1b6c245fd7ac5a4553fc"
+      "sha256": "7758cc5ee0c57fd337cf1cf5f8d6d82bbac2638ff38cc77cf17c9ed97ec407e6"
     },
     {
       "path": "dist/thumbnails/B01.jpg",
@@ -432,8 +432,8 @@
     },
     {
       "path": "docs/CONTINUIDADE.md",
-      "bytes": 831,
-      "sha256": "9f690f128632aa908467421f7c3a5e992a81994bdf61d55f16c7e020d3e6df31"
+      "bytes": 945,
+      "sha256": "5307ce6595bc303be68b27f86d1bd93b43eefa9de4861e08bd1a5279eb65418e"
     },
     {
       "path": "docs/DEPENDENCIAS.md",
@@ -442,18 +442,23 @@
     },
     {
       "path": "docs/INVENTARIO.md",
-      "bytes": 6106,
-      "sha256": "e6834e42fbc4a4e0a03c54ff1e36d000243b6599e104a9023cf9160e811f4527"
+      "bytes": 6242,
+      "sha256": "48e3aa20a8112bcc34c1d6a885f557df6daa53ce5019d11ec8a3ada242eca703"
     },
     {
       "path": "docs/PACOTE-VERIFICADO.md",
-      "bytes": 641,
-      "sha256": "7e5b8a1906d88a39464e9fceba963f7b1e2c87b3c02e8c629fdc9cef9b0e9c7c"
+      "bytes": 776,
+      "sha256": "757d7d31128d82e79d7b8beb6d14dbbb2eb977ac161e28a24d138651a684ee97"
+    },
+    {
+      "path": "docs/REDESIGN-1.1.md",
+      "bytes": 4125,
+      "sha256": "e54ba5c5ae9e298aa97b7decad5cf9d60b963acd596f8200bdeb3a863d0cafea"
     },
     {
       "path": "docs/VERIFICACOES.md",
-      "bytes": 6931,
-      "sha256": "88325f1f1b8bbc8b1aaa76eafcb444d67e5722cf42b63086a9e3240ce69d5a64"
+      "bytes": 7231,
+      "sha256": "a814aecdf111e7b427f5f8bc351efe4f6d11e0ac718d8e755778a4ce6c8ae5d4"
     },
     {
       "path": "docs/clean-install-tests.tap",
@@ -491,6 +496,11 @@
       "sha256": "a47172e44a86a7e2cd1c16282341f7726ec60caafe3a6166fe3e0602005b6fa6"
     },
     {
+      "path": "docs/redesign-tests.tap",
+      "bytes": 15819,
+      "sha256": "757ed2bf0c82f00f9368a6f19d864114d2701cc65798ebb63433ff7544377680"
+    },
+    {
       "path": "docs/test-results.tap",
       "bytes": 14232,
       "sha256": "62ee9e6f03c5f72ade9ccf07eb95cbd789247c12b1fc0285c0173ed06eab1a50"
@@ -503,12 +513,12 @@
     {
       "path": "package-lock.json",
       "bytes": 26136,
-      "sha256": "e06f496d50d98dfe89b96168b73eb15087e435a5772c83853a3e69eba4101b31"
+      "sha256": "8f9b9b75e54b5d09721cd00ffe9f9334e68ca030c9dac823bd62c4f847d15d98"
     },
     {
       "path": "package.json",
       "bytes": 474,
-      "sha256": "00bae1f993fb23dabdac3202f1c4797090970bf94c0ace225b450c9ed24f859d"
+      "sha256": "1d0dcfd173e6fa0fe4897cc2ea195597b38c168221da466af9f67085447aa333"
     },
     {
       "path": "public/favicon.svg",
@@ -892,8 +902,8 @@
     },
     {
       "path": "scripts/verify.mjs",
-      "bytes": 1058,
-      "sha256": "9a53b99c418ec583908d3bcab81d3d1d0f7ab6322d2365be40f425b1a10f9599"
+      "bytes": 1117,
+      "sha256": "2c70b3f8992b0670ad33900449af223db7a3d189532a9531b26cd7d37e9aa121"
     },
     {
       "path": "src/data/bible.js",
@@ -921,14 +931,19 @@
       "sha256": "e2856a025b0d9a637ad81f7274d275585c78dc8a7bf1fa95506ec768718f0950"
     },
     {
+      "path": "src/engine/atmosphere.js",
+      "bytes": 3483,
+      "sha256": "525d690dbd0d00cf3f798c44bb4eb21eaac6950745732c3122c1e9cc998b5f30"
+    },
+    {
       "path": "src/engine/kit.js",
       "bytes": 17814,
       "sha256": "cd7d32b115e95fb5ecebb2447daa4b1fb9c5cdcfbe6dccc55e2971c51e0afc5b"
     },
     {
       "path": "src/engine/viewer.js",
-      "bytes": 9106,
-      "sha256": "00abc863828028bb328bfff25e4c6f37b11d9b26fb887fe9c50ea443e7b076c4"
+      "bytes": 11599,
+      "sha256": "b6f9caa5563b36b375e51c86a2f3d6073542285652ffb7d84f0af0515eba1b05"
     },
     {
       "path": "src/icons.js",
@@ -936,9 +951,14 @@
       "sha256": "1a86460a065eb9c7b3164324ba35d51d1b59d121944f8ecb895821ab027ee27f"
     },
     {
+      "path": "src/immersive.css",
+      "bytes": 35243,
+      "sha256": "88e5c7c4814fdd4ddf37515ca63fc189e0859e838b8b747346ff10d5f6fb946a"
+    },
+    {
       "path": "src/main.js",
-      "bytes": 32256,
-      "sha256": "e531af652f33c8d38db658c3a36418fc55d24a62c79d1d5d8e2904143fc7c5e1"
+      "bytes": 32082,
+      "sha256": "0814c427aabaf0898bf9511e64171747c46c73600bc9dbfa5f80a0788b748a21"
     },
     {
       "path": "src/print.css",
@@ -987,13 +1007,23 @@
     },
     {
       "path": "src/storage.js",
-      "bytes": 893,
-      "sha256": "3b1eeb4f00f5f68a5e67793f08434c35718b442b40c8c16c851bb51eb167acb3"
+      "bytes": 922,
+      "sha256": "a640180f6b1b06e85207c33aced6fda50d0b34fb59a5ca94725dc01234617ceb"
     },
     {
       "path": "src/style.css",
       "bytes": 40885,
       "sha256": "a24a3c16819bbf5e27fdeeeea9cd66949934d89de604ee6530e524059cef9785"
+    },
+    {
+      "path": "src/ui/immersive.js",
+      "bytes": 12567,
+      "sha256": "09c5829301a7709f33d7dd9c7ed4755d86f94359ba304077b93e9aa1f8f3145f"
+    },
+    {
+      "path": "tests/atmosphere.test.mjs",
+      "bytes": 6437,
+      "sha256": "59888bb7260b8efa4ee5d09c9c272143b820e77bf6be4a656e589d8845b9d88c"
     },
     {
       "path": "tests/catalog.test.mjs",

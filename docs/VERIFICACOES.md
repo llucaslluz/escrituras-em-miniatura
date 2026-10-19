@@ -1,4 +1,6 @@
-# Verificações e limites — versão 1.0.0
+# Verificações e limites — histórico da versão 1.0.0
+
+A versão atual é 1.1.0. Consulte também `REDESIGN-1.1.md` para as novas verificações do visualizador imersivo e os 86 testes aprovados. O relatório abaixo preserva as medições e a curadoria da entrega inicial.
 
 Revisão da entrega em 18 de outubro de 2026 (America/Sao_Paulo). Arquivos de exportação usam data/hora UTC explícita no manifesto.
 

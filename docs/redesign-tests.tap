@@ -1,0 +1,530 @@
+
+> escrituras-em-miniatura@1.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: horários inválidos retornam ao ambiente original
+ok 1 - horários inválidos retornam ao ambiente original
+  ---
+  duration_ms: 2.0175
+  type: 'test'
+  ...
+# Subtest: os três horários mudam direção, cor, intensidade, preenchimento, atmosfera e exposição
+ok 2 - os três horários mudam direção, cor, intensidade, preenchimento, atmosfera e exposição
+  ---
+  duration_ms: 164.2006
+  type: 'test'
+  ...
+# Subtest: 72 cenas preservam o horário escolhido durante a narrativa e restauram a luz original
+ok 3 - 72 cenas preservam o horário escolhido durante a narrativa e restauram a luz original
+  ---
+  duration_ms: 6446.3792
+  type: 'test'
+  ...
+# Subtest: tela imersiva deixa o fundo transparente e conserva a névoa da cena
+ok 4 - tela imersiva deixa o fundo transparente e conserva a névoa da cena
+  ---
+  duration_ms: 22.2227
+  type: 'test'
+  ...
+# Subtest: o tema original acompanha a criação da luz e reconhece outros fundos escuros
+ok 5 - o tema original acompanha a criação da luz e reconhece outros fundos escuros
+  ---
+  duration_ms: 77.8154
+  type: 'test'
+  ...
+# Subtest: pausa, busca e repetição conservam o horário manual no próprio Viewer
+ok 6 - pausa, busca e repetição conservam o horário manual no próprio Viewer
+  ---
+  duration_ms: 67.1016
+  type: 'test'
+  ...
+# Subtest: controle de aproximação respeita os limites e informa o valor real
+ok 7 - controle de aproximação respeita os limites e informa o valor real
+  ---
+  duration_ms: 1.5514
+  type: 'test'
+  ...
+# Subtest: catálogo: 72 IDs únicos, quatro obras e 18 cenas da base
+ok 8 - catálogo: 72 IDs únicos, quatro obras e 18 cenas da base
+  ---
+  duration_ms: 5.0245
+  type: 'test'
+  ...
+# Subtest: dados: fontes oficiais, referências, contexto e quatro momentos válidos
+ok 9 - dados: fontes oficiais, referências, contexto e quatro momentos válidos
+  ---
+  duration_ms: 2.7836
+  type: 'test'
+  ...
+# Subtest: busca sem acentos, filtros e vizinhos respeitam o livro
+ok 10 - busca sem acentos, filtros e vizinhos respeitam o livro
+  ---
+  duration_ms: 14.8143
+  type: 'test'
+  ...
+# Subtest: M19: exatamente dezesseis pedras, iluminadas individualmente depois do toque
+ok 11 - M19: exatamente dezesseis pedras, iluminadas individualmente depois do toque
+  ---
+  duration_ms: 153.1417
+  type: 'test'
+  ...
+# Subtest: M15: oito projéteis visíveis passam sem tocar a figura de Samuel
+ok 12 - M15: oito projéteis visíveis passam sem tocar a figura de Samuel
+  ---
+  duration_ms: 399.0531
+  type: 'test'
+  ...
+# Subtest: Nomes distinguem identidades homônimas no catálogo e nas figuras
+ok 13 - Nomes distinguem identidades homônimas no catálogo e nas figuras
+  ---
+  duration_ms: 332.7707
+  type: 'test'
+  ...
+# Subtest: 72 construtores correspondem exatamente ao catálogo
+ok 14 - 72 construtores correspondem exatamente ao catálogo
+  ---
+  duration_ms: 5.0519
+  type: 'test'
+  ...
+# Subtest: B01: construir, animar, voltar e liberar recursos
+ok 15 - B01: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 319.2791
+  type: 'test'
+  ...
+# Subtest: B02: construir, animar, voltar e liberar recursos
+ok 16 - B02: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 152.0846
+  type: 'test'
+  ...
+# Subtest: B03: construir, animar, voltar e liberar recursos
+ok 17 - B03: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 198.2465
+  type: 'test'
+  ...
+# Subtest: B04: construir, animar, voltar e liberar recursos
+ok 18 - B04: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 102.9749
+  type: 'test'
+  ...
+# Subtest: B05: construir, animar, voltar e liberar recursos
+ok 19 - B05: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 147.6172
+  type: 'test'
+  ...
+# Subtest: B06: construir, animar, voltar e liberar recursos
+ok 20 - B06: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 69.8626
+  type: 'test'
+  ...
+# Subtest: B07: construir, animar, voltar e liberar recursos
+ok 21 - B07: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 61.9345
+  type: 'test'
+  ...
+# Subtest: B08: construir, animar, voltar e liberar recursos
+ok 22 - B08: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 87.095
+  type: 'test'
+  ...
+# Subtest: B09: construir, animar, voltar e liberar recursos
+ok 23 - B09: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 99.304
+  type: 'test'
+  ...
+# Subtest: B10: construir, animar, voltar e liberar recursos
+ok 24 - B10: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 105.2403
+  type: 'test'
+  ...
+# Subtest: B11: construir, animar, voltar e liberar recursos
+ok 25 - B11: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 120.3621
+  type: 'test'
+  ...
+# Subtest: B12: construir, animar, voltar e liberar recursos
+ok 26 - B12: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 76.8924
+  type: 'test'
+  ...
+# Subtest: B13: construir, animar, voltar e liberar recursos
+ok 27 - B13: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 81.5893
+  type: 'test'
+  ...
+# Subtest: B14: construir, animar, voltar e liberar recursos
+ok 28 - B14: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 50.2017
+  type: 'test'
+  ...
+# Subtest: B15: construir, animar, voltar e liberar recursos
+ok 29 - B15: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 78.5929
+  type: 'test'
+  ...
+# Subtest: B16: construir, animar, voltar e liberar recursos
+ok 30 - B16: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 88.0366
+  type: 'test'
+  ...
+# Subtest: B17: construir, animar, voltar e liberar recursos
+ok 31 - B17: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 160.6961
+  type: 'test'
+  ...
+# Subtest: B18: construir, animar, voltar e liberar recursos
+ok 32 - B18: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 99.1827
+  type: 'test'
+  ...
+# Subtest: B19: construir, animar, voltar e liberar recursos
+ok 33 - B19: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 70.6784
+  type: 'test'
+  ...
+# Subtest: B20: construir, animar, voltar e liberar recursos
+ok 34 - B20: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 186.9752
+  type: 'test'
+  ...
+# Subtest: B21: construir, animar, voltar e liberar recursos
+ok 35 - B21: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 128.508
+  type: 'test'
+  ...
+# Subtest: B22: construir, animar, voltar e liberar recursos
+ok 36 - B22: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 96.3272
+  type: 'test'
+  ...
+# Subtest: B23: construir, animar, voltar e liberar recursos
+ok 37 - B23: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 63.6178
+  type: 'test'
+  ...
+# Subtest: B24: construir, animar, voltar e liberar recursos
+ok 38 - B24: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 75.804
+  type: 'test'
+  ...
+# Subtest: B25: construir, animar, voltar e liberar recursos
+ok 39 - B25: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 71.6057
+  type: 'test'
+  ...
+# Subtest: B26: construir, animar, voltar e liberar recursos
+ok 40 - B26: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 76.3856
+  type: 'test'
+  ...
+# Subtest: B27: construir, animar, voltar e liberar recursos
+ok 41 - B27: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 113.9393
+  type: 'test'
+  ...
+# Subtest: B28: construir, animar, voltar e liberar recursos
+ok 42 - B28: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 186.7841
+  type: 'test'
+  ...
+# Subtest: B29: construir, animar, voltar e liberar recursos
+ok 43 - B29: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 129.5224
+  type: 'test'
+  ...
+# Subtest: B30: construir, animar, voltar e liberar recursos
+ok 44 - B30: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 105.5694
+  type: 'test'
+  ...
+# Subtest: B31: construir, animar, voltar e liberar recursos
+ok 45 - B31: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 87.188
+  type: 'test'
+  ...
+# Subtest: B32: construir, animar, voltar e liberar recursos
+ok 46 - B32: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 114.8492
+  type: 'test'
+  ...
+# Subtest: M01: construir, animar, voltar e liberar recursos
+ok 47 - M01: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 154.797
+  type: 'test'
+  ...
+# Subtest: M02: construir, animar, voltar e liberar recursos
+ok 48 - M02: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 89.436
+  type: 'test'
+  ...
+# Subtest: M03: construir, animar, voltar e liberar recursos
+ok 49 - M03: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 65.8574
+  type: 'test'
+  ...
+# Subtest: M04: construir, animar, voltar e liberar recursos
+ok 50 - M04: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 54.9751
+  type: 'test'
+  ...
+# Subtest: M05: construir, animar, voltar e liberar recursos
+ok 51 - M05: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 65.0727
+  type: 'test'
+  ...
+# Subtest: M06: construir, animar, voltar e liberar recursos
+ok 52 - M06: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 107.4298
+  type: 'test'
+  ...
+# Subtest: M07: construir, animar, voltar e liberar recursos
+ok 53 - M07: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 142.5074
+  type: 'test'
+  ...
+# Subtest: M08: construir, animar, voltar e liberar recursos
+ok 54 - M08: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 104.5186
+  type: 'test'
+  ...
+# Subtest: M09: construir, animar, voltar e liberar recursos
+ok 55 - M09: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 173.8675
+  type: 'test'
+  ...
+# Subtest: M10: construir, animar, voltar e liberar recursos
+ok 56 - M10: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 101.5599
+  type: 'test'
+  ...
+# Subtest: M11: construir, animar, voltar e liberar recursos
+ok 57 - M11: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 102.9455
+  type: 'test'
+  ...
+# Subtest: M12: construir, animar, voltar e liberar recursos
+ok 58 - M12: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 88.6708
+  type: 'test'
+  ...
+# Subtest: M13: construir, animar, voltar e liberar recursos
+ok 59 - M13: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 114.5713
+  type: 'test'
+  ...
+# Subtest: M14: construir, animar, voltar e liberar recursos
+ok 60 - M14: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 91.8963
+  type: 'test'
+  ...
+# Subtest: M15: construir, animar, voltar e liberar recursos
+ok 61 - M15: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 146.4388
+  type: 'test'
+  ...
+# Subtest: M16: construir, animar, voltar e liberar recursos
+ok 62 - M16: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 126.7679
+  type: 'test'
+  ...
+# Subtest: M17: construir, animar, voltar e liberar recursos
+ok 63 - M17: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 108.0387
+  type: 'test'
+  ...
+# Subtest: M18: construir, animar, voltar e liberar recursos
+ok 64 - M18: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 163.9058
+  type: 'test'
+  ...
+# Subtest: M19: construir, animar, voltar e liberar recursos
+ok 65 - M19: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 71.4703
+  type: 'test'
+  ...
+# Subtest: M20: construir, animar, voltar e liberar recursos
+ok 66 - M20: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 43.6577
+  type: 'test'
+  ...
+# Subtest: D01: construir, animar, voltar e liberar recursos
+ok 67 - D01: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 124.6325
+  type: 'test'
+  ...
+# Subtest: D02: construir, animar, voltar e liberar recursos
+ok 68 - D02: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 130.3859
+  type: 'test'
+  ...
+# Subtest: D03: construir, animar, voltar e liberar recursos
+ok 69 - D03: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 79.6832
+  type: 'test'
+  ...
+# Subtest: D04: construir, animar, voltar e liberar recursos
+ok 70 - D04: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 75.3699
+  type: 'test'
+  ...
+# Subtest: D05: construir, animar, voltar e liberar recursos
+ok 71 - D05: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 55.1798
+  type: 'test'
+  ...
+# Subtest: D06: construir, animar, voltar e liberar recursos
+ok 72 - D06: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 133.4919
+  type: 'test'
+  ...
+# Subtest: D07: construir, animar, voltar e liberar recursos
+ok 73 - D07: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 48.8777
+  type: 'test'
+  ...
+# Subtest: D08: construir, animar, voltar e liberar recursos
+ok 74 - D08: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 53.6834
+  type: 'test'
+  ...
+# Subtest: D09: construir, animar, voltar e liberar recursos
+ok 75 - D09: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 50.1384
+  type: 'test'
+  ...
+# Subtest: D10: construir, animar, voltar e liberar recursos
+ok 76 - D10: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 95.252
+  type: 'test'
+  ...
+# Subtest: P01: construir, animar, voltar e liberar recursos
+ok 77 - P01: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 69.0967
+  type: 'test'
+  ...
+# Subtest: P02: construir, animar, voltar e liberar recursos
+ok 78 - P02: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 174.2143
+  type: 'test'
+  ...
+# Subtest: P03: construir, animar, voltar e liberar recursos
+ok 79 - P03: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 88.8112
+  type: 'test'
+  ...
+# Subtest: P04: construir, animar, voltar e liberar recursos
+ok 80 - P04: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 153.83
+  type: 'test'
+  ...
+# Subtest: P05: construir, animar, voltar e liberar recursos
+ok 81 - P05: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 62.3445
+  type: 'test'
+  ...
+# Subtest: P06: construir, animar, voltar e liberar recursos
+ok 82 - P06: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 82.9511
+  type: 'test'
+  ...
+# Subtest: P07: construir, animar, voltar e liberar recursos
+ok 83 - P07: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 93.4825
+  type: 'test'
+  ...
+# Subtest: P08: construir, animar, voltar e liberar recursos
+ok 84 - P08: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 35.7039
+  type: 'test'
+  ...
+# Subtest: P09: construir, animar, voltar e liberar recursos
+ok 85 - P09: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 119.503
+  type: 'test'
+  ...
+# Subtest: P10: construir, animar, voltar e liberar recursos
+ok 86 - P10: construir, animar, voltar e liberar recursos
+  ---
+  duration_ms: 76.4437
+  type: 'test'
+  ...
+1..86
+# tests 86
+# suites 0
+# pass 86
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8082.0326
