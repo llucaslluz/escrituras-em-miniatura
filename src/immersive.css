@@ -274,3 +274,15 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
 .scene-study .doctrine-heading{font-family:Georgia,'Times New Roman',serif;font-size:1.3rem;font-weight:400;line-height:1.25;margin:13px 0 9px;color:inherit}
 .scene-study .doctrine-reference{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;line-height:1.7;text-decoration:underline;text-underline-offset:4px;margin-top:8px}
 .scene-study .doctrine-reference .icon{width:13px;height:13px;flex:0 0 13px}
+
+/* On a narrow portrait screen, reserve a reading band above the miniature. */
+@media(max-width:760px) and (min-height:541px){
+ .scene-history-toggle{left:21px;transform:none}
+ .scene-panel-toggle{top:calc(max(14px,env(safe-area-inset-top)) + 58px)}
+ .scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + 123px);bottom:57%;left:21px;width:calc(100% - 42px);gap:16px;padding-bottom:10px}
+ .scene-copy .scene-location{max-width:none;margin-bottom:10px}
+ .immersive-page .scene-copy .scene-poetic-title{font-size:clamp(28px,8vw,38px);max-width:none;line-height:1.04}
+ .scene-copy .scene-description{max-width:none;margin-top:14px;margin-bottom:0}
+ .scene-copy .scene-character-intro{max-width:none}
+ .immersive-canvas{top:44%;bottom:76px}
+}

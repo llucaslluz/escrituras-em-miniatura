@@ -25,7 +25,10 @@ function reachHead(r,side,recipient,amount){
   // Derive both joint rotations from the current head position, never from
   // a previous animation frame, so seeking and replay preserve contact.
   recipient.head.updateWorldMatrix(true,false);r.root.updateWorldMatrix(true,false);
-  const target=new THREE.Vector3(0,.275,0).applyMatrix4(recipient.head.matrixWorld);
+  // Rest the clay palm on the enlarged crown, slightly towards the minister.
+  // This keeps contact reachable without changing the articulated arm bones.
+  const clay=recipient.root.userData.clayPerson;
+  const target=(clay?new THREE.Vector3(0,clay.crownOffset+.03,.14):new THREE.Vector3(0,.275,0)).applyMatrix4(recipient.head.matrixWorld);
   r.root.worldToLocal(target);const shoulder=side==='L'?r.leftArm:r.rightArm,elbow=side==='L'?r.leftForearm:r.rightForearm;
   const delta=target.sub(shoulder.position),length=THREE.MathUtils.clamp(delta.length(),.041,.5799),direction=delta.normalize();
   const pole=new THREE.Vector3(0,-1,0).addScaledVector(direction,direction.y).normalize();

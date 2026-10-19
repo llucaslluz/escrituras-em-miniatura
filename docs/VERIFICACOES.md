@@ -1,6 +1,6 @@
 # Verificações e limites — histórico da versão 1.0.0
 
-A versão atual é 1.1.0. Consulte também `REDESIGN-1.1.md` para as novas verificações do visualizador imersivo e os 86 testes aprovados. O relatório abaixo preserva as medições e a curadoria da entrega inicial.
+A versão atual é 2.0.0; consulte `MASSINHA-2.0.md` para a direção de arte e o motor atuais. Os relatórios `REDESIGN-1.1.md`, `CORRECOES-1.2.md`, `PAINEIS-1.3.md`, `TEXTOS-1.3.1.md` e `DOUTRINA-1.4.md` documentam as etapas anteriores. O relatório abaixo preserva as medições e a curadoria da entrega inicial, sem atribuir seus resultados à versão atual.
 
 Revisão da entrega em 18 de outubro de 2026 (America/Sao_Paulo). Arquivos de exportação usam data/hora UTC explícita no manifesto.
 

@@ -43,4 +43,4 @@ Conferência em fontes oficiais realizada em 18 de outubro de 2026. Os resumos s
 - D01 teve contato conferido em coordenadas mundiais: o alcance de ombro e cotovelo acompanha o topo da cabeça de cada recipiente. Nas amostras de 20, 21, 22 e 23 segundos, a distância medida entre cada palma e o alvo foi inferior a `1e-8` unidade. A retirada das mãos começa antes de Joseph e Oliver se levantarem. P02 mantém vegetação, animais e figuras apoiados no topo da ilha.
 - Essa verificação é estrutural; inspeção visual e controles no navegador são registrados no relatório geral do projeto.
 
-Geometrias e materiais destes módulos são procedurais e incluídos no código, sem recursos visuais remotos. A textura de feltro é gerada pelo motor compartilhado.
+Geometrias e materiais destes módulos são procedurais e incluídos no código, sem recursos visuais remotos. A textura de massinha é gerada pelo motor compartilhado.

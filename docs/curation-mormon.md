@@ -31,7 +31,7 @@ Revisão das fontes oficiais em português realizada em 18 de outubro de 2026. O
 
 - Vinte construções com identificação M01–M20, cada uma com composição e ação próprias, quatro momentos e duração de 32 segundos.
 - Cenas base: M16, M17, M18 e M19.
-- Cenários e objetos são gerados localmente com Three.js e os materiais de feltro do Kit. Não usam imagens ou modelos remotos.
+- Cenários e objetos são gerados localmente com Three.js e os materiais de massinha do Kit. Não usam imagens ou modelos remotos.
 - `src/scenes/mormon.js` reúne os módulos `journeys.js`, `community.js` e `witnesses.js`; `utils.js` contém apenas construção compartilhada de formas, sem um cenário genérico replicado.
 - Gestos, passos, transições, iluminação, água, tecido, árvores e partículas usam o tempo do Kit. Não há temporizadores independentes.
 - A restauração das poses antes de avaliar cada instante torna a seleção de momentos e a repetição independentes do percurso anterior.

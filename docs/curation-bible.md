@@ -2,7 +2,7 @@
 
 Consulta das páginas oficiais realizada em 18 de outubro de 2026. Os links abaixo foram abertos na Biblioteca do Evangelho, em português. João 2 apresentou erro transitório na primeira tentativa e abriu normalmente na segunda. Resumos, descrições e legendas foram escritos para este projeto; não se reproduzem capítulos completos.
 
-As 32 cenas têm quatro momentos de oito segundos. Compartilham modelos de feltro e utilitários, mas cada construtor define cenário, composição, ação e reação próprios. A lista é um catálogo inicial, não um inventário de todos os relatos bíblicos.
+As 32 cenas têm quatro momentos de oito segundos. Compartilham modelos de massinha e utilitários, mas cada construtor define cenário, composição, ação e reação próprios. A lista é um catálogo inicial, não um inventário de todos os relatos bíblicos.
 
 ## Referências conferidas
 

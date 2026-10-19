@@ -4,8 +4,8 @@
 
 | Recurso | Versão/origem | Licença | Uso |
 | --- | --- | --- | --- |
-| Three.js | 0.186.1, npm `three` | MIT | WebGL, materiais, geometrias, luzes e OrbitControls |
-| Arte procedural | `src/engine/kit.js` e `src/scenes/` | MIT do projeto | Modelos, fibras de feltro, costuras, cenários, água, fogo e animação |
+| Three.js | 0.186.1, npm `three` | MIT | WebGL, materiais físicos, geometrias, luzes, OrbitControls e FullScreenQuad |
+| Arte procedural | `src/engine/kit.js`, `src/engine/clay-*.js` e `src/scenes/` | MIT do projeto | Modelos chibi, textura de massinha, formas arredondadas, cenários, água, fogo, animação e lente de miniatura |
 | Ícones | `src/icons.js`, originais em SVG | MIT do projeto | Interface |
 | Miniaturas | Capturas dos 72 dioramas, incluídas localmente | MIT do projeto | Biblioteca |
 | Tipografia | Georgia, Segoe UI, fontes do sistema | Licença do sistema operacional | Texto, sem downloads de fontes |

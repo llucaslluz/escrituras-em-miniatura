@@ -1,8 +1,10 @@
 # Escrituras em Miniatura
 
-**Histórias de fé em movimento — versão 1.4.0**
+**Histórias de fé em movimento — versão 2.0.0**
 
 Aplicação independente em português do Brasil, com **72 dioramas 3D procedurais**: Bíblia (32), Livro de Mórmon (20), Doutrina e Convênios (10) e Pérola de Grande Valor (10). Reconstruída do zero. Não recupera a fonte de “Gólgota em Miniatura” nem altera seu site ou identificador.
+
+As 72 cenas usam uma direção de arte inspirada em **claymation**: personagens chibi, formas arredondadas, textura de massinha, cores pastel e iluminação suave de estúdio. São cenas interativas renderizadas em tempo real com Three.js. A câmera geral reduz a distorção de perspectiva para aproximar a aparência de uma miniatura isométrica; a lente aplica um tilt-shift discreto conforme a profundidade, sem desfocar os textos da interface.
 
 ## Executar
 
@@ -64,7 +66,11 @@ src/
   data/                   catálogo, personagens derivados e fontes por obra
   data/editorial.js       72 ensinamentos próprios com versículos de apoio
   data/editorial/         textos autorais por obra
-  engine/kit.js           modelos, materiais/fibras, terreno e animações comuns
+  engine/kit.js           API compartilhada, terreno e animações comuns
+  engine/clay-style.js    materiais de massinha, formas e base arredondada
+  engine/clay-people.js   personagens chibi articulados
+  engine/clay-animals.js  animais de massinha e aves articuladas
+  engine/clay-studio.js   luzes suaves e lente de miniatura por qualidade
   engine/viewer.js        renderer, câmera, seleção e ciclo de vida
   scenes/bible.js         32 composições e ações bíblicas
   scenes/mormon.js        agregador dos 20 episódios do Livro de Mórmon
@@ -77,7 +83,7 @@ docs/                     inventário, curadoria, dependências e relatório
 dist/                     versão estática construída (no ZIP)
 ```
 
-Uma cena é construída somente quando selecionada. Os módulos de código são importados por obra; as 72 geometrias não são mantidas simultaneamente. Ao trocar de tela, o visualizador cancela seu ciclo, remove os observadores/listeners, libera geometrias/materiais e destrói o contexto anterior. A textura procedural compartilhada é reutilizada.
+Uma cena é construída somente quando selecionada. Os módulos de código são importados por obra; as 72 geometrias não são mantidas simultaneamente. Ao trocar de tela, o visualizador cancela seu ciclo, remove os observadores/listeners, libera geometrias, materiais, sombras e recursos da lente, e destrói o contexto anterior. A textura procedural compartilhada é reutilizada. A qualidade baixa e dispositivos sem suporte ao alvo HDR usam a renderização direta, preservando a interação e as cores.
 
 ### Adicionar uma história
 
@@ -93,7 +99,7 @@ Uma cena é construída somente quando selecionada. Os módulos de código são 
 
 O índice oficial é <https://www.churchofjesuschrist.org/study/scriptures?lang=por>. Cada história contém links para suas passagens. Resumos e legendas são originais; não há reprodução extensa do texto das escrituras. As composições são artísticas, e as visões/etapas doutrinárias não descrevem posições físicas literais.
 
-Modelos, fibras de feltro, costuras, água, animais, tecidos e iluminação são produzidos por código incluído. Não há modelos, imagens ou fontes tipográficas remotas. Fontes do sistema variam conforme o computador. Three.js e Vite são MIT; consulte `docs/DEPENDENCIAS.md` e `LICENSE`.
+Modelos, texturas de plasticina, detalhes do terreno, água, animais, roupas e iluminação são produzidos por código incluído. Não há modelos, imagens ou fontes tipográficas remotas. Fontes do sistema variam conforme o computador. Three.js e Vite são MIT; consulte `docs/DEPENDENCIAS.md` e `LICENSE`.
 
 As miniaturas são estilizadas e procedurais, não digitalizações de bonecos físicos. O relatório `docs/VERIFICACOES.md` distingue verificações automáticas, inspeção visual e limitações. A qualidade/performance em um telefone físico deve ser avaliada nesse dispositivo; uma viewport móvel no computador não substitui esse teste.
 
@@ -116,3 +122,5 @@ A versão 1.3.1 restaura os textos editoriais na estrutura da cena, preservando 
 Detalhes desta restauração e validação: [docs/TEXTOS-1.3.1.md](docs/TEXTOS-1.3.1.md).
 
 A versão 1.4.0 substitui a chamada repetida por 72 ensinamentos doutrinários próprios, com versículos de apoio e links oficiais. A lateral e “Sobre a cena” exibem o mesmo conteúdo específico. Curadoria e verificação: [docs/DOUTRINA-1.4.md](docs/DOUTRINA-1.4.md).
+
+A versão 2.0.0 aplica a direção de arte de massinha às 72 cenas, com personagens chibi, animais remodelados, materiais de plasticina, base e objetos arredondados, iluminação de estúdio e lente de miniatura. O catálogo, as referências, os ensinamentos específicos e os controles de reprodução permanecem disponíveis. Detalhes: [docs/MASSINHA-2.0.md](docs/MASSINHA-2.0.md).

@@ -1,3 +1,5 @@
+import {updateStudio} from './clay-studio.js';
+
 const presets = Object.freeze({
   morning: Object.freeze({background:'#dce2d2',key:'#fff0d3',intensity:3.25,position:[-5,9,6],sky:'#e8f2f3',ground:'#a08869',fill:2.05,exposure:1.1}),
   sunset: Object.freeze({background:'#70584d',key:'#ffc388',intensity:2.7,position:[-7,3,-4],sky:'#d9b4a1',ground:'#65525a',fill:1.6,exposure:1.05}),
@@ -46,7 +48,7 @@ export class AtmosphereController {
 
   apply() {
     this.restore(this.authored);
-    const p=presets[this.choice];if(!p)return;
+    const p=presets[this.choice];updateStudio(this.kit,this.effectiveAtmosphere);if(!p)return;
     const {kit,scene,renderer}=this;
     kit.light.color.set(p.key);kit.light.position.fromArray(p.position);kit.light.intensity=p.intensity;
     kit.fill.color.set(p.sky);kit.fill.groundColor.set(p.ground);kit.fill.intensity=p.fill;

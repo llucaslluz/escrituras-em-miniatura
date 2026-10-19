@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Kit} from './kit.js';
 import {AtmosphereController,normalizeAtmosphere} from './atmosphere.js';
+import {ClayOptics,prepareStudio,disposeShadows} from './clay-studio.js';
+import {fitMiniatureBaseFov} from './camera-framing.js';
 
 const loaders={bible:()=>import('../scenes/bible.js'),mormon:()=>import('../scenes/mormon.js'),dc:()=>import('../scenes/dc.js'),pearl:()=>import('../scenes/pearl.js')};
 export function effectivelyVisible(object){for(let o=object;o;o=o.parent)if(!o.visible)return false;return true;}
@@ -13,7 +15,7 @@ export class Viewer{
   try{this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:this.immersive,preserveDrawingBuffer:true,powerPreference:'high-performance'});}catch(error){this.error=error;host.innerHTML='<div class="fallback"><b>O diorama precisa de WebGL 2.</b><p>Ative a aceleração gráfica ou experimente outro navegador. A narrativa, os personagens e as fontes continuam disponíveis abaixo.</p></div>';return;}
   if(this.immersive){this.renderer.setClearColor('#000000',0);this.scene.background=null;}
   this.renderer.domElement.className='scene-canvas';this.renderer.domElement.setAttribute('aria-label','Diorama 3D interativo. Arraste para girar; use os controles para aproximar.');this.renderer.domElement.setAttribute('role','img');this.renderer.domElement.tabIndex=0;
-  this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.12;this.renderer.shadowMap.type=THREE.PCFShadowMap;host.append(this.renderer.domElement);
+  this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.toneMapping=THREE.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.08;this.renderer.shadowMap.type=THREE.PCFShadowMap;host.append(this.renderer.domElement);this.optics=new ClayOptics(this.renderer);host.dataset.presentation='clay-studio';
   this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.dampingFactor=.08;this.controls.minDistance=3;this.controls.maxDistance=25;this.controls.maxPolarAngle=Math.PI*.48;this.controls.target.set(0,1,0);this.controls.enablePan=false;
   this.labelLayer=document.createElement('div');this.labelLayer.className='labels-layer';host.append(this.labelLayer);
   this.pick=e=>{if(this.dragged>6||!this.kit)return;const r=this.renderer.domElement.getBoundingClientRect();const point=new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);const ray=new THREE.Raycaster();ray.setFromCamera(point,this.camera);const hits=ray.intersectObjects(this.kit.selectables.filter(x=>effectivelyVisible(x.object)).map(x=>x.object),true).filter(x=>effectivelyVisible(x.object));if(hits[0]){let obj=hits[0].object;while(obj&&!obj.userData.selectable)obj=obj.parent;const entry=this.kit.selectables.find(s=>s.object===obj);if(entry)this.onSelect(entry);}};
@@ -22,38 +24,48 @@ export class Viewer{
   this.renderer.domElement.addEventListener('pointerdown',this.down);this.renderer.domElement.addEventListener('pointermove',this.move);this.renderer.domElement.addEventListener('pointerup',this.up);this.renderer.domElement.addEventListener('keydown',this.key);
   this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(host);this.applyPreferences(preferences);this.last=performance.now();this.tick=this.tick.bind(this);this.raf=requestAnimationFrame(this.tick);
  }
- applyPreferences(p){this.preferences=p;this.setLoop(p.loop!==false,false);if(p.reduced)this.playing=false;if(!this.renderer)return;const q=p.quality||'medium';this.renderer.setPixelRatio(Math.min(devicePixelRatio,{low:1,medium:1.5,high:2}[q]));this.renderer.shadowMap.enabled=q!=='low';this.setAtmosphere(p.atmosphere);this.resize();}
+ applyPreferences(p){this.preferences=p;this.setLoop(p.loop!==false,false);if(p.reduced)this.playing=false;if(!this.renderer)return;const q=p.quality||'medium';this.renderer.setPixelRatio(Math.min(devicePixelRatio,{low:1,medium:1.5,high:2}[q]||1.5));this.renderer.shadowMap.enabled=q!=='low';this.optics?.setQuality(q);if(this.kit){const previousSize=this.kit.light.shadow.mapSize.x;prepareStudio(this.kit,q);if(previousSize!==this.kit.light.shadow.mapSize.x){this.kit.light.shadow.map?.dispose();this.kit.light.shadow.map=null;this.kit.light.shadow.needsUpdate=true;}}this.host.dataset.optics=this.optics?.target?'miniature':'direct';this.setAtmosphere(p.atmosphere);this.resize();}
  async load(story){
   const token=Symbol();this.loadToken=token;this.story=story;this.time=0;this.host.dataset.loading='true';
   if(!this.renderer){this.playing=false;this.host.dataset.loading='false';this.onUpdate(this);return;}
   const {builders}=await loaders[story.book]();if(this.disposed||token!==this.loadToken)return;
-  if(this.kit){this.scene.remove(this.kit.group);this.kit.dispose();this.kit=null;this.renderer?.renderLists.dispose();}
+  if(this.kit){this.scene.remove(this.kit.group);disposeShadows(this.kit);this.kit.dispose();this.kit=null;this.renderer?.renderLists.dispose();}
   const kit=new Kit(story.id);builders[story.id](kit);this.kit=kit;
   const peopleMap=new Map(story.characters.map(c=>[c.name,c]));for(const s of kit.selectables){const c=peopleMap.get(s.name);if(c){s.role=c.role;s.summary=c.description;s.reference=story.reference;}}
   if(kit.config.night){kit.background.set('#1b2b39');kit.light.color.set('#b5cef0');kit.light.intensity=1.4;kit.fill.intensity=.8;}
   kit.top.material=kit.mat(kit.config.ground);this.scene.background=this.immersive?null:kit.background;this.scene.fog=new THREE.Fog(kit.background,26,50);this.scene.add(kit.group);
-  this.renderer.toneMappingExposure=1.12;this.atmosphereController=new AtmosphereController(kit,this.scene,this.renderer,{atmosphere:this.atmosphere,immersive:this.immersive});
+  prepareStudio(kit,this.preferences.quality);this.renderer.toneMappingExposure=1.08;this.atmosphereController=new AtmosphereController(kit,this.scene,this.renderer,{atmosphere:this.atmosphere,immersive:this.immersive});
   this.views=kit.config.views||[{label:'Vista geral',camera:kit.config.camera,target:kit.config.target},{label:'Personagens',camera:[4,3,5],target:[0,1,0]},{label:'Detalhes',camera:[0,2.6,4],target:[0,1,0]}];this.setView(0);this.playing=!this.preferences.reduced;this.updateScene();this.makeLabels();this.host.dataset.loading='false';this.host.dataset.scene=story.id;this.onUpdate(this);return kit;
  }
  makeLabels(){this.labelLayer.replaceChildren();this.labelNodes=(this.kit?.labels||[]).map(l=>{const node=document.createElement('span');node.className='model-label';node.textContent=l.text;this.labelLayer.append(node);return{...l,node}});this.labelLayer.hidden=!this.names;}
- setView(index){const v=this.views?.[index];if(!v)return;this.viewIndex=index;this.camera.position.fromArray(v.camera);this.controls?.target.fromArray(v.target||[0,1,0]);this.controls?.update();this.resize();this.onUpdate(this);}
+ setView(index){const v=this.views?.[index];if(!v)return;this.viewIndex=index;this.camera.position.fromArray(v.camera);this.controls?.target.fromArray(v.target||[0,1,0]);this.viewDistanceScale=1;if(index===0){const target=this.controls?.target||new THREE.Vector3().fromArray(v.target||[0,1,0]);this.viewDistanceScale=Math.min(1.3,(this.controls?.maxDistance||25)*.98/Math.max(this.camera.position.distanceTo(target),.1));this.camera.position.sub(target).multiplyScalar(this.viewDistanceScale).add(target);}this.controls?.update();this.resize();this.onUpdate(this);}
  resize(){
   if(!this.renderer)return;
   const {width,height}=this.host.getBoundingClientRect();if(width<1||height<1)return;
-  this.camera.aspect=width/height;this.camera.fov=this.camera.aspect<1.1?52:38;
+  this.camera.aspect=width/height;this.camera.fov=this.camera.aspect<1.1?52:38;if((this.viewIndex||0)===0)this.camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(this.camera.fov*.5))/(this.viewDistanceScale||1.3)));
   if(this.immersive){
    const v=this.views?.[this.viewIndex||0];
    if((this.viewIndex||0)===0&&v){
-    const distance=new THREE.Vector3().fromArray(v.camera).distanceTo(new THREE.Vector3().fromArray(v.target||[0,1,0]));
+    const distance=new THREE.Vector3().fromArray(v.camera).distanceTo(new THREE.Vector3().fromArray(v.target||[0,1,0]))*(this.viewDistanceScale||1.3);
     const available=width>=1100?Math.min(width-600,1120):width>760?width-340:height<540?width*.65:width*.94;
-    this.camera.fov=THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(2*Math.atan(height*6/(available*distance))),34,105);
+    this.camera.fov=THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(2*Math.atan(height*6/(available*distance))),26,100);
    }else{
     this.camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(19))*Math.max(1,1.3/this.camera.aspect)));
    }
    const horizontalShift=width>=1100?18:width>760?145:height<540?width*.12:0;
    this.camera.setViewOffset(width,height,-horizontalShift,height*(width>=1100?.025:-.035),width,height);
-  }else this.camera.clearViewOffset();
-  this.camera.updateProjectionMatrix();this.renderer.setSize(width,height,false);
+  }else{
+   this.camera.clearViewOffset();
+   const v=this.views?.[this.viewIndex||0];
+   if((this.viewIndex||0)===0&&v){
+    // Derive the initial fit from the authored view so resizing does not undo
+    // a visitor's subsequent dolly or orbit. No scene bounds include the sky.
+    const framing=this.camera.clone(),target=new THREE.Vector3().fromArray(v.target||[0,1,0]);
+    framing.position.fromArray(v.camera).sub(target).multiplyScalar(this.viewDistanceScale||1.3).add(target);
+    framing.lookAt(target);this.camera.fov=fitMiniatureBaseFov(framing);
+   }
+  }
+  this.camera.updateProjectionMatrix();this.renderer.setSize(width,height,false);this.optics?.resize(width,height);
  }
  orbit(angle){const offset=this.camera.position.clone().sub(this.controls.target);offset.applyAxisAngle(new THREE.Vector3(0,1,0),angle);this.camera.position.copy(this.controls.target).add(offset);this.controls.update();}
  zoom(factor){const v=this.camera.position.clone().sub(this.controls.target);v.multiplyScalar(factor);v.clampLength(3,25);this.camera.position.copy(this.controls.target).add(v);this.controls.update();}
@@ -66,7 +78,7 @@ export class Viewer{
  toggle(){this.playing=!this.playing;this.onUpdate(this)}
  replay(){this.time=0;this.playing=true;this.updateScene();this.onUpdate(this)}
  seek(t){this.time=Math.max(0,Math.min(t,this.story.duration));this.updateScene();this.onUpdate(this)}
- tick(now){if(this.disposed)return;const dt=Math.min((now-this.last)/1000,.075);this.last=now;if(this.playing&&this.kit){this.time+=dt*this.speed;const duration=this.story.duration;if(this.loop!==false&&duration>0&&this.time>=duration)this.time%=duration;}if(this.kit){this.updateScene();this.controls.update();for(const {object,node}of this.labelNodes||[]){if(!this.names)break;const pos=new THREE.Vector3();object.getWorldPosition(pos);pos.y+=1.9;pos.project(this.camera);node.style.transform=`translate(-50%,-50%) translate(${(pos.x*.5+.5)*this.host.clientWidth}px,${(-pos.y*.5+.5)*this.host.clientHeight}px)`;node.hidden=pos.z>1||!effectivelyVisible(object);}this.renderer?.render(this.scene,this.camera);this.frameCount++;this.host.dataset.animationTime=this.time.toFixed(3);this.host.dataset.playing=String(this.playing);this.host.dataset.looping=String(this.loop!==false);if(now-(this.metricStart||now)>2000){this.host.dataset.measuredFps=((this.frameCount-this.metricFrame)*1000/(now-this.metricStart)).toFixed(1);this.host.dataset.drawCalls=String(this.renderer.info.render.calls);this.host.dataset.triangles=String(this.renderer.info.render.triangles);this.host.dataset.geometries=String(this.renderer.info.memory.geometries);this.metricStart=now;this.metricFrame=this.frameCount;}if(!this.metricStart){this.metricStart=now;this.metricFrame=this.frameCount;}if(now-(this.lastNotify||0)>100){this.lastNotify=now;this.onUpdate(this);}}this.raf=requestAnimationFrame(this.tick)}
- destroy(){this.disposed=true;cancelAnimationFrame(this.raf);this.observer?.disconnect();this.controls?.dispose();this.kit?.dispose();this.scene.clear();if(this.renderer){const c=this.renderer.domElement;c.removeEventListener('pointerdown',this.down);c.removeEventListener('pointermove',this.move);c.removeEventListener('pointerup',this.up);c.removeEventListener('keydown',this.key);this.renderer.dispose();this.renderer.forceContextLoss();}this.host.replaceChildren();}
+ tick(now){if(this.disposed)return;const dt=Math.min((now-this.last)/1000,.075);this.last=now;if(this.playing&&this.kit){this.time+=dt*this.speed;const duration=this.story.duration;if(this.loop!==false&&duration>0&&this.time>=duration)this.time%=duration;}if(this.kit){this.updateScene();this.controls.update();for(const {object,node}of this.labelNodes||[]){if(!this.names)break;const pos=new THREE.Vector3();object.getWorldPosition(pos);pos.y+=1.9;pos.project(this.camera);node.style.transform=`translate(-50%,-50%) translate(${(pos.x*.5+.5)*this.host.clientWidth}px,${(-pos.y*.5+.5)*this.host.clientHeight}px)`;node.hidden=pos.z>1||!effectivelyVisible(object);}if(this.optics)this.optics.render(this.scene,this.camera,this.camera.position.distanceTo(this.controls.target));else this.renderer?.render(this.scene,this.camera);this.frameCount++;this.host.dataset.animationTime=this.time.toFixed(3);this.host.dataset.playing=String(this.playing);this.host.dataset.looping=String(this.loop!==false);if(now-(this.metricStart||now)>2000){this.host.dataset.measuredFps=((this.frameCount-this.metricFrame)*1000/(now-this.metricStart)).toFixed(1);this.host.dataset.drawCalls=String(this.renderer.info.render.calls);this.host.dataset.triangles=String(this.renderer.info.render.triangles);this.host.dataset.geometries=String(this.renderer.info.memory.geometries);this.metricStart=now;this.metricFrame=this.frameCount;}if(!this.metricStart){this.metricStart=now;this.metricFrame=this.frameCount;}if(now-(this.lastNotify||0)>100){this.lastNotify=now;this.onUpdate(this);}}this.raf=requestAnimationFrame(this.tick)}
+ destroy(){this.disposed=true;cancelAnimationFrame(this.raf);this.observer?.disconnect();this.controls?.dispose();this.optics?.dispose();disposeShadows(this.kit);this.kit?.dispose();this.scene.clear();if(this.renderer){const c=this.renderer.domElement;c.removeEventListener('pointerdown',this.down);c.removeEventListener('pointermove',this.move);c.removeEventListener('pointerup',this.up);c.removeEventListener('keydown',this.key);this.renderer.dispose();this.renderer.forceContextLoss();}this.host.replaceChildren();}
 }
 

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { clipWaterToPlinth } from '../engine/clay-style.js';
 
 // Narrative time is supplied by Kit. No wall clock, timers or accumulated transforms.
 const PI = Math.PI, TAU = PI * 2;
@@ -134,7 +135,7 @@ export const builders = {
     const mo = k.person('Moisés', -1, 3, { robe: '#d8c49d', mantle: '#8c6f4d' }); staff(k, mo.handR, '#796044', 2.1);
     const people = Array.from({ length: 8 }, (_, i) => k.person('Povo de Israel', -.65 + i % 3 * .65, 4.1 + Math.floor(i / 3) * .55, { robe: ['#b8ae86', '#b68d72', '#8f9f87'][i % 3], scale: i % 4 === 0 ? .67 : .88, beard: i % 2 === 0 }));
     people.forEach((r, i) => k.walk(r, [r.root.position.x, r.root.position.z], [r.root.position.x, -3.8 + Math.floor(i / 3) * .55], 12 + i * .5, 27 + i * .35));
-    k.animate(t => { const open = ease(t, 3, 12); left.position.x = -1.9 - open * 1.95; right.position.x = 1.9 + open * 1.95; walls.forEach((w, i) => { w.scale.y = open; w.position.x = (i ? 1 : -1) * mix(.1, 1.9, open); w.position.y = open * 1.3; }); mo.rightArm.rotation.z = .8 * ease(t, 1, 6); mo.rightArm.rotation.x = -1 * ease(t, 1, 7); mo.head.rotation.y = -.3; });
+    k.animate(t => { const open = ease(t, 3, 12); left.position.x = -1.9 - open * 1.95; right.position.x = 1.9 + open * 1.95; left.userData.fitWaterToPlinth(); right.userData.fitWaterToPlinth(); walls.forEach((w, i) => { w.scale.y = open; w.position.x = (i ? 1 : -1) * mix(.1, 1.9, open); w.position.y = open * 1.3; }); mo.rightArm.rotation.z = .8 * ease(t, 1, 6); mo.rightArm.rotation.x = -1 * ease(t, 1, 7); mo.head.rotation.y = -.3; });
     k.cloud(-2, 4.6, -3, 1.2); k.config.camera = [10, 7, 11];
   },
   B06(k) {
@@ -176,21 +177,64 @@ export const builders = {
     k.select(ditch, 'Vala com água', 'Preparação do altar', '1 Reis 18:32–35', 'A água derramada enche a vala ao redor do altar.');
   },
   B11(k) {
-    k.config.night = true; k.config.ground = '#8d8876'; k.config.camera = [8.5, 7.2, 10.5]; k.config.target = [0, 1.3, -.3];
-    // Open-front cutaway gives the den depth while retaining grounded, readable lions.
-    const rockMaterial = k.mat('#817e6f'); for (let row = 0; row < 4; row++) for (let j = 0; j < 11; j++) { const a = mix(-PI * .48, PI * .48, j / 10); const x = Math.sin(a) * 4.25, z = -Math.cos(a) * 3.45; const b = k.mesh(new THREE.DodecahedronGeometry(.72, 0), rockMaterial, x, .45 + row * .77, z); b.scale.set(1.1, .73, 1); b.rotation.set(.07 * row, j, 0); }
-    const rim = k.mesh(new THREE.TorusGeometry(3.55, .28, 8, 48, PI), k.mat('#aaa18b'), 0, 3.2, -.1); rim.rotation.x = -PI / 2; rim.rotation.z = 0;
-    const da = k.person('Daniel', -.2, .3, { robe: '#d7c6a4', mantle: '#73858a', hair: '#ada694' }); kneel(da); const lions = [[-2.5, 1, 1.2], [2.3, .8, 1.3], [1, -1.8, 1.05]].map(([x, z, s]) => k.animal('lion', x, z, s));
-    lions[0].rotation.y = .8; lions[1].rotation.y = -.9; lions[2].rotation.y = 2.3;
-    // Articulated ears and tufted tail supplement each recognisable helper lion.
-    const ears = [], tails = [];
-    lions.forEach((lion, i) => { const head = lion.children.find(o => o.type === 'Group'); for (const side of [-1, 1]) { const ear = k.mesh(new THREE.SphereGeometry(.065, 10, 8), k.mat('#c5a36c'), side * .14, .2, .03, head || lion); ear.scale.set(1, 1, .5); ears.push({ ear, phase: i + side }); } const tail = new THREE.Group(); tail.position.set(0, .5, -.46); lion.add(tail); const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(.15, .06, -.35), new THREE.Vector3(.34, .12, -.4)]); k.mesh(new THREE.TubeGeometry(curve, 12, .025, 6), k.mat('#ba925d'), 0, 0, 0, tail); k.mesh(new THREE.SphereGeometry(.07, 12, 8), k.mat('#866346'), .34, .12, -.4, tail); tails.push(tail); });
-    const an = angel(k, 'Anjo de proteção', -.4, -1.7, { y: .15 }); const glow = k.ray(-.4, .1, -.8, 5.7); const dar = k.person('Dario', 2.1, -3.1, { y: 3.3, scale: .8, robe: '#b5a273', mantle: '#8d797c' });
-    k.stars(); const shaft = new THREE.SpotLight('#cfdbd5', 4, 15, .42, .75, 1); shaft.position.set(1, 8, -1); shaft.target.position.set(0, 0, .4); k.add(shaft); k.add(shaft.target);
-    k.ambient(t => { ears.forEach(({ ear, phase }) => { ear.rotation.z = Math.sin(t * 1.3 + phase) * .13; }); tails.forEach((tail, i) => { tail.rotation.y = Math.sin(t * .7 + i) * .2; }); });
-    k.animate(t => { const dawn = ease(t, 23, 32); pray(da, t, 1 - dawn * .45); da.head.rotation.x = .22 - dawn * .48; da.head.rotation.y = dawn * .4; an.root.visible = t > 14; an.rightArm.rotation.z = .65; opacity(an.root, .2 + ease(t, 15, 21) * .65); glow.visible = t > 14; dar.root.visible = t > 24; dar.head.rotation.x = .35; dar.rightArm.rotation.x = -1.1 * dawn; k.light.intensity = .6 + dawn * 2.1; k.light.color.set(dawn > .5 ? '#f4d5a1' : '#b5c3d2'); k.fill.intensity = .7 + dawn * .9; shaft.intensity = 4 + dawn * 8; });
-    lions.forEach(l => k.select(l, 'Leões da cova', 'Animais preservando sua presença natural', 'Daniel 6:16–23', 'Daniel atribui a Deus a proteção que impede os leões de feri-lo.'));
-    k.config.views = [{ label: 'Cova inteira', camera: [8.5, 7.2, 10.5], target: [0, 1.3, -.3] }, { label: 'Daniel e os leões', camera: [4.8, 3.3, 6.5], target: [0, 1, .1] }, { label: 'A abertura', camera: [7, 9, 7], target: [0, 1.3, -1] }];
+    k.config.night = true; k.config.ground = '#b7a58e'; k.config.camera = [7.9, 7.1, 11.7]; k.config.target = [0, 1.25, -.25];
+    // The opening faces the visitor: a miniature cutaway, not a closed arena.
+    const wall = k.groupAt(0, 0, 0); wall.name = 'Cova de pedras arredondadas';
+    const stoneColors = ['#96928b', '#aaa296', '#b7ab9a', '#8e9290'];
+    for (let row = 0; row < 4; row++) for (let j = 0; j < 13; j++) {
+      const a = mix(-PI * .49, PI * .49, j / 12) + (row % 2 ? .035 : -.015), r = 4.25 + Math.sin(j * 4.7 + row) * .06;
+      const stone = k.rock(Math.sin(a) * r, -Math.cos(a) * 3.65, 1); wall.attach(stone);
+      stone.position.y = .37 + row * .69 + Math.sin(j * 3.4 + row) * .055;
+      stone.scale.set(1.62 + (j % 3) * .065, .99, 1.35); stone.rotation.set(Math.sin(j) * .08, -a + Math.sin(j * 2) * .14, Math.cos(j * 4) * .07); stone.material = k.mat(stoneColors[(j + row * 3) % 4]);
+    }
+    // Leaf and moss details share a few instanced meshes rather than dozens of
+    // individual draw calls. All positions are derived from fixed indices.
+    const leafGeometry = new THREE.SphereGeometry(1, 10, 8), transform = new THREE.Object3D();
+    const details = (color, parts) => { const mesh = new THREE.InstancedMesh(leafGeometry, k.mat(color), parts.length); parts.forEach(([x, y, z, sx, sy, sz, rz = 0, ry = 0], i) => { transform.position.set(x, y, z); transform.scale.set(sx, sy, sz); transform.rotation.set(0, ry, rz); transform.updateMatrix(); mesh.setMatrixAt(i, transform.matrix); }); mesh.castShadow = mesh.receiveShadow = true; k.add(mesh); return mesh; };
+    const leaves = [], moss = [], fernLeaves = [];
+    for (const [i, a] of [-1.02, -.49, .49, 1.06].entries()) {
+      const x = Math.sin(a) * 4.25, z = -Math.cos(a) * 3.65 + .55;
+      const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(x - .08, 3.05, z), new THREE.Vector3(x + .12, 2.25, z + .1), new THREE.Vector3(x - .1, 1.55, z + .12), new THREE.Vector3(x + .05, .85 + i % 2 * .25, z + .2)]);
+      k.mesh(new THREE.TubeGeometry(curve, 18, .022, 5), k.mat('#6f7955'));
+      for (let n = 0; n < 7; n++) { const p = curve.getPoint(.06 + n * .135); for (const side of [-1, 1]) leaves.push([p.x + side * .085, p.y - .035, p.z + .015, .12, .045, .065, side * -.52, side * .3]); }
+    }
+    for (let i = 0; i < 20; i++) { const a = mix(-PI * .46, PI * .46, i / 19), r = 3.77 + Math.sin(i) * .16; moss.push([Math.sin(a) * r, .055 + i % 3 * .012, -Math.cos(a) * 3.1, .17 + i % 3 * .04, .04, .11]); }
+    for (const [x, z] of [[-4.4, .8], [4.3, .6], [-3.7, 2.6], [3.9, 2.5], [-3.3, -2.3], [3.2, -2.4]]) for (let i = 0; i < 7; i++) { const a = i / 7 * TAU; fernLeaves.push([x + Math.sin(a) * .16, .14 + i % 2 * .07, z + Math.cos(a) * .16, .065, .23, .045, -Math.sin(a) * .65, a]); }
+    details('#6f8159', leaves); details('#89916b', moss); details('#71845e', fernLeaves);
+    const jointMoss = [], paleMoss = [];
+    for (let i = 0; i < 25; i++) {
+      const a = mix(-1.42, 1.42, i / 24), row = i % 4, x = Math.sin(a) * (4.25 - .64), z = -Math.cos(a) * 3.65 + Math.cos(a) * .64;
+      const y = .17 + row * .69 + Math.sin(i * 2.3) * .08;
+      for (let lobe = 0; lobe < 3; lobe++) {
+        const tangent = (lobe - 1) * .095, patch = [x + Math.cos(a) * tangent, y + Math.sin(lobe * 2.1 + i) * .035, z + Math.sin(a) * tangent, .11 + lobe % 2 * .045, .05 + (i + lobe) % 3 * .015, .027, Math.sin(i + lobe) * .25, -a];
+        (i % 3 ? jointMoss : paleMoss).push(patch);
+      }
+    }
+    details('#647657', jointMoss); details('#8a9568', paleMoss);
+    const pebbles = [];
+    for (let i = 0; i < 23; i++) { const a = i / 23 * TAU, r = 4.1 + Math.sin(i * 3) * .6; pebbles.push([Math.sin(a) * r, .045, Math.cos(a) * r, .05 + i % 3 * .025, .04 + i % 2 * .02, .065]); }
+    details('#c4b8a1', pebbles);
+    const da = k.person('Daniel', -.05, .55, { robe: '#e1d5ba', mantle: '#9ba99b', hair: '#95866e', beard: false }); kneel(da); da.root.rotation.y = .14;
+    // The original generic kneel points the boots forward. Here the legs tuck
+    // behind the robe and its clay hem touches the floor of the den.
+    da.root.position.y = -.09; da.leftLeg.rotation.x = da.rightLeg.rotation.x = 1.12; da.leftLeg.position.y = da.rightLeg.position.y = .33;
+    const positions = [[-2.75, .9, 1.18, .65, false], [2.65, .8, 1.2, -.9, false], [-1.9, 3.3, 1.13, -.25, true], [1.65, 3.6, 1.13, -.1, true], [2, -1.8, 1.02, 2.4, false]];
+    const lions = positions.map(([x, z, s, turn, resting]) => { const lion = k.animal('lion', x, z, s); lion.rotation.y = turn; lion.userData.resting = resting; return lion; });
+    const an = angel(k, 'Anjo de proteção', -.2, -1.25, { y: .23, hair: '#d6b676', mantle: '#e8dfc7' });
+    // Wings and halo are a symbolic toy-art convention; the existing episode
+    // note identifies the angel as an interpretation, not a physical account.
+    for (const side of [-1, 1]) { const wing = new THREE.Group(); wing.position.set(side * .22, 1.01, -.18); an.root.add(wing); for (let i = 0; i < 4; i++) { const feather = k.mesh(leafGeometry, k.mat('#f1e9d7'), side * (.12 + i * .09), .1 + i * .055, -.025, wing); feather.scale.set(.115, .27 - i * .022, .065); feather.rotation.z = -side * (.55 + i * .17); } }
+    const halo = k.mesh(new THREE.TorusGeometry(.225, .022, 6, 36), k.mat('#f5dc9c', { emissive: '#e7bd69', emissiveIntensity: 1.7, bumpScale: 0 }), 0, 1.92, 0, an.root); halo.rotation.x = PI / 2;
+    const glow = k.ray(-.15, .05, -.4, 6); const dar = k.person('Dario', 2.05, -3.55, { y: 3.06, scale: .72, robe: '#c6b084', mantle: '#a18c98' });
+    k.stars(); const shaft = new THREE.SpotLight('#ffe3aa', 12, 14, .34, .9, 1.1); shaft.position.set(-.2, 8, -.45); shaft.target.position.set(-.05, 0, .45); k.add(shaft); k.add(shaft.target);
+    const motes = [], r = seed(161); for (let i = 0; i < 42; i++) motes.push((r() - .5) * 2.5, .3 + r() * 5, (r() - .5) * 1.7 - .4);
+    const moteGeometry = new THREE.BufferGeometry(); moteGeometry.setAttribute('position', new THREE.Float32BufferAttribute(motes, 3));
+    const particles = k.add(new THREE.Points(moteGeometry, new THREE.PointsMaterial({ color: '#ffe4a9', size: .025, transparent: true, opacity: .65, depthWrite: false })));
+    k.ambient(t => { particles.rotation.y = Math.sin(t * .12) * .14; particles.position.y = Math.sin(t * .5) * .045; });
+    k.animate(t => { const dawn = ease(t, 23, 32), protection = ease(t, 14, 20), prayer = 1 - dawn * .45; pray(da, t, prayer); da.leftArm.rotation.z = .55 * prayer; da.rightArm.rotation.z = -.55 * prayer; da.head.rotation.x = .22 - dawn * .48; da.head.rotation.y = dawn * .4; an.root.visible = t > 14; an.rightArm.rotation.z = .38; an.leftArm.rotation.z = -.24; an.head.rotation.x = .08; glow.visible = t > 14; dar.root.visible = t > 24; dar.head.rotation.x = .35; dar.rightArm.rotation.x = -1.1 * dawn; k.light.intensity = 1.2 + dawn * 1.8; k.light.color.set(dawn > .5 ? '#f4d5ac' : '#c6d2e1'); k.fill.intensity = 1.15 + dawn * .65; shaft.intensity = 9 + protection * 10 + dawn * 4; particles.visible = t > 14; });
+    lions.forEach(l => k.select(l, 'Leões da cova', 'Animais em repouso', 'Daniel 6:16–23', 'Daniel atribui a Deus a proteção que impede os leões de feri-lo.'));
+    const angelEntry = k.selectables.find(entry => entry.object === an.root); if (angelEntry) { angelEntry.reference = 'Daniel 6:22'; angelEntry.summary = 'O anjo representa a proteção testemunhada por Daniel. As asas e a auréola são convenções artísticas, não uma descrição de sua anatomia nas escrituras.'; }
+    k.config.views = [{ label: 'Cova inteira', camera: [7.9, 7.1, 11.7], target: [0, 1.25, -.25] }, { label: 'Daniel e os leões', camera: [3.8, 3.6, 7.8], target: [0, 1.05, .2] }, { label: 'A abertura', camera: [6.5, 9, 7.5], target: [0, 1.3, -1] }];
   },
   B12(k) {
     k.config.ground = '#b49b7b'; k.background.set('#aa9a85'); const arch = k.mesh(new THREE.TorusGeometry(1.9, .42, 9, 32, PI), k.mat('#a57852'), 0, .35, -.8); k.box(.8, 2, 1.7, '#ad845e', -1.9, 1, -1.1); k.box(.8, 2, 1.7, '#ad845e', 1.9, 1, -1.1);
@@ -292,7 +336,7 @@ export const builders = {
     const christ = jesus(k, -.6, -.5, { y: .55 }); const disciples = [k.person('Discípulos de Jesus', .6, -.4, { y: .55, robe: '#b6b49b' }), k.person('Discípulos de Jesus', -.8, .65, { y: .55, robe: '#c8b58b' }), k.person('Discípulos de Jesus', .8, .65, { y: .55, robe: '#a2ad95' })]; [christ, ...disciples].forEach(r => boatRig.attach(r.root));
     const clouds = [k.cloud(-2.5, 4.8, -2.5, 1.6), k.cloud(1.5, 4.5, -3, 1.8)]; rain(k, t => ease(t, 1, 8) * (1 - ease(t, 18, 25)), 130);
     // Extra broad swell field receives an explicit storm envelope, independent of river ripples.
-    const swellGeo = new THREE.PlaneGeometry(10, 10, 42, 42); swellGeo.rotateX(-PI / 2); const p = swellGeo.attributes.position; const base = new Float32Array(p.array); const swell = k.mesh(swellGeo, k.mat('#759ca2', { transparent: true, opacity: .58, side: THREE.DoubleSide, roughness: .3 }), 0, .09, 0);
+    const swellGeo = new THREE.PlaneGeometry(10, 10, 42, 42); swellGeo.rotateX(-PI / 2); clipWaterToPlinth(swellGeo); const p = swellGeo.attributes.position; const base = new Float32Array(p.array); const swell = k.mesh(swellGeo, k.mat('#759ca2', { transparent: true, opacity: .58, side: THREE.DoubleSide, roughness: .3 }), 0, .09, 0);
     k.ambient(t => { const storm = ease(t, 0, 8) * (1 - ease(t, 19, 27)); for (let i = 0; i < p.count; i++) { const x = base[i * 3], z = base[i * 3 + 2]; p.setY(i, storm * (Math.sin(x * 2 + z * 1.4 - t * 2.8) * .14 + Math.sin(z * 3 - t * 3) * .06)); } p.needsUpdate = true; swellGeo.computeVertexNormals(); boatRig.rotation.z = Math.sin(t * 2.3) * .13 * storm; boatRig.rotation.x = Math.sin(t * 1.8) * .08 * storm; boatRig.position.y = .25 + Math.sin(t * 2) * .055 * storm; });
     k.animate(t => { const wake = ease(t, 12, 18), calm = ease(t, 19, 27); kneel(christ, 1 - wake); christ.head.rotation.x = .5 * (1 - wake) - .1 * wake; christ.rightArm.rotation.x = -1.2 * wake; christ.rightArm.rotation.z = .5 * wake; disciples.forEach((r, i) => { r.head.rotation.y = -.4 + i * .25; r.rightArm.rotation.x = -.95 * ease(t, 5, 12) + calm * .6; r.leftArm.rotation.z = (-.5 + i * .3) * (1 - calm); }); clouds.forEach((c, i) => { c.position.x = [-2.5, 1.5][i] + calm * (i ? 2 : -2); }); k.light.intensity = .65 + calm * 1.8; k.fill.intensity = .8 + calm * .9; water.visible = swell.visible = true; });
   },
@@ -354,7 +398,7 @@ export const builders = {
   B29(k) {
     k.config.night = true; k.config.ground = '#8f987b'; k.background.set('#384951'); k.stars(); const olives = [k.tree(-3.6, -2.2, 1.35), k.tree(2.7, -2.4, 1.3), k.tree(-3.3, 2.4, 1.05), k.tree(3.7, 1.8, 1.2)];
     for (let i = 0; i < 9; i++) { const rock = k.rock(-2.4 + i * .59, -2 + Math.sin(i * 2) * .5, .35 + i % 3 * .1); rock.rotation.y = i * .4; } const prayerRock = k.rock(-.5, -.8, 1.2); prayerRock.position.y = .17;
-    const christ = jesus(k, -.4, 1.1, { mantle: '#b7a28c' }); const sleepers = [[1.8, 1.4], [2.4, 2.4], [1.2, 2.9]].map(([x, z], i) => { const r = k.person('Discípulos de Jesus', x, z, { robe: ['#a2aa90', '#b6a482', '#c4baa0'][i], mantle: i === 0 ? '#889c93' : undefined }); kneel(r, .9); r.head.rotation.x = .53; r.root.rotation.y = -1; for (const side of [-1, 1]) { const lid = k.mesh(new THREE.CapsuleGeometry(.012, .04, 3, 6), k.mat('#bc8c65'), side * .075, .006, .195, r.head); lid.rotation.z = PI / 2; } return r; });
+    const christ = jesus(k, -.4, 1.1, { mantle: '#b7a28c' }); const sleepers = [[1.8, 1.4], [2.4, 2.4], [1.2, 2.9]].map(([x, z], i) => { const r = k.person('Discípulos de Jesus', x, z, { robe: ['#a2aa90', '#b6a482', '#c4baa0'][i], mantle: i === 0 ? '#889c93' : undefined, eyesClosed: true }); kneel(r, .9); r.head.rotation.x = .53; r.root.rotation.y = -1; return r; });
     const messenger = angel(k, 'Anjo fortalecedor', -1.7, -1.3, { y: .2 }); const softRay = k.ray(-1.5, .1, -1.1, 4.3); const angelLight = new THREE.PointLight('#e2e2c5', 0, 5); angelLight.position.set(-1.3, 2, -1.1); k.add(angelLight);
     k.animate(t => { const kneeling = ease(t, 2, 9) * (1 - ease(t, 25, 30)), strengthened = ease(t, 16, 23), returnToFriends = ease(t, 28, 32); kneel(christ, kneeling); pray(christ, t, kneeling); christ.root.position.set(-.4 + returnToFriends * 1.3, 0, 1.1 + returnToFriends * .3); christ.root.rotation.y = PI * (1 - returnToFriends) + returnToFriends * 1.1; christ.head.rotation.x = .2 * kneeling - strengthened * .04; christ.rightArm.rotation.x = -kneeling * .75 - returnToFriends * .65; messenger.root.visible = softRay.visible = t > 16 && t < 29; messenger.rightArm.rotation.x = -.7 * strengthened; messenger.rightArm.rotation.z = .4 * strengthened; messenger.head.rotation.x = .08; angelLight.intensity = strengthened * (1 - returnToFriends) * 1.3; sleepers.forEach((r, i) => { r.head.rotation.x = .55 + Math.sin(t * .8 + i) * .015; r.leftArm.rotation.x = -.45; r.rightArm.rotation.x = -.45; r.leftForearm.rotation.x = r.rightForearm.rotation.x = -1.2; }); k.light.intensity = .62; k.fill.intensity = .65; olives.forEach(o => { o.visible = true; }); });
     k.select(prayerRock, 'Rocha no jardim', 'Ambientação artística da oração', 'Lucas 22:39–46', 'A passagem situa Jesus no Monte das Oliveiras e relata sua oração de joelhos; a rocha é uma escolha de composição.');
@@ -367,9 +411,9 @@ export const builders = {
     const central = makeCross(0, -1.6, 4.5, 'Cruz de Jesus'); makeCross(-2.6, -2, 3.6, 'Cruz à esquerda'); makeCross(2.6, -2, 3.6, 'Cruz à direita');
     const christ = jesus(k, 0, -1.44, { y: 2.38, mantle: undefined, robe: '#ded7bf' }); christ.leftArm.rotation.z = -PI / 2; christ.rightArm.rotation.z = PI / 2; christ.leftForearm.rotation.z = .04; christ.rightForearm.rotation.z = -.04;
     [-1, 1].forEach(side => { const r = k.person('Condenados ao lado de Jesus', side * 2.6, -1.85, { y: 1.9, scale: .8, robe: '#a79b84', hair: '#615342' }); r.leftArm.rotation.z = -PI / 2; r.rightArm.rotation.z = PI / 2; r.head.rotation.x = .3; });
-    const sign = k.box(.8, .28, .06, '#bdac86', 0, 4.14, -1.44); k.label(sign, 'Jesus Nazareno'); k.select(sign, 'Inscrição na cruz', 'Título ordenado por Pilatos', 'João 19:19–22', 'O texto de João registra a inscrição que identifica Jesus como nazareno e rei dos judeus.');
+    const sign = k.box(.8, .28, .06, '#bdac86', 0, 4.34, -1.44); k.label(sign, 'Jesus Nazareno'); k.select(sign, 'Inscrição na cruz', 'Título ordenado por Pilatos', 'João 19:19–22', 'O texto de João registra a inscrição que identifica Jesus como nazareno e rei dos judeus.');
     const mother = k.person('Maria, mãe de Jesus', -1.9, 1.5, { robe: '#bfc1ab', mantle: '#8eaaa9', beard: false }); const mag = k.person('Maria Madalena', -2.7, 1.1, { robe: '#c6b59b', mantle: '#a49685', beard: false }); const beloved = k.person('Discípulo amado', -.8, 1.8, { robe: '#b9ac8d', mantle: '#8b9f95', beard: false }); const cent = k.person('Centurião', 2.9, 1.9, { robe: '#ae9274', mantle: '#886a5d' }); const soldiers = [k.person('Soldados romanos', 1.8, .3, { robe: '#aa8f73', mantle: '#9a6b59' }), k.person('Soldados romanos', 3.4, -.1, { robe: '#a6a18d', mantle: '#92745e' })];
-    [cent, ...soldiers].forEach(r => { const helmet = k.mesh(new THREE.SphereGeometry(.25, 16, 10, 0, TAU, 0, PI * .5), k.mat('#a5a38d', { metalness: .25 }), 0, .05, 0, r.head); helmet.scale.y = .85; const shield = k.mesh(new THREE.CylinderGeometry(.25, .25, .07, 20), k.mat('#a28b62')); shield.rotation.x = PI / 2; attach(r.handL, shield, 0, 0, .12); }); staff(k, cent.handR, '#826b4e', 2);
+    [cent, ...soldiers].forEach(r => { const helmet = k.mesh(new THREE.SphereGeometry(.395, 24, 14, 0, TAU, 0, PI * .5), k.mat('#a5a38d', { metalness: .25 }), 0, .06, 0, r.head); helmet.scale.y = .91; helmet.name = 'Capacete romano de argila'; helmet.userData.clayHelmet = true; const shield = k.mesh(new THREE.CylinderGeometry(.25, .25, .07, 20), k.mat('#a28b62')); shield.rotation.x = PI / 2; attach(r.handL, shield, 0, 0, .12); }); staff(k, cent.handR, '#826b4e', 2);
     const garments = ['#baa989', '#918d76', '#b9b39a'].map((c, i) => { const geo = new THREE.PlaneGeometry(.7, .6, 12, 9); geo.rotateX(-PI / 2); const cloth = k.mesh(geo, k.mat(c, { side: THREE.DoubleSide }), 1.8 + i * .45, .1, 1); return { cloth, base: new Float32Array(geo.attributes.position.array) }; });
     const clouds = [k.cloud(-2.3, 5, -3, 1.8), k.cloud(2.8, 4.7, -2.7, 1.9)]; const windCloth = k.flag(-4, 0, -.1, '#aa9380'); windCloth.scale.set(.55, .65, .6);
     k.ambient(t => { garments.forEach(({ cloth, base }, j) => { const p = cloth.geometry.attributes.position; for (let i = 0; i < p.count; i++) p.setY(i, base[i * 3 + 1] + Math.sin(base[i * 3] * 5 + t * 2 + j) * .018); p.needsUpdate = true; }); });
