@@ -78,13 +78,24 @@ export function createClayAnimal(kit, kind, x, z, s = 1) {
   const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(.24, -.03, -.24), new THREE.Vector3(.46, .07, -.29), new THREE.Vector3(.5, .17, -.2)]);
   const strand = new THREE.Mesh(new THREE.TubeGeometry(curve, 14, lion ? .028 : .035, 6), kit.mat(bodyColor, { roughness: .57, bumpScale: .012 })); strand.castShadow = true; tail.add(strand);
   clayParts(kit, tail, lion ? maneColor : donkey ? '#827571' : '#f2e8d3', [[.5, .17, -.2, lion ? .085 : .065, .09, .075]]);
-  Object.assign(root.userData, { body, head, paws, tail, resting: false });
+  // Local support for the two ellipsoids already used by each paw. Grounding
+  // belongs to the paw, so resting never requires sinking the whole creature.
+  const pawSupport = angle => {
+    const c=Math.cos(angle),s=Math.sin(angle);
+    return Math.max(
+      -.22*c+Math.hypot(.23*c,.11*s),
+      -.085*c+.045*s+Math.hypot(.09*c,.17*s),
+      donkey?-.045*c+.06*s+Math.hypot(.045*c,.14*s):-Infinity,
+    );
+  };
+  const supports={standing:pawSupport(0),front:pawSupport(-.95),back:pawSupport(.65)};
+  Object.assign(root.userData, { body, head, paws, tail, resting: false, autoGroundPaws:true });
   kit.ambient(t => {
     const rest = root.userData.resting ? 1 : 0;
-    body.position.y = -.19 * rest; body.scale.set(1 + Math.sin(t * 1.25 + x) * .012, 1, 1);
+    body.position.y = -.09 * rest; body.scale.set(1 + Math.sin(t * 1.25 + x) * .012, 1, 1);
     head.position.y = .72 - rest * .2; head.position.z = .47 + rest * .12;
     head.rotation.y = Math.sin(t * .45 + z) * .065; head.rotation.z = rest * .055;
-    paws.forEach((paw, i) => { const front = i % 2 === 1; paw.position.y = rest * (front ? -.055 : -.12); paw.rotation.x = rest * (front ? -.95 : .65); paw.position.z = (front ? .34 : -.37) + (front ? .16 : -.05) * rest; });
+    paws.forEach((paw, i) => { const front = i % 2 === 1; if(root.userData.autoGroundPaws!==false) paw.position.y = rest ? (front?supports.front:supports.back) : supports.standing; paw.rotation.x = rest * (front ? -.95 : .65); paw.position.z = (front ? .34 : -.37) + (front ? .16 : -.05) * rest; });
     tail.position.y = .46 - rest * .2; tail.rotation.y = Math.sin(t * .65 + x) * .12;
     eyes.visible = !rest; sleepingEyes.visible = !!rest;
   });

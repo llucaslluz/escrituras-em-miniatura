@@ -1,4 +1,4 @@
-import { THREE, ease, mix, masonry, beam, prayer, teaching, thought, kneel, token, temple, grass, ring, colors, bag, reach } from './utils.js';
+import { THREE, ease, mix, masonry, beam, prayer, teaching, thought, kneel, token, temple, grass, ring, colors, bag, reach, fade, walking, stride, supportTiltedFeet } from './utils.js';
 
 function arrow(k, color='#8b6841') {
   const g=k.groupAt();beam(k,[0,0,-.38],[0,0,.35],.012,color,g);
@@ -48,9 +48,9 @@ export const builders = {
     }
     k.animate(t=>{
       teaching(samuel,t,.8+ease(1,6,t)*.2);samuel.leftArm.rotation.z=-.4-.3*ease(8,14,t);samuel.head.rotation.y=Math.sin(t*.4)*.22;
-      believers.forEach((r,i)=>{const trust=ease(7+i*.7,13+i*.7,t);r.head.rotation.x=-.2*trust;r.rightForearm.rotation.x=-.9*trust;r.leftArm.rotation.z=-.25*trust;const retreat=ease(27,32,t);r.root.position.x=([-2.45,-3.3,-1.4][i])-retreat*.8;r.root.position.z=([.55,1.8,2][i])+retreat*.45;const stride=t>27&&t<32?Math.sin(t*6+i)*.22:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;});
+      believers.forEach((r,i)=>{const trust=ease(7+i*.7,13+i*.7,t);r.head.rotation.x=-.2*trust;r.rightForearm.rotation.x=-.9*trust;r.leftArm.rotation.z=-.25*trust;const retreat=ease(27,32,t),from=[[-2.45,-3.3,-1.4][i],[.55,1.8,2][i]],to=[from[0]-.8,from[1]+.45];r.root.position.x=mix(from[0],to[0],retreat);r.root.position.z=mix(from[1],to[1],retreat);walking(r,from,to,27,32,t,.22);r.root.rotation.y=mix(Math.PI,Math.atan2(-.8,.45),retreat);});
       const aiming=ease(12,15,t)*(1-ease(25,29,t));archer.leftArm.rotation.x=-1.2*aiming;archer.rightArm.rotation.x=-1.1*aiming;archer.rightForearm.rotation.x=-1.1*aiming;archer.rightArm.rotation.z=.25*aiming;
-      const throwPhase=t>=16&&t<26?Math.sin((t-16)*Math.PI):0;thrower.rightArm.rotation.x=(-.5-throwPhase*.8)*aiming;thrower.rightForearm.rotation.x=-.8*aiming;stoneHeld.visible=throwPhase<.4;
+      const throwPhase=t>=16&&t<26?Math.sin((t-16)*Math.PI)*ease(15.5,17,t)*(1-ease(25,26,t)):0;thrower.rightArm.rotation.x=(-.5-throwPhase*.8)*aiming;thrower.rightForearm.rotation.x=-.8*aiming;stoneHeld.visible=throwPhase<.4;
       skeptic.rightArm.rotation.z=.8*ease(6,12,t)*(1-ease(24,30,t));skeptic.head.rotation.y=Math.sin(t*.9)*.3;
       k.light.intensity=3.1+.35*ease(24,31,t);
     });k.cloud(-1,6,-4,1.1);k.cloud(3.5,5,-4,.8);
@@ -65,14 +65,14 @@ export const builders = {
     const ray=k.ray(0,0,-.25,7);const cloudL=k.cloud(-1,6,-1.3,1),cloudR=k.cloud(1,6,-1.3,1);
     const nephi=k.person('Néfi, discípulo de Cristo',-1.7,1.7,{robe:'#9ba78c',rotation:Math.PI});
     const witnesses=[nephi];for(let i=0;i<7;i++){const a=(i/7)*Math.PI*1.5-Math.PI*.25;const r=k.person('Povo de Néfi',Math.sin(a)*3.15,Math.cos(a)*2+1,{robe:colors[i%6],beard:i%2===0,scale:i===5?.7:1,rotation:Math.atan2(-Math.sin(a)*3.15,-Math.cos(a)*2-1)});witnesses.push(r);}
-    const points=witnesses.map(r=>r.root.position.clone());
+    const points=witnesses.map(r=>r.root.position.clone()),showChrist=fade(christ.root),showRay=fade(ray);
     k.animate(t=>{
-      const descend=ease(8,16,t);christ.root.position.y=mix(5.6,0,descend);christ.root.visible=t>=7;christ.leftArm.rotation.z=-.5*descend;christ.rightArm.rotation.z=.6*descend;
+      const descend=ease(8,16,t);christ.root.position.y=mix(5.6,0,descend);showChrist(ease(7,9,t));christ.leftArm.rotation.z=-.5*descend;christ.rightArm.rotation.z=.6*descend;
       if(t>16)teaching(christ,t,.8);
-      cloudL.position.x=-1-ease(4,13,t)*1.7;cloudR.position.x=1+ease(4,13,t)*1.7;ray.visible=t>4;k.light.intensity=2.4+ease(5,16,t)*1.2;
+      cloudL.position.x=-1-ease(4,13,t)*1.7;cloudR.position.x=1+ease(4,13,t)*1.7;showRay(ease(4,7,t));k.light.intensity=2.4+ease(5,16,t)*1.2;
       witnesses.forEach((r,i)=>{r.head.rotation.x=-.35*ease(1,5,t)*(1-ease(15,18,t));const bow=ease(17,20,t)*(1-ease(23,26,t));kneel(r,bow);r.leftForearm.rotation.x=-.6*bow;r.rightForearm.rotation.x=-.6*bow;if(t>23){r.head.rotation.x=.08;}
-        if(i===0){const approach=ease(24,29,t);r.root.position.x=mix(points[i].x,-.65,approach);r.root.position.z=mix(points[i].z,.5,approach);r.rightArm.rotation.x=-.8*approach;r.rightForearm.rotation.x=-.7*approach;const stride=t>24&&t<29?Math.sin(t*6)*.2:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;}
-        if(i===1){const approach=ease(28,32,t);r.root.position.x=mix(points[i].x,.75,approach);r.root.position.z=mix(points[i].z,.7,approach);r.leftArm.rotation.x=-.65*approach;const stride=t>28&&t<32?Math.sin(t*6)*.2:0;r.leftLeg.rotation.x=stride;r.rightLeg.rotation.x=-stride;}
+        if(i===0){const approach=ease(24,29,t);r.root.position.x=mix(points[i].x,-.65,approach);r.root.position.z=mix(points[i].z,.5,approach);r.rightArm.rotation.x=-.8*approach;r.rightForearm.rotation.x=-.7*approach;if(t>=24)walking(r,[points[i].x,points[i].z],[-.65,.5],24,29,t,.2);}
+        if(i===1){const approach=ease(28,32,t);r.root.position.x=mix(points[i].x,.75,approach);r.root.position.z=mix(points[i].z,.7,approach);r.leftArm.rotation.x=-.65*approach;if(t>=28)walking(r,[points[i].x,points[i].z],[.75,.7],28,32,t,.2);}
       });
     });
   },
@@ -87,16 +87,17 @@ export const builders = {
     const patient=k.person('Pessoa enferma',-2.15,2.8,{robe:'#9dad96',hair:'#71634d'}),helper=k.person('Acompanhante',-2.9,2.7,{robe:'#bfaa82',beard:false});
     const second=k.person('Outra pessoa enferma',2.8,2.1,{robe:'#ba9c80',beard:false}),family=k.person('Pessoas reunidas',3.4,.5,{robe:'#a49e78'});
     const staff=beam(k,[0,-.2,0],[0,.65,0],.032,'#8b6a45',patient.handL);token(k,staff,'Apoio de madeira','Detalhe artístico','3 Néfi 17:5–10','O apoio sugere uma dificuldade de locomoção sem identificar uma enfermidade específica.');
-    const starting={p:patient.root.position.clone(),h:helper.root.position.clone()};
+    const starting={p:patient.root.position.clone(),h:helper.root.position.clone()},showStaff=fade(staff);
     k.animate(t=>{
       const move=ease(6,15,t),heal=ease(17,23,t);patient.root.position.x=mix(starting.p.x,-.35,move);patient.root.position.z=mix(starting.p.z,-.4,move);patient.root.rotation.y=2.6;helper.root.position.x=mix(starting.h.x,-1.3,move);helper.root.position.z=mix(starting.h.z,.1,move);helper.root.rotation.y=2.6;
-      const walking=t>6&&t<15;patient.leftLeg.rotation.x=walking?Math.sin(t*4)*.12:0;patient.rightLeg.rotation.x=-patient.leftLeg.rotation.x;helper.leftLeg.rotation.x=walking?Math.sin(t*4)*.2:0;helper.rightLeg.rotation.x=-helper.leftLeg.rotation.x;
+      walking(patient,[starting.p.x,starting.p.z],[-.35,-.4],6,15,t,.12);walking(helper,[starting.h.x,starting.h.z],[-1.3,.1],6,15,t,.2);
       patient.root.rotation.z=.12*(1-heal);patient.head.rotation.x=.2*(1-heal);patient.leftArm.rotation.x=-.4*(1-heal);patient.leftForearm.rotation.x=-.4;helper.rightArm.rotation.z=.8*(1-ease(20,24,t));helper.rightForearm.rotation.x=-.6;
+      if(t<=25)supportTiltedFeet(patient);
       const care=ease(14,18,t);christ.leftArm.rotation.z=-1*care;christ.leftForearm.rotation.x=-.5*care;christ.rightArm.rotation.x=-.55*care;christ.head.rotation.y=-.45*care;
       reach(christ,'left',[patient.root.position.x,1.08,patient.root.position.z],care*(1-ease(24,27,t)));
       second.head.rotation.y=-.5;second.leftForearm.rotation.x=-.5*ease(15,20,t);family.rightArm.rotation.z=.65*ease(22,27,t);
       if(t>25){kneel(patient,ease(25,29,t));prayer(patient,1);kneel(helper,ease(26,30,t));prayer(helper,1);kneel(second,ease(26,31,t));prayer(second,1);}
-      staff.visible=t<24;k.light.intensity=3+heal*.5;k.light.color.setRGB(1,.92,.75+heal*.12);
+      showStaff(1-ease(23,25,t));k.light.intensity=3+heal*.5;k.light.color.setRGB(1,.92,.75+heal*.12);
     });k.cloud(0,5.5,-3,1.1);
   },
 
@@ -111,11 +112,13 @@ export const builders = {
     const halo=ring(k,0,.06,-.05,2.35,'#eed38c');halo.material=k.mat('#f3d88c',{emissive:'#e8b95c',emissiveIntensity:.9,transparent:true,opacity:.15,depthWrite:false});
     const sparks=[];for(let i=0;i<26;i++){const a=i/26*Math.PI*2;const g=k.sphere(.035,'#f5dda0',Math.sin(a)*2.35,.15,Math.cos(a)*2.35-.05);g.material=k.mat('#f5dda0',{emissive:'#e5af4f',emissiveIntensity:1.1,transparent:true,opacity:.85});sparks.push(g);}
     token(k,halo,'Manifestação de fogo','Representação luminosa','3 Néfi 17:24–25','Os pequeninos são circundados por fogo enquanto anjos ministram entre eles.');
+    const showAngels=angels.map(r=>fade(r.root)),showSparks=sparks.map(fade);
     k.animate(t=>{
       const pray=ease(9,12,t)*(1-ease(14,16,t));kneel(christ,pray);prayer(christ,pray);parents.forEach((r,i)=>{kneel(r,ease(9+i*.1,13+i*.1,t));prayer(r,ease(9,13,t));r.head.rotation.x=.2;});
-      if(t>=16){const index=Math.min(4,Math.floor((t-16)/1.6)),target=children[index];christ.head.rotation.y=Math.atan2(target.root.position.x,target.root.position.z+.4)*.4;christ.leftArm.rotation.z=-.6;christ.rightArm.rotation.z=.6;christ.leftForearm.rotation.x=-.8;christ.rightForearm.rotation.x=-.8;children.forEach((r,i)=>{const start=16+i*1.6,visit=ease(start,start+.5,t)*(1-ease(start+1,start+1.6,t)),to=r.root.userData.blessingPlace;r.root.position.x=mix(to[0],.15,visit);r.root.position.z=mix(to[1],.05,visit);r.root.rotation.y=Math.PI;r.head.rotation.x=i===index?-.17:0;r.leftForearm.rotation.x=i===index?-.6:0;r.rightForearm.rotation.x=i===index?-.6:0;const gait=visit>0&&visit<.99?Math.sin(t*9)*.2:0;r.leftLeg.rotation.x=gait;r.rightLeg.rotation.x=-gait;if(i===index){r.head.updateWorldMatrix(true,false);const crown=new THREE.Vector3(0,r.root.userData.clayPerson?.crownOffset??.24,0).applyMatrix4(r.head.matrixWorld);crown.y+=.055;reach(christ,'right',crown,visit);}});}
-      const descend=ease(24,30,t);angels.forEach((r,i)=>{r.root.visible=t>=24;r.root.position.y=mix(4.8,.15,descend);r.leftArm.rotation.z=-.55;r.rightArm.rotation.z=.55;r.head.rotation.x=.18;});
-      halo.visible=t>=24;halo.material.opacity=.15+.5*descend;sparks.forEach((g,i)=>{g.visible=t>=24;g.position.y=.1+descend*(.1+(i%4)*.13)+Math.sin(t*2+i)*.04;});k.light.intensity=3+descend*.7;
+      children.forEach(r=>{r.root.rotation.y=mix(r.root.rotation.y,Math.PI,ease(13,16,t));});
+      if(t>=16){const index=Math.min(4,Math.floor((t-16)/1.6)),target=children[index];christ.head.rotation.y=Math.atan2(target.root.position.x,target.root.position.z+.4)*.4;christ.leftArm.rotation.z=-.6;christ.rightArm.rotation.z=.6;christ.leftForearm.rotation.x=-.8;christ.rightForearm.rotation.x=-.8;children.forEach((r,i)=>{const start=16+i*1.6,out=ease(start,start+.5,t),back=ease(start+1,start+1.6,t),visit=out*(1-back),to=r.root.userData.blessingPlace;r.root.position.x=mix(to[0],.15,visit);r.root.position.z=mix(to[1],.05,visit);const facing=Math.atan2(.15-to[0],.05-to[1]),turn=Math.atan2(Math.sin(facing-Math.PI),Math.cos(facing-Math.PI));r.root.rotation.y=Math.PI+turn*4*visit*(1-visit);r.head.rotation.x=i===index?-.17:0;r.leftForearm.rotation.x=i===index?-.6:0;r.rightForearm.rotation.x=i===index?-.6:0;stride(r,Math.hypot(to[0]-.15,to[1]-.05)*visit,4*visit*(1-visit),.2);if(i===index){r.head.updateWorldMatrix(true,false);const crown=new THREE.Vector3(0,r.root.userData.clayPerson?.crownOffset??.24,0).applyMatrix4(r.head.matrixWorld);crown.y+=.055;reach(christ,'right',crown,visit);}});}
+      const descend=ease(24,30,t);angels.forEach((r,i)=>{showAngels[i](ease(24+i*.12,26+i*.12,t));r.root.position.y=mix(4.8,.15,descend);r.leftArm.rotation.z=-.55;r.rightArm.rotation.z=.55;r.head.rotation.x=.18;});
+      const fire=ease(24,26,t);halo.visible=fire>0;halo.material.opacity=(.15+.5*descend)*fire;sparks.forEach((g,i)=>{showSparks[i](ease(24+(i%4)*.1,26+(i%4)*.1,t));g.position.y=.1+descend*(.1+(i%4)*.13)+Math.sin(t*2+i)*.04;});k.light.intensity=3+descend*.7;
     });
   },
 
@@ -138,15 +141,15 @@ export const builders = {
     const handTip=k.groupAt(0,2.2,-1);k.mesh(new THREE.SphereGeometry(.1,16,12),k.mat('#e6c8a0'),0,.16,0,handTip).scale.set(.75,1,.6);
     beam(k,[0,.13,.01],[0,-.05,.02],.024,'#e6c8a0',handTip);for(let i=0;i<3;i++)beam(k,[-.055+i*.045,.19,-.01],[-.05+i*.04,.06,-.025],.018,'#e6c8a0',handTip);
     token(k,handTip,'Toque do Senhor','Ação descrita no relato','Éter 3:6','O Senhor toca as pedras uma por uma. A trajetória é uma escolha de encenação.');
-    const pool=new THREE.PointLight('#ffda91',0,7,2);pool.position.set(0,2,-.6);k.add(pool);
+    const pool=new THREE.PointLight('#ffda91',0,7,2);pool.position.set(0,2,-.6);k.add(pool);const showHand=fade(handTip),showLord=fade(lord.root),showVeil=fade(veil);
     k.animate(t=>{
       const pray=ease(1,5,t);kneel(brother,pray,1.75);prayer(brother,pray);brother.head.rotation.x=.28;
       const touch=Math.max(0,Math.min(15,(t-14)/.82)),index=Math.min(15,Math.floor(touch)),fraction=touch-index,next=Math.min(15,index+1);
       stones.forEach((s,i)=>{const power=ease(14+i*.82,14.2+i*.82,t);s.material.emissiveIntensity=power*2.4;s.material.color.setRGB(mix(.75,1,power),mix(.8,.95,power),mix(.78,.78,power));});
-      const a=stones[index].position,b=stones[next].position;handTip.position.set(mix(a.x,b.x,fraction),1.76+.11+.1+Math.sin(fraction*Math.PI)*.15,-.8+mix(a.z,b.z,fraction));handTip.visible=t>=13&&t<=27;
-      const reveal=ease(27,31,t);lord.root.visible=t>=27;lord.root.position.y=1.75;lord.rightArm.rotation.x=-.9;lord.rightForearm.rotation.x=-.6;lord.leftArm.rotation.z=-.35;lord.root.traverse(o=>{if(o.isMesh){o.material.transparent=true;o.material.opacity=mix(.15,.8,reveal);}});
-      const fall=ease(26,28,t)*(1-ease(29,31,t));brother.root.rotation.x=.65*fall;brother.root.position.y=1.75-.18*pray-.15*fall;brother.head.rotation.x=.28+.3*fall;
-      pool.intensity=ease(14,28,t)*3;k.light.intensity=.75+ease(14,28,t)*.55;veil.visible=t>=13;
+      const a=stones[index].position,b=stones[next].position,smooth=ease(0,1,fraction);handTip.position.set(mix(a.x,b.x,smooth),1.76+.11+.1+Math.sin(smooth*Math.PI)*.15,-.8+mix(a.z,b.z,smooth));showHand(ease(12.8,13.4,t)*(1-ease(26.8,27.4,t)));
+      const reveal=ease(27,31,t);showLord(.8*reveal);lord.root.position.y=1.75;lord.rightArm.rotation.x=-.9;lord.rightForearm.rotation.x=-.6;lord.leftArm.rotation.z=-.35;
+      const fall=ease(26,28,t)*(1-ease(29,31,t));brother.root.rotation.x=.35*fall;brother.root.position.y=1.75-.095*pray;brother.head.rotation.x=.28+.3*fall;
+      pool.intensity=ease(14,28,t)*3;k.light.intensity=.75+ease(14,28,t)*.55;showVeil(ease(12.8,14,t));
     });
     k.select(mountain,'Monte Selém','Lugar do encontro','Éter 3:1','O texto identifica o nome do monte, sem estabelecer uma localização moderna.');
   },
@@ -162,12 +165,12 @@ export const builders = {
     const caseGroup=k.groupAt(1.8,0,.65);const cloth=k.mesh(new THREE.BoxGeometry(1.1,.06,.9),k.mat('#a09372'),0,.09,0,caseGroup);
     for(const side of[-1,1])beam(k,[side*.48,.12,-.34],[side*.48,.12,.34],.014,'#c8b58b',caseGroup);
     const lamp=k.lamp(-1.2,.85,0);const glimmer=new THREE.PointLight('#ffe0a0',1,3);glimmer.position.set(-1.2,1.1,0);k.add(glimmer);
-    const initial=new THREE.Vector3(-.4,.88,0),carry=new THREE.Vector3();
+    const initial=new THREE.Vector3(-.4,.88,0),carry=new THREE.Vector3(),showStylus=fade(stylus);
     k.animate(t=>{
-      const write=1-ease(17,20,t);moroni.rightArm.rotation.x=-.9*write;moroni.rightForearm.rotation.x=(-.6+Math.sin(t*3)*.06)*write;moroni.head.rotation.x=.25*write;stylus.visible=t<20;reach(moroni,'right',[-.35+Math.sin(t*2)*.05,1.18,-.12+Math.cos(t*3)*.02],write);
+      const write=1-ease(17,20,t);moroni.rightArm.rotation.x=-.9*write;moroni.rightForearm.rotation.x=(-.6+Math.sin(t*3)*.06)*write;moroni.head.rotation.x=.25*write;showStylus(1-ease(18.5,20,t));reach(moroni,'right',[-.35+Math.sin(t*2)*.05,1.18,-.12+Math.cos(t*3)*.02],write);
       k.group.updateMatrixWorld(true);moroni.handR.getWorldPosition(stylus.position);
       const finish=ease(17,21,t);moroni.leftArm.rotation.x=-.75*finish;moroni.leftForearm.rotation.x=-.4*finish;
-      const move=ease(22,28,t);moroni.root.position.x=mix(-.35,1.25,move);moroni.root.position.z=mix(-.6,.1,move);const stride=t>22&&t<28?Math.sin(t*6)*.2:0;moroni.leftLeg.rotation.x=stride;moroni.rightLeg.rotation.x=-stride;
+      const move=ease(22,28,t);moroni.root.position.x=mix(-.35,1.25,move);moroni.root.position.z=mix(-.6,.1,move);walking(moroni,[-.35,-.6],[1.25,.1],22,28,t,.2);moroni.root.rotation.y=Math.atan2(1.6,.7)*move;
       const lift=ease(20,23,t),place=ease(28,31,t);k.group.updateMatrixWorld(true);moroni.handL.getWorldPosition(carry);plates.position.copy(initial).lerp(carry,lift);plates.position.lerp(new THREE.Vector3(1.8,.15,.65),place);plates.rotation.y=.2*lift*(1-place);if(t>=20)moroni.rightArm.rotation.x=-.65*lift*(1-place);
       moroni.head.rotation.y=-.25*ease(8,13,t)*(1-finish);k.light.color.setRGB(.8+place*.2,.82+place*.08,1-place*.17);k.light.intensity=.9+place*.45;
     });

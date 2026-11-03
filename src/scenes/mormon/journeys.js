@@ -1,4 +1,4 @@
-import { THREE, ease, mix, tent, bag, masonry, beam, prayer, teaching, thought, dust, palmBank, grass, ring, token, tool } from './utils.js';
+import { THREE, ease, mix, tent, bag, masonry, beam, prayer, teaching, thought, dust, palmBank, grass, ring, token, tool, fade, walking, kneel } from './utils.js';
 
 export const builders = {
   M01(k) {
@@ -14,7 +14,7 @@ export const builders = {
       k.walk(r,from,to,2+i*.6,18+i*.65);bag(k,.1,-.25,-.17,'#9c845c',r.handL);
       k.animate(t=>{if(t>22){thought(r,t,i);if(i===0)prayer(r,ease(23,27,t));else r.head.rotation.y=mix(0,-.6,ease(23,27,t));}});
     });
-    const fire=k.fire(2.5,.05,.3,.4); k.animate(t=>{fire.visible=t>21; k.light.color.setRGB(1,.9-.14*ease(20,32,t),.74-.1*ease(20,32,t));});
+    const fire=k.fire(2.5,.05,.3,.4),showFire=fade(fire);k.animate(t=>{showFire(ease(20,23,t));k.light.color.setRGB(1,.9-.14*ease(20,32,t),.74-.1*ease(20,32,t));});
     bag(k,3.6,0,-.35);bag(k,3.25,0,-.5);dust(k,0,.5);k.cloud(0,5,-4,1.1);
   },
 
@@ -27,7 +27,7 @@ export const builders = {
     const rail=beam(k,[-2.5,.88,3.5],[1.2,.88,-1.9],.055,'#a4a79d');token(k,rail,'Barra de ferro','Elemento do sonho','1 Néfi 8:19–24','Alguns atravessam a névoa apegados à barra de ferro.');
     for(let i=0;i<8;i++){const u=i/7;beam(k,[mix(-2.5,1.2,u),0,mix(3.5,-1.9,u)],[mix(-2.5,1.2,u),.88,mix(3.5,-1.9,u)],.025,'#91978e');}
     const river=k.water(.9,9,-2.4,-.2,{river:true,color:'#5c8f8d'});token(k,river,'Rio','Elemento do sonho','1 Néfi 8:13,19','O rio aparece perto da árvore e da barra de ferro.');
-    const building=k.groupAt(-4.2,1.9,-2.6);for(let i=0;i<3;i++)k.mesh(new THREE.BoxGeometry(1.65,.5,1.3),k.mat('#9d927b'),0,i*.6,0,building);token(k,building,'Grande edifício','Elemento do sonho','1 Néfi 8:26–28','O edifício aparece elevado e cheio de pessoas que zombam.');
+    const building=k.groupAt(-4.2,1.9,-2.6);for(let i=0;i<3;i++){k.mesh(new THREE.BoxGeometry(1.65,.5,1.3),k.mat('#9d927b'),0,i*.6,0,building);k.mesh(new THREE.BoxGeometry(1.78,.075,1.4),k.mat('#c4b896'),0,i*.6+.28,0,building);}token(k,building,'Grande edifício','Elemento do sonho','1 Néfi 8:26–28','O edifício aparece elevado e cheio de pessoas que zombam.');
     const fog=[];for(let i=0;i<6;i++){const g=k.cloud(-2+i*.65,.65,1+i%2,.9);g.traverse(o=>{if(o.isMesh)o.material=k.mat('#9fa79c',{transparent:true,opacity:.45,depthWrite:false});});fog.push(g);}token(k,fog[0],'Névoa de escuridão','Elemento do sonho','1 Néfi 8:23–24','A névoa dificulta enxergar o caminho.');
     const lehi=k.person('Leí',-.4,.9,{robe:'#d1c09a',hair:'#817b6c'});k.walk(lehi,[-.4,.9],[1,-.3],0,7);
     const held=k.sphere(.11,'#fff8d9');lehi.handR.add(held);held.position.set(0,-.05,.05);
@@ -50,7 +50,7 @@ export const builders = {
       const receive=ease(8,13,t);nephi.rightArm.rotation.x=-1.15*receive;nephi.rightForearm.rotation.x=-.6*receive;nephi.leftArm.rotation.x=-.8*receive;
       zoram.rightArm.rotation.z=.85*ease(10,15,t)*(1-ease(20,23,t));zoram.head.rotation.y=-.55;
       const leave=ease(21,31,t);if(t>=8)nephi.root.position.set(mix(.25,-1.1,leave),0,mix(-.45,2.2,leave));if(t>=11)zoram.root.position.set(mix(1.2,-.2,leave),0,mix(.2,2.5,leave));
-      if(t>21){nephi.leftLeg.rotation.x=Math.sin(t*6)*.25*(1-ease(29,31,t));nephi.rightLeg.rotation.x=-nephi.leftLeg.rotation.x;zoram.leftLeg.rotation.x=-nephi.leftLeg.rotation.x;zoram.rightLeg.rotation.x=nephi.leftLeg.rotation.x;}
+      if(t>=21){walking(nephi,[.25,-.45],[-1.1,2.2],21,31,t);walking(zoram,[1.2,.2],[-.2,2.5],21,31,t);nephi.root.rotation.y=Math.atan2(-1.35,2.65);zoram.root.rotation.y=Math.atan2(-1.4,2.3);}
       k.group.updateMatrixWorld(true);nephi.handR.getWorldPosition(hand);plates.position.copy(origin).lerp(hand,receive);plates.position.y+=.12*receive;
       thought(sam,t);thought(laman,t,2);
     });
@@ -74,7 +74,7 @@ export const builders = {
       k.group.updateMatrixWorld(true);lehi.handR.getWorldPosition(motion);device.position.set(mix(-1.35,motion.x,lift),mix(.32,motion.y+.18,lift),mix(-.4,motion.z+.06,lift));
       p1.rotation.y=ease(7,15,t)*.7;p2.rotation.y=-ease(7,15,t)*.45;
       nephi.rightArm.rotation.z=.9*ease(10,15,t)*(1-go);nephi.head.rotation.y=-.4;thought(saria,t,1);
-      [lehi,nephi,saria].forEach((r,i)=>{const s=t>22&&t<32?Math.sin(t*6+i)*.27:0;r.leftLeg.rotation.x=s;r.rightLeg.rotation.x=-s;});
+      [[lehi,[-1.6,.5],[.9,2]],[nephi,[.3,.7],[2.8,2.2]],[saria,[1.1,1.4],[3.1,2.4]]].forEach(([r,from,to])=>{walking(r,from,to,22,32,t);r.root.rotation.y=Math.atan2(to[0]-from[0],to[1]-from[1])*ease(21,23,t);});
     });dust(k,1,2);k.cloud(1,5,-4,.9);
   },
 
@@ -89,19 +89,19 @@ export const builders = {
     const pile=[];for(let i=0;i<5;i++)pile.push(k.box(1.7,.1,.18,'#ad8558',-2.3,.12+i*.11,-2.1));
     const nephi=k.person('Néfi',-1.9,-2.5,{robe:'#8a9c7e',mantle:'#c5b17f'}),sam=k.person('Sam',1.6,-2.6,{robe:'#b99d72'}),lehi=k.person('Leí',2.6,-2.7,{robe:'#d1bd93',hair:'#8b8571'});
     const crew=k.groupAt(0,0,.8);[nephi,sam,lehi].forEach(r=>crew.add(r.root));
-    const hammer=tool(k,nephi.handR);const cloud=k.cloud(-1,5,-2,1.3),cloud2=k.cloud(3,4,-3,1);
+    const hammer=tool(k,nephi.handR),showHammer=fade(hammer),showGangplank=fade(gangplank),showSail=fade(sail),showMast=fade(mast),showYard=fade(yard),showPile=pile.map(fade);const cloud=k.cloud(-1,5,-2,1.3),cloud2=k.cloud(3,4,-3,1);
     k.animate(t=>{
       const build=1-ease(7,10,t),board=ease(9,15,t),storm=ease(16,20,t)*(1-ease(24,29,t));
-      nephi.rightArm.rotation.x=build*(-.9+Math.sin(t*4)*.45)-board*.4;nephi.rightForearm.rotation.x=-.4;hammer.visible=t<9;
-      nephi.root.position.set(mix(-1.9,-.6,board),mix(0,.62,board),mix(-3.3,-.3,board));sam.root.position.set(mix(1.6,.6,board),mix(0,.62,board),mix(-3.4,-.4,board));lehi.root.position.set(mix(2.6,0,board),mix(0,.62,board),mix(-3.5,.65,board));
-      [nephi,sam,lehi].forEach((r,i)=>{const gait=t>9&&t<15?Math.sin(t*7+i)*.25:0;r.leftLeg.rotation.x=gait;r.rightLeg.rotation.x=-gait;r.head.rotation.x=.14*storm;});
+      nephi.rightArm.rotation.x=build*(-.9+Math.sin(t*4)*.45)-board*.4;nephi.rightForearm.rotation.x=-.4;showHammer(1-ease(7,9,t));
+      nephi.root.position.set(mix(-1.9,-.6,board),mix(.09,.15,board),mix(-3.3,-.3,board));sam.root.position.set(mix(1.6,.6,board),mix(.09,.15,board),mix(-3.4,-.4,board));lehi.root.position.set(mix(2.6,0,board),mix(.09,.15,board),mix(-3.5,.65,board));
+      [[nephi,[-1.9,-3.3],[-.6,-.3]],[sam,[1.6,-3.4],[.6,-.4]],[lehi,[2.6,-3.5],[0,.65]]].forEach(([r,from,to])=>{walking(r,from,to,9,15,t,.23);r.head.rotation.x=.14*storm;});
       if(t>21)prayer(nephi,ease(21,25,t));sam.leftArm.rotation.z=-.75*storm;sam.rightArm.rotation.z=.75*storm;
       ship.rotation.z=Math.sin(t*2.6)*(.025+.12*storm);ship.rotation.x=Math.sin(t*1.8)*(.02+.06*storm);
-      const departure=ease(15,31,t);ship.position.z=.8+departure*.7;crew.position.z=ship.position.z;crew.rotation.copy(ship.rotation);gangplank.visible=t<16;
-      sail.visible=t>7;mast.visible=t>5;yard.visible=t>5;for(let i=0;i<sailGeo.attributes.position.count;i++)sailGeo.attributes.position.setZ(i,.1*Math.sin(original[i*3]*3-t*3)*(1+storm));sailGeo.attributes.position.needsUpdate=true;sailGeo.computeVertexNormals();
-      pile.forEach((o,i)=>o.visible=t<4+i);cloud.scale.setScalar(1.3+storm*.4);cloud2.scale.setScalar(1+storm*.4);k.light.intensity=3.3-storm*2;k.background.setRGB(.74-storm*.35,.82-storm*.32,.8-storm*.25);
+      const departure=ease(15,31,t);ship.position.z=.8+departure*.7;crew.position.z=ship.position.z;crew.rotation.copy(ship.rotation);showGangplank(1-ease(14,16,t));
+      showSail(ease(6,8,t));showMast(ease(4,6,t));showYard(ease(4,6,t));for(let i=0;i<sailGeo.attributes.position.count;i++){const u=(original[i*3]+.775)/1.55,v=(original[i*3+1]+.775)/1.55,belly=Math.sin(u*Math.PI)*Math.sin(v*Math.PI);sailGeo.attributes.position.setZ(i,(.15+.04*Math.sin(t*1.6+u*2))*(1+storm*.45)*belly);}sailGeo.attributes.position.needsUpdate=true;sailGeo.computeVertexNormals();
+      showPile.forEach((show,i)=>show(1-ease(3+i,4+i,t)));cloud.scale.setScalar(1.3+storm*.4);cloud2.scale.setScalar(1+storm*.4);k.light.intensity=3.3-storm*2;k.background.setRGB(.74-storm*.35,.82-storm*.32,.8-storm*.25);
     });
-    const prayerRipple=ring(k,-.7,.09,.5,.5);k.animate(t=>{prayerRipple.scale.setScalar(1+ease(24,30,t)*2);prayerRipple.visible=t>23;});
+    const prayerRipple=ring(k,-.7,.09,.5,.5),showRipple=fade(prayerRipple);k.animate(t=>{prayerRipple.scale.setScalar(1+ease(24,30,t)*2);showRipple(ease(23,25,t));});
   },
 
   M06(k) {
@@ -111,9 +111,9 @@ export const builders = {
     const enos=k.person('Enos',-.45,.2,{robe:'#b7a17a',mantle:'#788367'}),arc=new THREE.EllipseCurve(0,0,.28,.7,-Math.PI/2,Math.PI/2,false,0);
     const pts=arc.getPoints(25).map(p=>new THREE.Vector3(p.x,p.y,0));const bow=k.mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,.025,6),k.mat('#7a5637'),-1.4,.75,.3);beam(k,[-1.4,.05,.3],[-1.4,1.45,.3],.007,'#d1b88c');
     token(k,bow,'Arco em repouso','Contexto da caçada','Enos 1:3','Enos sai para caçar e recorda o ensino de seu pai.');
-    const sunRay=k.ray(0,0,0,6),stars=k.stars();k.animate(t=>{
-      const kneeling=ease(3,8,t);enos.root.position.y=-.18*kneeling;enos.leftLeg.rotation.x=-1.25*kneeling;enos.rightLeg.rotation.x=-1.25*kneeling;prayer(enos,kneeling);enos.head.rotation.x=.2+.06*Math.sin(t*.5);
-      const night=ease(12,24,t);k.light.intensity=mix(3.4,.8,night);k.light.color.setRGB(mix(1,.6,night),mix(.93,.7,night),mix(.74,1,night));k.background.setRGB(mix(.77,.09,night),mix(.82,.14,night),mix(.71,.22,night));stars.material.opacity=night*.9;sunRay.visible=t<20;
+    const sunRay=k.ray(0,0,0,6),showSun=fade(sunRay),stars=k.stars();k.animate(t=>{
+      const kneeling=ease(3,8,t);kneel(enos,kneeling);prayer(enos,kneeling);enos.head.rotation.x=.2+.04*Math.sin(t*.5);
+      const night=ease(12,24,t);k.light.intensity=mix(3.4,.8,night);k.light.color.setRGB(mix(1,.6,night),mix(.93,.7,night),mix(.74,1,night));k.background.setRGB(mix(.77,.09,night),mix(.82,.14,night),mix(.71,.22,night));stars.material.opacity=night*.9;showSun(1-ease(17,21,t));
       enos.leftArm.rotation.z=-.65-.16*ease(24,30,t);enos.rightArm.rotation.z=.65+.16*ease(24,30,t);
     });
   },

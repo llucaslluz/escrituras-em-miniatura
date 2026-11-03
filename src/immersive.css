@@ -192,7 +192,6 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
 .scene-copy .scene-editorial,.scene-copy .scene-character-intro{position:static;inset:auto;width:100%;flex:0 0 auto}
 .scene-copy .scene-character-intro{margin-top:auto;max-width:285px}
 .scene-copy .scene-poetic-title{overflow-wrap:anywhere}
-.scene-copy[data-compact-copy] .scene-craft-note,.scene-copy[data-hide-invitation] .scene-character-intro{display:none}
 @media(max-width:1439px) and (min-width:1100px){.scene-copy{left:3.3%;width:260px}}
 @media(max-width:1099px){.scene-copy{top:max(24%,200px);bottom:7%;width:235px}}
 @media(max-height:740px) and (min-width:1100px){.scene-copy{top:max(22%,150px);width:240px;bottom:5%}}
@@ -256,33 +255,59 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
 }
 @media print{.scene-history-toggle,.scene-controls-toggle{display:none}}
 
-/* Editorial text stays in the page; short viewports can scroll this column. */
-.immersive-page .scene-copy .scene-character-intro{display:block}
-.scene-copy .scene-description{display:block}
-@media(max-width:760px){
- .scene-copy{gap:20px}
- .scene-copy .scene-description{font-size:.73rem;line-height:1.65;margin-top:16px}
- .scene-copy .scene-character-intro{margin-top:0}
- .scene-copy .scene-character-intro h2{font-size:1.35rem;line-height:1.12;margin:8px 0}
- .scene-copy .scene-character-intro p{font-size:.7rem;line-height:1.65;margin-bottom:8px}
- .scene-copy .scene-character-intro .eyebrow{font-size:.52rem}
- .scene-copy .scene-source-link{font-size:.66rem;min-height:44px}
-}
-
+/* Reading grows with the text instead of shrinking to fit the miniature. */
+.immersive-page{--scene-reading:#f4f3e9}
+.immersive-page[data-light=sunset]{--scene-reading:#f5e8d7}
+.immersive-page[data-light=night]{--scene-reading:#343e49}
+body.immersive-mode .skip:not(:focus){transform:translateY(-200%)}
+.scene-copy{gap:10px;overflow:visible;pointer-events:auto;scrollbar-gutter:auto;min-width:0;min-height:0}
+.scene-reading-toggle{flex:0 0 auto;align-self:flex-start;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid var(--scene-line);border-radius:24px;background:var(--scene-reading);color:var(--scene-ink);font-size:.875rem;line-height:1.4;overflow-wrap:anywhere;text-align:left}
+.scene-copy-body{display:flex;flex-direction:column;gap:24px;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--scene-faint) transparent;padding:2px 6px 10px 2px;scroll-padding-block:8px}
+.scene-copy-body:focus-visible{outline:2px solid var(--scene-focus);outline-offset:3px}
+.immersive-page .scene-copy .scene-editorial,.immersive-page .scene-copy .scene-character-intro{display:block;max-width:none;pointer-events:auto}
+.immersive-page .scene-copy .scene-location,.immersive-page .scene-copy .eyebrow,.immersive-page .scene-copy .scene-source-link{font-size:.875rem;line-height:1.6;letter-spacing:.06em}
+.immersive-page .scene-copy .scene-location{margin-bottom:14px;max-width:none}
+.immersive-page .scene-copy .scene-description,.immersive-page .scene-copy .scene-character-intro p{display:block;font-size:1.067rem;line-height:1.6;max-width:none;margin:14px 0 0}
+.immersive-page .scene-copy .scene-character-intro{margin-top:0}
+.immersive-page .scene-copy .scene-character-intro h2{font-size:1.6rem;line-height:1.25;margin:8px 0;max-width:none}
+.immersive-page .scene-copy .scene-source-link{min-height:44px;margin-top:12px;max-width:100%;overflow-wrap:anywhere;letter-spacing:0}
+.immersive-page .scene-copy .scene-poetic-title{font-size:clamp(2.6rem,4.2vw,5rem);line-height:1.08;letter-spacing:-.04em;margin:0;max-width:none;overflow-wrap:anywhere}
+.immersive-page .scene-copy .scene-poetic-title.compact-title{font-size:clamp(2.4rem,3.8vw,4.2rem)}
+.immersive-page .scene-copy .scene-poetic-title.long-title{font-size:clamp(2.1rem,3.2vw,3.8rem)}
+.scene-copy[data-reading-expanded=true]{z-index:3;width:min(48vw,42rem);padding:14px;border:1px solid var(--scene-line);border-radius:16px;background:var(--scene-reading);box-shadow:0 8px 28px var(--scene-shadow);bottom:152px}
 .scene-doctrine h2{text-wrap:balance}
-.scene-doctrine .scene-source-link{line-height:1.7}
 .scene-study .doctrine-heading{font-family:Georgia,'Times New Roman',serif;font-size:1.3rem;font-weight:400;line-height:1.25;margin:13px 0 9px;color:inherit}
 .scene-study .doctrine-reference{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;line-height:1.7;text-decoration:underline;text-underline-offset:4px;margin-top:8px}
 .scene-study .doctrine-reference .icon{width:13px;height:13px;flex:0 0 13px}
-
-/* On a narrow portrait screen, reserve a reading band above the miniature. */
+@media(min-width:1100px){
+ .immersive-page .scene-copy .scene-poetic-title.compact-title{font-size:clamp(2.4rem,3.125vw,3rem)}
+}
+@media(max-width:1099px) and (min-height:541px){
+ .scene-copy[data-reading-expanded=true]{width:min(58vw,38rem);bottom:150px}
+}
 @media(max-width:760px) and (min-height:541px){
- .scene-history-toggle{left:21px;transform:none}
- .scene-panel-toggle{top:calc(max(14px,env(safe-area-inset-top)) + 58px)}
- .scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + 123px);bottom:57%;left:21px;width:calc(100% - 42px);gap:16px;padding-bottom:10px}
- .scene-copy .scene-location{max-width:none;margin-bottom:10px}
- .immersive-page .scene-copy .scene-poetic-title{font-size:clamp(28px,8vw,38px);max-width:none;line-height:1.04}
- .scene-copy .scene-description{max-width:none;margin-top:14px;margin-bottom:0}
- .scene-copy .scene-character-intro{max-width:none}
- .immersive-canvas{top:44%;bottom:76px}
+ .scene-history-toggle,.scene-panel-toggle{top:calc(max(14px,env(safe-area-inset-top)) + max(58px,4.2rem));width:calc((100% - 48px)/2);min-width:0;gap:6px;padding:8px;overflow-wrap:anywhere}
+ .scene-history-toggle{left:18px;transform:none}
+ .scene-history-toggle>.icon:last-child{display:none}
+ .scene-panel-toggle{right:18px}
+ .scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + max(117px,7.3rem));bottom:auto;left:18px;width:calc(100% - 36px);height:min(36dvh,calc(100dvh - max(14px,env(safe-area-inset-top)) - max(117px,7.3rem) - 90px - env(safe-area-inset-bottom)));gap:8px}
+ .immersive-page .scene-copy .scene-poetic-title,.immersive-page .scene-copy .scene-poetic-title.compact-title,.immersive-page .scene-copy .scene-poetic-title.long-title{font-size:clamp(2rem,8vw,2.6rem);line-height:1.1}
+ .scene-copy-body{gap:20px}
+ .scene-copy[data-reading-expanded=true]{width:calc(100% - 36px);height:auto;bottom:calc(90px + env(safe-area-inset-bottom));padding:12px}
+ .immersive-page[data-open-panel=controls] .scene-copy{max-height:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(117px,7.3rem) - 144px - env(safe-area-inset-bottom))}
+ .immersive-page[data-open-panel=controls] .scene-copy[data-reading-expanded=true]{bottom:calc(144px + env(safe-area-inset-bottom))}
+ .immersive-canvas{top:max(44%,calc(max(14px,env(safe-area-inset-top)) + 114px + 36dvh));bottom:76px}
+}
+@media(max-height:540px){
+ .scene-copy{top:76px;left:18px;bottom:80px;width:min(40vw,26rem);max-width:none;gap:8px}
+ .scene-copy[data-reading-expanded=true]{top:76px;left:18px;bottom:80px;width:min(68vw,38rem);padding:12px}
+ .immersive-page[data-open-panel=controls] .scene-copy{bottom:134px}
+ .immersive-page .scene-copy .scene-poetic-title,.immersive-page .scene-copy .scene-poetic-title.compact-title,.immersive-page .scene-copy .scene-poetic-title.long-title{font-size:2rem;line-height:1.1}
+}
+@media print{
+ .scene-reading-toggle{display:none}
+ .scene-copy,.scene-copy[data-reading-expanded=true]{position:relative;inset:auto;width:auto;height:auto;max-height:none;display:block;padding:0;border:0;box-shadow:none;background:none;overflow:visible}
+ .scene-copy-body{display:block;overflow:visible;height:auto;max-height:none;padding:0}
+ .immersive-page .scene-copy .scene-editorial,.immersive-page .scene-copy .scene-character-intro{display:block;margin:24px 0}
+ .immersive-page .scene-copy .scene-poetic-title{font-size:2.6rem}
 }

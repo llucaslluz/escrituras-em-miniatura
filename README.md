@@ -1,10 +1,12 @@
 # Escrituras em Miniatura
 
-**Histórias de fé em movimento — versão 2.0.0**
+**Histórias de fé em movimento — versão 2.1.0**
 
 Aplicação independente em português do Brasil, com **72 dioramas 3D procedurais**: Bíblia (32), Livro de Mórmon (20), Doutrina e Convênios (10) e Pérola de Grande Valor (10). Reconstruída do zero. Não recupera a fonte de “Gólgota em Miniatura” nem altera seu site ou identificador.
 
 As 72 cenas usam uma direção de arte inspirada em **claymation**: personagens chibi, formas arredondadas, textura de massinha, cores pastel e iluminação suave de estúdio. São cenas interativas renderizadas em tempo real com Three.js. A câmera geral reduz a distorção de perspectiva para aproximar a aparência de uma miniatura isométrica; a lente aplica um tilt-shift discreto conforme a profundidade, sem desfocar os textos da interface.
+
+A versão 2.1.0 refina a **travessia do Mar Vermelho (B05)**: paredes de água turquesa em volumes curvos de massinha, espuma clara, gotas, peixes e um caminho de areia para Moisés e dez israelitas, incluindo adultos e crianças. A sequência mostra o mar, a abertura, a travessia e a chegada. Veja [docs/TRAVESSIA-2.1.md](docs/TRAVESSIA-2.1.md).
 
 ## Executar
 

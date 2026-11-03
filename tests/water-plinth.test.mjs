@@ -56,24 +56,55 @@ test('Água e espuma das 16 histórias permanecem dentro da miniatura durante to
   }
 });
 
-test('B05: separação continua abrindo o caminho; paredes verticais e recorte não dependem do quadro anterior', () => {
+test('B05: ondas esculpidas revelam a passagem e retornam ao mesmo estado ao buscar o tempo', () => {
   const kit = new Kit('B05'); bible.B05(kit);
   try {
-    const water = surfaces(kit), walls = [];
-    kit.group.traverse(object => { const p = object.geometry?.parameters; if (p?.width === 9 && p?.height === 2.6) walls.push(object); });
+    const water = surfaces(kit), walls = [], foam = [];
+    let sea;
+    kit.group.traverse(object => {
+      if (object.userData.redSea) sea = object;
+      if (object.userData.redSeaWall) walls.push(object);
+      if (object.userData.redSeaFoam) foam.push(object);
+    });
+    assert.ok(sea, 'o mar esculpido permanece identificado na história');
     assert.equal(water.length, 2); assert.equal(walls.length, 2);
-    const wallVertices = walls.map(object => [...object.geometry.attributes.position.array]);
-    kit.update(0); assert.ok(walls.every(object => object.scale.y === 0));
+    assert.deepEqual(walls.map(object => object.userData.redSeaWall).sort(), ['left', 'right']);
+    assert.ok(foam.length > 0, 'as cristas têm espuma modelada');
+    kit.update(0);
+    assert.equal(sea.userData.redSeaOpen, 0);
+    assert.ok(walls.every(object => !object.visible));
+    assert.ok(foam.every(object => !object.visible));
+    assert.ok(water.some(object => {
+      const p = object.geometry.attributes.position;
+      return Array.from({ length: p.count }, (_, i) => Math.abs(p.getX(i))).some(x => x < .01);
+    }), 'antes da abertura a água alcança o centro');
     kit.update(20); kit.group.updateMatrixWorld(true);
-    const opened = water.map(object => Array.from(object.geometry.attributes.position.array));
-    assert.ok(walls.every(object => object.scale.y === 1));
-    walls.forEach((object, i) => assert.deepEqual([...object.geometry.attributes.position.array], wallVertices[i], 'paredes do mar não recebem o recorte horizontal'));
-    for (const surface of water) {
-      assert.equal(surface.parent.position.y, .12, 'o nível original da água foi preservado');
-      const p = surface.geometry.attributes.position;
-      for (let i = 0; i < p.count; i++) assert.ok(Math.abs(p.getX(i) + surface.parent.position.x) > 1.84, 'o corredor central permanece aberto');
+    assert.equal(sea.userData.redSeaOpen, 1);
+    assert.ok(walls.every(object => object.visible));
+    assert.ok(foam.some(object => object.visible));
+    for (const wall of walls) {
+      assertContained(wall, 'a crista acompanha a borda da miniatura');
+      const position = wall.geometry.attributes.position;
+      let maximum = 0;
+      for (let i = 0; i < position.count; i++) {
+        maximum = Math.max(maximum, position.getY(i));
+        assert.ok(Math.abs(position.getX(i)) > 1, 'as cristas preservam o corredor entre os dois lados');
+      }
+      assert.ok(maximum > 2.8, 'a água conserva altura e volume em vez de ser achatada pelo recorte horizontal');
+      assert.equal(wall.geometry.userData.clayWaterSurface, undefined);
     }
-    kit.update(0); kit.update(20);
-    assert.deepEqual(water.map(object => Array.from(object.geometry.attributes.position.array)), opened, 'busca direta e reprodução recompõem o mesmo recorte no mesmo quadro');
+    for (const surface of water) {
+      assertContained(surface, 'o mar horizontal permanece dentro da base');
+      const p = surface.geometry.attributes.position;
+      for (let i = 0; i < p.count; i++) assert.ok(Math.abs(p.getX(i) + surface.parent.position.x) > 1.6, 'o leito central permanece seco e aberto');
+    }
+    const snapshot = () => [...water, ...walls, ...foam].map(object => ({
+      position: Array.from(object.geometry.attributes.position.array),
+      instances: object.instanceMatrix ? Array.from(object.instanceMatrix.array) : null,
+      visible: object.visible,
+    }));
+    const opened = snapshot();
+    kit.update(0); kit.update(32); kit.update(20);
+    assert.deepEqual(snapshot(), opened, 'busca direta e reprodução recompõem as mesmas ondas e espuma no mesmo instante');
   } finally { kit.dispose(); }
 });

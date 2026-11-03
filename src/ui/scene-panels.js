@@ -1,4 +1,4 @@
-// Disclosures remain open while being read. A committed choice closes them.
+// Scene adjustments stay open; choosing a story closes navigation.
 export function createScenePanels(page) {
  const entries={
   navigation:{panel:page.querySelector('#scene-navigator'),trigger:page.querySelector('[data-action=toggle-navigation]'),label:'histórias'},
@@ -26,7 +26,12 @@ export function createScenePanels(page) {
  const toggle=name=>{if(active===name)close(true);else open(name)};
  const outside=event=>{
   if(!active)return;const entry=entries[active];
-  if(!entry.panel.contains(event.target)&&!entry.trigger.contains(event.target))close();
+  if(!entry.panel.contains(event.target)&&!entry.trigger.contains(event.target)){
+   const focusable=event.target.closest('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]');
+   const labelControl=event.target.closest('label')?.control;
+   const movesFocus=focusable||(labelControl&&!labelControl.disabled);
+   close(entry.panel.contains(page.ownerDocument.activeElement)&&!movesFocus);
+  }
  };
  const choice=event=>{
   const link=event.target.closest('a');
@@ -36,10 +41,8 @@ export function createScenePanels(page) {
    if(active&&entries[active].panel.contains(link))close(true);
    return;
   }
-  const button=event.target.closest('button');
-  if(active&&button&&entries[active].panel.contains(button))close(true);
  };
- const commit=event=>{if(active&&entries[active].panel.contains(event.target)&&event.target.matches('input,select'))close(true)};
+ const commit=event=>{if(active==='navigation'&&entries.navigation.panel.contains(event.target)&&event.target.matches('input,select'))close(true)};
  const escape=event=>{if(event.key==='Escape'&&active&&!page.querySelector('dialog[open]')){event.preventDefault();close(true)}};
  page.addEventListener('pointerdown',outside);
  page.addEventListener('click',outside);

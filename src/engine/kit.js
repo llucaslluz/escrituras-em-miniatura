@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import {makeClayTexture,clayColor,clayGeometry,clayPlinth,clayBeamTexture,clipWaterToPlinth} from './clay-style.js';
 import {createClayPerson} from './clay-people.js';
 import {createClayAnimal,createClayDove} from './clay-animals.js';
+import {applyGroundedGait,gaitEnvelope} from './clay-gait.js';
 
 const TAU=Math.PI*2;
+const surfaceProfiles={cloth:{roughness:.85,bumpScale:.009,clearcoat:.015},skin:{roughness:.64,bumpScale:.007,clearcoat:.025},hair:{roughness:.76,bumpScale:.009,clearcoat:.025},stone:{roughness:.86,bumpScale:.01,clearcoat:.01},wood:{roughness:.79,bumpScale:.01,clearcoat:.02},leaf:{roughness:.83,bumpScale:.009,clearcoat:.015}};
 export const smooth=(a,b,t)=>{const p=THREE.MathUtils.clamp((t-a)/(b-a),0,1);return p*p*(3-2*p)};
 export function random(seed=19){return()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
 // Compatibility alias for source consumers of the first edition.
@@ -26,7 +28,7 @@ export class Kit{
   pebbles.castShadow=pebbles.receiveShadow=true;pebbles.name='Grãos e pedrinhas de argila';this.add(pebbles);
 
  }
- mat(color,options={}){const key=color+JSON.stringify(options);if(!this.materials.has(key)){const material=new THREE.MeshPhysicalMaterial({color:clayColor(color),roughness:.72,metalness:0,bumpMap:makeClayTexture(),bumpScale:.012,clearcoat:.045,clearcoatRoughness:.8,...options});material.userData.clayMaterial=true;this.materials.set(key,material);}return this.materials.get(key)}
+ mat(color,options={}){const key=color+JSON.stringify(options);if(!this.materials.has(key)){const{surface,...explicit}=options;const material=new THREE.MeshPhysicalMaterial({color:clayColor(color),roughness:.72,metalness:0,bumpMap:makeClayTexture(),bumpScale:.012,clearcoat:.045,clearcoatRoughness:.8,...surfaceProfiles[surface],...explicit});material.userData.clayMaterial=true;if(surface)material.userData.claySurface=surface;this.materials.set(key,material);}return this.materials.get(key)}
  add(o){this.group.add(o);return o}
  mesh(g,m,x=0,y=0,z=0,parent=this.group){const o=new THREE.Mesh(clayGeometry(g,this.geometryCache),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
  box(w,h,d,c,x=0,y=0,z=0){return this.mesh(new THREE.BoxGeometry(w,h,d,1,1,1),this.mat(c),x,y,z)}
@@ -38,15 +40,34 @@ export class Kit{
  select(object,name,role='',reference='',summary=''){object.userData.selectable=name;this.selectables.push({object,name,role,reference,summary});return object}
  label(object,text){if(!this.labels.some(l=>l.object===object&&l.text===text))this.labels.push({object,text});return object}
  person(name,x,z,o={}){return createClayPerson(this,name,x,z,o)}
- walk(rig,from,to,start,end){this.animate(t=>{const p=smooth(start,end,t),moving=t>start&&t<end;rig.root.position.x=THREE.MathUtils.lerp(from[0],to[0],p);rig.root.position.z=THREE.MathUtils.lerp(from[1],to[1],p);rig.root.rotation.y=Math.atan2(to[0]-from[0],to[1]-from[1]);const stride=moving?Math.sin((t-start)*7)*.32:0;rig.leftLeg.rotation.x=stride;rig.rightLeg.rotation.x=-stride;rig.leftArm.rotation.x=-stride*.5;rig.rightArm.rotation.x=stride*.5});}
- rock(x,z,s=1){const r=this.mesh(new THREE.DodecahedronGeometry(.5,1),this.mat('#8b8a78'),x,.22*s,z);r.scale.set(s,s*.65,s*.8);r.rotation.set(.1,x,.1);return r}
+ walk(rig,from,to,start,end){
+  const distance=Math.hypot(to[0]-from[0],to[1]-from[1]);
+  this.animate(t=>{
+   const u=THREE.MathUtils.clamp((t-start)/Math.max(end-start,.001),0,1),p=u*u*(3-2*u);
+   rig.root.position.x=THREE.MathUtils.lerp(from[0],to[0],p);rig.root.position.z=THREE.MathUtils.lerp(from[1],to[1],p);
+   if(distance>0)rig.root.rotation.y=Math.atan2(to[0]-from[0],to[1]-from[1]);
+   applyGroundedGait(rig,distance*p,{envelope:distance>0?gaitEnvelope(u):0});
+  });
+ }
+ rock(x,z,s=1){
+  const r=this.mesh(new THREE.DodecahedronGeometry(.5,1),this.mat('#8b8a78',{surface:'stone'}),x,.22*s,z);
+  r.scale.set(s,s*.65,s*.8);r.rotation.set(.1,x,.1);r.updateMatrixWorld(true);
+  if(s===0)return r;
+  const before=new THREE.Box3().setFromObject(r,true),variant=Math.abs(Math.round(x*317+z*193))%3;
+  r.scale.x*=[.90,.96,1][variant];r.scale.z*=[1,.90,.94][variant];r.rotation.x+=[-.035,.025,0][variant];r.rotation.z+=[.02,-.025,0][variant];r.updateMatrixWorld(true);
+  const after=new THREE.Box3().setFromObject(r,true),ratio=Math.min(1,(x-before.min.x)/(x-after.min.x),(before.max.x-x)/(after.max.x-x),(z-before.min.z)/(z-after.min.z),(before.max.z-z)/(after.max.z-z),(before.max.y-before.min.y)/(after.max.y-after.min.y));
+  r.scale.multiplyScalar(ratio);r.updateMatrixWorld(true);
+  const fitted=new THREE.Box3().setFromObject(r,true);r.position.y+=before.min.y-fitted.min.y;r.userData.clayRockVariant=variant;
+  return r;
+ }
  tree(x,z,s=1,kind='olive'){
-  const g=this.groupAt(x,0,z);g.scale.setScalar(s);const mesh=(geo,col,px,py,pz,p=g)=>this.mesh(geo,this.mat(col),px,py,pz,p);
-  mesh(new THREE.CylinderGeometry(.13,.24,1.6,9),'#796348',0,.8,0).rotation.z=.09;
-  for(let j=0;j<3;j++){const b=mesh(new THREE.CylinderGeometry(.065,.12,.92,7),'#796348',(j-1)*.22,1.48,0);b.rotation.z=(j-1)*-.6;}
+  const g=this.groupAt(x,0,z);g.scale.setScalar(s);const mesh=(geo,col,px,py,pz,p=g,surface='leaf')=>this.mesh(geo,this.mat(col,{surface}),px,py,pz,p);
+  mesh(new THREE.CylinderGeometry(.13,.24,1.6,9),'#796348',0,.8,0,g,'wood').rotation.z=.09;
+  for(let j=0;j<3;j++){const b=mesh(new THREE.CylinderGeometry(.065,.12,.92,7),'#796348',(j-1)*.22,1.48,0,g,'wood');b.rotation.z=(j-1)*-.6;}
   const canopy=new THREE.Group();canopy.position.y=1.9;g.add(canopy);const r=random(Math.round((x+10)*212+(z+12)*17));
   if(kind==='palm'){for(let j=0;j<8;j++){const leaf=mesh(new THREE.SphereGeometry(.48,12,6),'#6a8150',Math.sin(j/8*TAU)*.6,.1,Math.cos(j/8*TAU)*.6,canopy);leaf.scale.set(.3,.12,2.1);leaf.rotation.y=j/8*TAU;leaf.rotation.x=.3;}}
   else{for(let j=0;j<36;j++){const a=r()*TAU,rr=Math.sqrt(r())*.9;const leaf=mesh(new THREE.SphereGeometry(.24,10,8),j%3?'#778553':'#a2ac77',Math.cos(a)*rr,(r()-.5)*.65,Math.sin(a)*rr,canopy);leaf.scale.set(1.25,.55,.8);leaf.rotation.set(r(),r()*TAU,r());}for(let j=0;j<18;j++){const a=r()*TAU;const leaf=mesh(new THREE.SphereGeometry(.16,8,6),'#b4bd86',Math.cos(a)*.9,(r()-.5)*.6,Math.sin(a)*.9,canopy);leaf.scale.set(.3,.12,1.1);leaf.rotation.y=-a;}}
+  if(kind!=='palm'){const variant=Math.abs(Math.round(x*317+z*193))%3;canopy.scale.set(...[[.96,.76,.96],[.79,1,.79],[1,.88,.72]][variant]);g.userData.clayCanopyVariant=variant;}
   this.ambient(t=>{canopy.rotation.z=Math.sin(t*1.1+x)*.018;canopy.rotation.x=Math.cos(t*.7+z)*.012});return g;
  }
  water(width,length,x=0,z=0,o={}){

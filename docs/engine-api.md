@@ -56,3 +56,15 @@ Os arquivos `src/data/bible.js`, `mormon.js`, `dc.js` e `pearl.js` exportam as h
 `book` aceita `bible`, `mormon`, `dc` ou `pearl`; `testament` só é necessário para a Bíblia. `type` distingue `relato`, `parábola`, `visão` e `doutrina`. Datas aproximadas devem ser identificadas como tais. Os 72 ensinamentos próprios e seus versículos de apoio ficam em `src/data/editorial/`, reunidos por `src/data/editorial.js`.
 
 Verifique referências nas escrituras oficiais e registre decisões nos documentos `curation-*.md`. Preserve a distinção entre relato, interpretação artística e exposição doutrinária. Não é necessário reproduzir extensamente o texto das escrituras.
+
+## Refinamento do catálogo — apoio, passada e pausa
+
+`Kit.walk` usa distância percorrida, apoio alternado e uma janela suave na partida/parada. A função compartilhada `applyGroundedGait(rig, distanceWorld, { envelope=1, ground=0, swingHeight=.065, arms=true })`, em `engine/clay-gait.js`, está disponível para trajetórias autorais. `gaitEnvelope(progress)` produz uma janela com platô central. A distância é absoluta, não acumulada por quadro; `ground` é a altura local relativa à raiz. A função ajusta pernas e, opcionalmente, braços; não altera raiz, cabeça, antebraços ou mãos. `arms:false` preserva gestos e objetos narrativos. O apoio é analítico para botas elipsoidais e plano de suporte, não uma solução de IK completa para todo terreno.
+
+Olhos já fechados permanecem fechados; as piscadas usam as geometrias existentes, com fases estáveis por nome/cena. Animais conservam pivôs/instancing e têm apoio corrigido em repouso. Animações locais ainda prevalecem após os callbacks de ambiente; apoios especiais devem ser testados no próprio construtor.
+
+O Viewer invalida a imagem em câmera/controle, busca temporal, atmosfera, preferências, vista, nomes e resize. Em pausa estável, mantém o agendamento leve dos controles para amortecimento, mas evita redesenhar a cena sem mudança. `data-rendered-frames` conta renders efetivamente solicitados e `data-render-mode` distingue reprodução, interação, pausa estável e documento oculto. O relógio não avança quando `document.visibilityState` é `hidden`; ao voltar, retoma sem pular momentos. A regra de visibilidade tem testes unitários; a ferramenta integrada ainda não comprova o comportamento de uma aba realmente oculta.
+
+Os atalhos locais de câmera ignoram eventos com Ctrl, Meta ou Alt, preservando os comandos do navegador e tecnologias assistivas. Teclas simples de aproximação e setas continuam disponíveis no canvas focado; mudanças de câmera em pausa invalidam a imagem. Isso não implementa nem simula zoom nativo do navegador.
+
+O mar de B05 mantém constantes espaciais e dados por linha em cache local à instância. Os dois lados simétricos compartilham o cálculo temporal, conservando as mesmas posições, normais e matrizes nos testes de equivalência. O cache aumenta a memória CPU em aproximadamente 104,2 KiB por instância; não reduz a geometria nem comprova economia de GPU. Evite reconstruí-lo a cada quadro ou compartilhá-lo globalmente entre cenas.

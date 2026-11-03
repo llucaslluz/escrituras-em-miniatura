@@ -107,8 +107,8 @@ export function prepareStudio(kit,quality='medium'){
  shadow.mapSize.set(quality==='high'?2048:1024,quality==='high'?2048:1024);
  shadow.radius=quality==='high'?12:8;shadow.bias=-.00035;shadow.normalBias=.018;
  if(!kit.studio){
-  const rim=new THREE.DirectionalLight('#c9ddf5',.65);rim.name='Softbox fria';rim.position.set(5,6,-6);
-  const bounce=new THREE.DirectionalLight('#ffe5c8',.32);bounce.name='Softbox frontal quente';bounce.position.set(2,3,7);
+  const rim=new THREE.DirectionalLight('#c9ddf5',.70);rim.name='Softbox fria';rim.position.set(5,7,-5);
+  const bounce=new THREE.DirectionalLight('#ffe5c8',.30);bounce.name='Softbox frontal quente';bounce.position.set(2,3,7);
   kit.group.add(rim,bounce);kit.studio={rim,bounce};
  }
  return kit.studio;
@@ -117,9 +117,9 @@ export function prepareStudio(kit,quality='medium'){
 export function updateStudio(kit,atmosphere){
  if(!kit.studio)return;
  const {rim,bounce}=kit.studio;
- if(atmosphere==='night'){rim.color.set('#9dbbe6');rim.intensity=.52;bounce.color.set('#ffdcaf');bounce.intensity=.38;}
- else if(atmosphere==='sunset'){rim.color.set('#c6ccef');rim.intensity=.48;bounce.color.set('#ffd0a3');bounce.intensity=.3;}
- else{rim.color.set('#d0e3f3');rim.intensity=.65;bounce.color.set('#ffe4c7');bounce.intensity=.32;}
+ if(atmosphere==='night'){rim.color.set('#9dbbe6');rim.intensity=.54;bounce.color.set('#ffdcaf');bounce.intensity=.38;}
+ else if(atmosphere==='sunset'){rim.color.set('#c6ccef');rim.intensity=.50;bounce.color.set('#ffd0a3');bounce.intensity=.3;}
+ else{rim.color.set('#d0e3f3');rim.intensity=.70;bounce.color.set('#ffe4c7');bounce.intensity=.30;}
 }
 
 export function disposeShadows(kit){kit?.group.traverse(object=>object.shadow?.dispose());}

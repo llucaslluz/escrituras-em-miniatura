@@ -1,33 +1,21 @@
-// Keep the editorial and doctrinal teaching in one flow. Fit the display
-// heading to the actual wrapped text, rather than guessing from its length.
+// Keep the same reading flow at every text size; expansion only adds space.
 export function observeSceneCopy(page) {
- const rail=page.querySelector('.scene-copy'),editorial=rail.querySelector('.scene-editorial'),heading=rail.querySelector('h1'),intro=rail.querySelector('.scene-character-intro');
- let frame=0,disposed=false;
- const fit=()=>{
-  if(disposed||!rail.isConnected)return;
-  heading.style.removeProperty('font-size');
-  delete rail.dataset.compactCopy;
-  const natural=parseFloat(getComputedStyle(heading).fontSize),minimum=Math.min(natural,matchMedia('(max-width:760px)').matches?28:38);
-  const needed=()=>editorial.getBoundingClientRect().height+intro.getBoundingClientRect().height+(getComputedStyle(intro).display==='none'?0:28);
-  // Leave room for the ink below italic descenders, outside the line box.
-  const available=rail.getBoundingClientRect().height-6;
-  if(needed()>available)rail.dataset.compactCopy='true';
-  if(needed()>available){
-   heading.style.fontSize=minimum+'px';
-   let low=minimum,high=natural;
-   for(let i=0;i<9;i++){
-    const size=(low+high)/2;heading.style.fontSize=size+'px';
-    if(needed()<=available)low=size;else high=size;
-   }
-   heading.style.fontSize=Math.floor(low*10)/10+'px';
-  }
-  const scrollable=rail.scrollHeight>rail.clientHeight+1;
-  rail.dataset.scrollable=String(scrollable);
-  if(scrollable)rail.tabIndex=0;else rail.removeAttribute('tabindex');
+ const rail=page.querySelector('.scene-copy'),body=rail.querySelector('.scene-copy-body'),toggle=rail.querySelector('.scene-reading-toggle');
+ const setExpanded=expanded=>{
+  rail.dataset.readingExpanded=String(expanded);
+  toggle.setAttribute('aria-expanded',String(expanded));
+  toggle.textContent=expanded?'Recolher leitura':'Expandir leitura';
  };
- const schedule=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(fit)};
- const resize=new ResizeObserver(schedule);resize.observe(rail);
- const preferences=new MutationObserver(schedule);preferences.observe(document.documentElement,{attributes:true,attributeFilter:['data-text']});
- fit();
- return()=>{disposed=true;cancelAnimationFrame(frame);resize.disconnect();preferences.disconnect()};
+ const activate=()=>setExpanded(rail.dataset.readingExpanded!=='true');
+ const escape=event=>{
+  if(event.key!=='Escape'||rail.dataset.readingExpanded!=='true'||page.querySelector('dialog[open]')||page.dataset.openPanel!=='none')return;
+  event.preventDefault();event.stopPropagation();setExpanded(false);toggle.focus({preventScroll:true});
+ };
+ const updateScroll=()=>{
+  const scrollable=body.scrollHeight>body.clientHeight+1;
+  if(scrollable)body.tabIndex=0;else body.removeAttribute('tabindex');
+ };
+ const resize=new ResizeObserver(updateScroll);resize.observe(body);
+ toggle.addEventListener('click',activate);rail.addEventListener('keydown',escape);updateScroll();
+ return()=>{resize.disconnect();toggle.removeEventListener('click',activate);rail.removeEventListener('keydown',escape)};
 }
