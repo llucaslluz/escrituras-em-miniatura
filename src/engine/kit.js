@@ -22,11 +22,12 @@ export class Kit{
   this.mesh(clayPlinth(5.98,.12),this.mat('#796b63',{roughness:.86}),0,-.47,0);
   this.top=this.mesh(clayPlinth(5.94,.065),this.mat(this.config.ground,{roughness:.84,bumpScale:.018}),0,-.0325,0);
   // A single instanced draw adds tiny clay pebbles and hand-worked ground grain.
-  const seed=[...id].reduce((n,c)=>n+c.charCodeAt(0)*31,44),r=random(seed),count=86;
+  const seed=[...id].reduce((n,c)=>n+c.charCodeAt(0)*31,44),r=random(seed),count=140;
   const pebbles=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),this.mat('#c9bca6',{roughness:.9}),count);
   const transform=new THREE.Object3D(),palette=['#b8a38e','#d0bca3','#a5aaa0','#d9cdb9'].map(c=>clayColor(c));
-  for(let i=0;i<count;i++){const a=r()*TAU,rad=Math.sqrt(r())*5.74,size=.02+r()*.045;transform.position.set(Math.cos(a)*rad,.006,Math.sin(a)*rad);transform.rotation.set(r(),a,r());transform.scale.set(size,size*.32,size*(.65+r()*.5));transform.updateMatrix();pebbles.setMatrixAt(i,transform.matrix);pebbles.setColorAt(i,palette[i%palette.length]);}
+  for(let i=0;i<count;i++){const rim=i>=86,a=rim?(i-86)/54*TAU+r()*.08:r()*TAU,rad=rim?5.22+r()*.56:Math.sqrt(r())*5.74,size=rim?.055+r()*.065:.02+r()*.045;transform.position.set(Math.cos(a)*rad,.008,Math.sin(a)*rad);transform.rotation.set(r(),a,r());transform.scale.set(size*(1+r()*.3),size*(rim?.42:.32),size*(.65+r()*.5));transform.updateMatrix();pebbles.setMatrixAt(i,transform.matrix);pebbles.setColorAt(i,palette[i%palette.length]);}
   pebbles.castShadow=pebbles.receiveShadow=true;pebbles.name='Grãos e pedrinhas de argila';this.add(pebbles);
+  const floraCount=96,flora=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),this.mat('#849862',{roughness:.86,surface:'leaf'}),floraCount);const floraPalette=['#6e8650','#849a61','#98aa70','#d8c478','#cfa185','#a49b76'].map(c=>clayColor(c));for(let i=0;i<floraCount;i++){const outer=i<64,a=outer?(i/64)*TAU+r()*.09:r()*TAU,rad=outer?4.45+r()*1.28:1.6+r()*3.6,s=outer?.045+r()*.05:.03+r()*.035;transform.position.set(Math.cos(a)*rad,.016,Math.sin(a)*rad);transform.rotation.set(r()*.3,a,r()*.3);transform.scale.set(s*1.15,s*.52,s*(.85+r()*.35));transform.updateMatrix();flora.setMatrixAt(i,transform.matrix);flora.setColorAt(i,floraPalette[i%floraPalette.length]);}flora.castShadow=flora.receiveShadow=true;flora.name='Tufos e florzinhas de argila';this.add(flora);
 
  }
  mat(color,options={}){const key=color+JSON.stringify(options);if(!this.materials.has(key)){const{surface,...explicit}=options;const material=new THREE.MeshPhysicalMaterial({color:clayColor(color),roughness:.72,metalness:0,bumpMap:makeClayTexture(),bumpScale:.012,clearcoat:.045,clearcoatRoughness:.8,...surfaceProfiles[surface],...explicit});material.userData.clayMaterial=true;if(surface)material.userData.claySurface=surface;this.materials.set(key,material);}return this.materials.get(key)}

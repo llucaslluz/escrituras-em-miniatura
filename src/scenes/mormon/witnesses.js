@@ -175,4 +175,120 @@ export const builders = {
     });
     token(k,caseGroup,'Recolhimento dos registros','Composição artística','Morôni 10:2,34','A embalagem e o lugar são escolhas visuais, sem alegação de localização histórica.');
   },
+
+  M21(k) {
+    k.finish({ground:'#6b7d53',camera:[8.6,6.2,10.5],target:[0,1.1,0]});k.background.set('#c9d5c0');
+    for(const[x,z,s]of[[-3.6,-2.2,1.35],[-1.8,-3.5,1.5],[1.9,-3.3,1.45],[3.7,-1.6,1.25],[-3.4,1.8,1.05],[3.2,2.1,1.1]])k.tree(x,z,s);
+    for(let i=0;i<14;i++)grass(k,Math.cos(i*1.7)*3.8,Math.sin(i*1.7)*3.6,.85);
+    const stump=k.cylinder(.48,.42,'#7b5e3f',1.5,.21,-.8);
+    const plates=k.plates(1.5,.46,-.8);
+    token(k,plates,'Promessa sobre os registros','Oração pela preservação','Enos 1:13–16','Enos ora com fé para que o Senhor preserve os registros e os leve aos lamanitas no futuro.');
+    const enos=k.person('Enos',-.3,.6,{robe:'#9e8b6b',mantle:'#5e7358',hair:'#4c3828',beard:false});
+    const jacob=k.person('Jacó (na memória de Enos)',-2.1,-1.2,{robe:'#cfc2a3',mantle:'#8d7b60',hair:'#b8b09c',beard:true,scale:.94});
+    const ray=k.ray(-.3,.05,.6,4.8);
+    const showJacob=fade(jacob.root),showRay=fade(ray);
+    k.animate(t=>{
+      const remember=1-ease(7,10,t),kneelAmt=ease(6,11,t),forgive=ease(15,22,t),intercede=ease(23,30,t);
+      showJacob(remember*.85);
+      jacob.rightArm.rotation.x=-.65*remember;
+      kneel(enos,kneelAmt);
+      prayer(enos,kneelAmt*(1-intercede*.4));
+      enos.head.rotation.x=.26*kneelAmt-.42*forgive;
+      enos.leftArm.rotation.z=-.35*kneelAmt-.35*intercede;
+      enos.rightArm.rotation.z=.35*kneelAmt+.35*intercede;
+      enos.head.rotation.y=.35*intercede;
+      showRay(forgive);
+      k.light.intensity=2.1+forgive*.9;
+      stump.visible=true;
+    });
+  },
+
+  M22(k) {
+    k.finish({ground:'#b59e7a',camera:[9.4,6.6,11.2],target:[0,1.2,-.2]});k.background.set('#dfd2b7');
+    const dais=masonry(k,0,-2.3,5.2,.65,2.2);
+    for(const x of[-2.2,2.2])k.cylinder(.24,2.8,'#c8b594',x,1.4,-1.8);
+    const throne=k.box(1.1,.95,.85,'#8e6a45',0,1.1,-2.35);k.fire(-2.4,.75,-1.5,.45);k.fire(2.4,.75,-1.5,.45);
+    token(k,throne,'Trono do rei Noé','Corte em Lehi-Néfi','Mosias 12:17–19','Abinádi é levado perante o rei Noé e seus sacerdotes e testifica com poder sobre a lei e o Messias.');
+    const abinadi=k.person('Abinádi',-.2,1.1,{robe:'#c8b99c',mantle:'#7e6a54',hair:'#c9c1ae',beard:true});
+    const king=k.person('Rei Noé',0,-2.1,{y:.65,robe:'#b8864b',mantle:'#7a3e38',hair:'#4d382a',beard:true});
+    const alma=k.person('Alma',1.9,.4,{robe:'#98a38c',mantle:'#677560',hair:'#523d2d',beard:false});
+    const priests=[-1.7,1.7].map((x,i)=>k.person('Sacerdotes de Noé',x,-1.6,{y:.65,robe:colors[i+1],mantle:'#7d6c55',beard:true,scale:.93}));
+    const halo=k.ray(-.2,.08,1.1,4.2);const showHalo=fade(halo);
+    k.animate(t=>{
+      const shine=ease(7,13,t),command=ease(14,22,t),convert=ease(22,30,t);
+      abinadi.root.rotation.y=Math.PI;
+      abinadi.rightArm.rotation.x=-1.15*shine-.2*command;
+      abinadi.leftArm.rotation.z=-.45*command;
+      abinadi.head.rotation.x=-.14*shine;
+      showHalo(shine);
+      king.rightArm.rotation.x=-.65*ease(2,8,t)*(1-shine*.5);
+      priests.forEach((r,i)=>{r.head.rotation.y=(i?-.25:.25)*(1-shine);r.root.position.z=-1.6-.18*shine;});
+      alma.root.rotation.y=-2.2;
+      alma.root.position.x=mix(1.9,1.35,convert);
+      alma.head.rotation.x=.22*convert;
+      alma.rightArm.rotation.x=-.75*convert;
+      alma.rightForearm.rotation.x=-.7*convert;
+      k.light.intensity=2.3+shine*.8;
+      dais.visible=true;
+    });
+  },
+
+  M23(k) {
+    k.finish({ground:'#8c8577',camera:[9.2,6.5,11],target:[0,1.2,0]});k.background.set('#b7b2a6');
+    const wallBack=masonry(k,0,-2.3,5.6,2.6,.7);
+    const pillarL=k.box(.75,2.7,.75,'#989082',-1.85,1.35,-.6);
+    const pillarR=k.box(.75,2.7,.75,'#989082',1.85,1.35,-.6);k.fire(-2.5,1.2,-1.8,.4);k.fire(2.5,1.2,-1.8,.4);
+    token(k,pillarL,'Pilares da prisão de Amonia','Libertação pelo poder de Deus','Alma 14:26–29','A terra treme e as paredes da prisão se fendem quando Alma e Amuleque clamam ao Senhor.');
+    const alma=k.person('Alma, o Filho',-.65,-.2,{robe:'#b7ab91',mantle:'#6c7a6b',hair:'#5b4534',beard:false});
+    const amulek=k.person('Amuleque',.65,-.2,{robe:'#a6987e',mantle:'#7c6953',hair:'#523f30',beard:true});
+    const cords=[-0.65,0.65].map(x=>ring(k,x,.75,-.2,.32,'#6e563b'));
+    const ray=k.ray(0,.05,-.2,4.8);const showRay=fade(ray);
+    k.animate(t=>{
+      const bound=1-ease(14,18,t),cry=ease(7,14,t),breakFree=ease(15,21,t),walkOut=ease(23,31,t);
+      [alma,amulek].forEach((r,i)=>{
+        kneel(r,bound*.75);
+        r.leftArm.rotation.x=-.55*bound-.65*cry*(1-walkOut);
+        r.rightArm.rotation.x=-.55*bound-.75*breakFree*(1-walkOut);
+        r.head.rotation.x=.22*bound-.24*cry;
+        r.root.position.z=mix(-.2,1.85,walkOut);
+        walking(r,[i?.65:-.65,-.2],[i?.65:-.65,1.85],23,31,t,.2);
+      });
+      cords.forEach((c,i)=>{c.position.y=mix(.75,.08,breakFree);c.scale.setScalar(1+.35*breakFree);c.visible=t<24;});
+      pillarL.rotation.z=.32*breakFree;pillarL.position.x=-1.85-.45*breakFree;
+      pillarR.rotation.z=-.32*breakFree;pillarR.position.x=1.85+.45*breakFree;
+      showRay(breakFree);
+      k.light.intensity=1.9+breakFree*1.1;
+      wallBack.visible=true;
+    });
+  },
+
+  M24(k) {
+    k.finish({ground:'#989f74',camera:[9.6,6.6,11.4],target:[0,1.1,.2]});k.background.set('#d7dec5');
+    for(const[x,z,s]of[[-3.9,-2.4,1.2],[3.8,-2.3,1.15],[-3.6,1.8,.95]])k.tree(x,z,s);
+    for(let i=0;i<12;i++)grass(k,Math.cos(i*1.9)*4.1,Math.sin(i*1.9)*3.7,.85);
+    const banner=k.flag(.6,0,-.9,'#b88c4a');
+    token(k,banner,'Compromisso dos jovens de Helamã','Fé ensinada pelas mães','Alma 53:20–21; 56:47–48','Eles nunca haviam lutado, mas não duvidavam de que suas mães sabiam que Deus os livraria.');
+    const helaman=k.person('Helamã',0,-.7,{robe:'#a38b68',mantle:'#5e6f59',hair:'#7a6b58',beard:true});
+    const youths=[[-1.6,.8],[-.55,.95],[.55,.95],[1.6,.8]].map(([x,z],i)=>k.person('Jovens guerreiros',x,z,{robe:colors[i],mantle:'#c7b593',beard:false,scale:.88}));
+    const mothers=[-2.4,2.4].map((x,i)=>k.person('Mães de fé (memória viva)',x,-1.6,{robe:colors[i+2],mantle:'#dfd1b4',beard:false,scale:.92}));
+    const showMothers=mothers.map(r=>fade(r.root));
+    youths.forEach(r=>{const spear=k.groupAt();beam(k,[0,-.45,0],[0,.75,0],.018,'#785c3d',spear);r.handR.add(spear);});
+    k.animate(t=>{
+      const remember=ease(6,13,t)*(1-ease(18,22,t)),march=ease(15,23,t),thanks=ease(24,31,t);
+      showMothers.forEach(fn=>fn(remember*.85));
+      mothers.forEach(r=>{r.rightArm.rotation.x=-.65*remember;});
+      helaman.rightArm.rotation.x=-.85*ease(0,7,t)-.35*march;
+      helaman.root.position.z=mix(-.7,.35,march);
+      walking(helaman,[0,-.7],[0,.35],15,23,t,.18);
+      youths.forEach((r,i)=>{
+        r.root.rotation.y=Math.PI*(1-march);
+        r.root.position.z=mix(i%2?.95:.8,(i%2?.95:.8)+.75,march);
+        walking(r,[r.root.position.x,i%2?.95:.8],[r.root.position.x,(i%2?.95:.8)+.75],15,23,t,.18);
+        r.rightArm.rotation.x=-.75*ease(2,9,t);
+        kneel(r,thanks*.7);
+        prayer(r,thanks);
+      });
+      kneel(helaman,thanks*.65);
+    });
+  },
 };

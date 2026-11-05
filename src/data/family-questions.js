@@ -288,4 +288,68 @@ export const familyQuestions = {
     'Como os quatro anos de preparação ajudaram Joseph Smith a amadurecer antes de receber as placas?',
     'De que maneira o Senhor nos prepara passo a passo para grandes responsabilidades?'
   ],
+  B33: [
+    'O que significa tirar as sandálias em "terra santa" quando nos aproximamos de Deus em oração ou no templo?',
+    'Como saber que o Senhor vê nossas aflições e conhece nosso nome traz paz à nossa família?'
+  ],
+  B34: [
+    'Quais tempestades ou preocupações podemos entregar nas mãos de Jesus hoje?',
+    'Como a voz do Salvador traz "grande bonança" ao nosso lar quando confiamos Nele?'
+  ],
+  B35: [
+    'O que fez o bom samaritano parar e ajudar quando outros passaram de largo?',
+    'Quem perto de nós pode estar precisando de nosso tempo, cuidado e compaixão esta semana?'
+  ],
+  B36: [
+    'Como podemos equilibrar nossas tarefas diárias com o tempo dedicado a ouvir a voz de Jesus?',
+    'Qual é a "boa parte" que nossa família pode escolher todos os dias ao sentar-se aos pés do Salvador?'
+  ],
+  M21: [
+    'Como lembrar os ensinamentos de nossos pais e avós fortalece nossa própria fé em Cristo?',
+    'Depois de sentirmos o perdão e o amor de Deus, por quem podemos orar com mais fervor?'
+  ],
+  M22: [
+    'De onde veio a coragem de Abinádi para defender a verdade mesmo diante de um rei?',
+    'Assim como Alma, como podemos ter um coração humilde para reconhecer e seguir a verdade?'
+  ],
+  M23: [
+    'Como a fé em Jesus Cristo pode romper os "laços" de tristeza ou dificuldade que enfrentamos?',
+    'O que aprendemos com a união e a paciência de Alma e Amuleque durante a provação?'
+  ],
+  M24: [
+    'Que verdades do evangelho aprendidas em casa mais fortalecem você nos momentos difíceis?',
+    'Como podemos honrar a fé de nossas mães e pais por meio de nossas escolhas diárias?'
+  ],
+  D11: [
+    'Como as bênçãos do Sacerdócio de Melquisedeque já fortaleceram e consolaram nossa família?',
+    'Por que é especial saber que os próprios apóstolos de Jesus restauraram essa autoridade?'
+  ],
+  D12: [
+    'Por que cuidar da saúde do nosso corpo nos ajuda a sentir melhor o Espírito Santo?',
+    'Como podemos demonstrar gratidão ao Senhor pelos alimentos saudáveis que Ele criou?'
+  ],
+  D13: [
+    'Como servir ao Senhor com boa vontade nos transforma, mesmo quando os resultados são diferentes do que imaginávamos?',
+    'De que maneira caminhar juntos nas dificuldades une mais a nossa família?'
+  ],
+  D14: [
+    'Como a visão da redenção dos mortos mostra que o amor do Pai Celestial alcança todas as gerações?',
+    'O que podemos fazer na história da família e no templo para ajudar nossos antepassados?'
+  ],
+  P11: [
+    'O que a resposta de Adão — "Não sei, a não ser que o Senhor me mandou" — nos ensina sobre confiar em Deus?',
+    'Como as ordenanças do evangelho nos ajudam a lembrar do sacrifício de Jesus Cristo?'
+  ],
+  P12: [
+    'Como você se sente ao saber que o Criador do universo chora de compaixão quando Seus filhos sofrem?',
+    'Como podemos consolar o coração do Pai Celestial amando e cuidando melhor uns dos outros?'
+  ],
+  P13: [
+    'O que a visão de Colobe e das inteligências eternas nos ensina sobre quem realmente somos?',
+    'Como saber que fomos conhecidos e amados antes de nascer muda nossa maneira de viver hoje?'
+  ],
+  P14: [
+    'O que a amizade e o trabalho conjunto de Joseph Smith e Oliver Cowdery nos ensinam sobre servir ao Senhor?',
+    'Como a leitura diária do Livro de Mórmon traz luz e respostas para a nossa casa?'
+  ],
 };

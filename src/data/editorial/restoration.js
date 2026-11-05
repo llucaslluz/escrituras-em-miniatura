@@ -123,4 +123,52 @@ export const editorial = {
     reference: 'Joseph Smith—História 1:34, 46, 53–54, 59',
     url: pgp('js-h', 1, 'p34,p46,p53-p54,p59'),
   },
+  D11: {
+    title: 'As chaves apostólicas são restauradas',
+    text: 'Pedro, Tiago e João conferem a Joseph Smith e Oliver Cowdery o Sacerdócio de Melquisedeque e as chaves do reino. Essa autoridade apostólica permite realizar todas as ordenanças espirituais do evangelho.',
+    reference: 'D&C 27:12; 128:20',
+    url: dc(27, 'p12'),
+  },
+  D12: {
+    title: 'Cuidar do corpo e receber sabedoria',
+    text: 'A Palavra de Sabedoria une o cuidado com a saúde física à receptividade espiritual. Ao usar com gratidão e temperança as dádivas da terra, os santos recebem promessas de vigor e tesouros de conhecimento.',
+    reference: 'D&C 89:10–21',
+    url: dc(89, 'p10-p21'),
+  },
+  D13: {
+    title: 'O sacrifício consagrado prepara líderes',
+    text: 'Na jornada do Acampamento de Sião, o Senhor aceita a oferta voluntária de Seus servos e pede que aguardem a redenção de Sião. A caminhada em união e obediência prepara aqueles que liderariam a Igreja.',
+    reference: 'D&C 105:9–13, 18–19',
+    url: dc(105, 'p9-p13,p18-p19'),
+  },
+  D14: {
+    title: 'Mensageiros levam liberdade aos cativos',
+    text: 'Entre a assembleia dos justos, Cristo organiza profetas e servos fiéis para proclamar a redenção aos espíritos em prisão. O amor de Deus atravessa o véu para que todos possam escolher as bênçãos do evangelho.',
+    reference: 'D&C 138:18–19, 30–37, 57',
+    url: dc(138, 'p18-p19,p30-p37,p57'),
+  },
+  P11: {
+    title: 'Obedecer por amor antes de compreender',
+    text: 'Adão oferece sacrifícios porque o Senhor ordenou, demonstrando confiança plena em Deus. Em resposta à sua obediência fiel, o anjo revela que toda a oferta é à semelhança do sacrifício do Unigênito.',
+    reference: 'Moisés 5:5–8',
+    url: pgp('moses', 5, 'p5-p8'),
+  },
+  P12: {
+    title: 'As lágrimas de um Pai amoroso no céu',
+    text: 'Ao ver o Senhor chorar pelo sofrimento de Seus filhos, Enoque compreende a profundidade da compaixão divina. A visão do Cordeiro imolado desde a fundação do mundo traz consolo e esperança eterna à Terra.',
+    reference: 'Moisés 7:28–33, 47',
+    url: pgp('moses', 7, 'p28-p33,p47'),
+  },
+  P13: {
+    title: 'Inteligências nobres e a escolha divina',
+    text: 'Da contemplação de Colobe e da ordem das estrelas, o Senhor conduz Abraão a compreender a eternidade dos espíritos. Antes do nascimento mortal, Cristo e os servos nobres foram chamados para sua missão.',
+    reference: 'Abraão 3:2–3, 18–23',
+    url: pgp('abr', 3, 'p2-p3,p18-p23'),
+  },
+  P14: {
+    title: 'Traduzir as escrituras pelo dom de Deus',
+    text: 'Enquanto Joseph Smith dita a tradução e Oliver Cowdery escreve, o Espírito ilumina a mente de ambos. O trabalho diário com a palavra antiga desperta a busca humilde por autoridade e batismo no Senhor.',
+    reference: 'Joseph Smith—História 1:66–68',
+    url: pgp('js-h', 1, 'p66-p68'),
+  },
 };

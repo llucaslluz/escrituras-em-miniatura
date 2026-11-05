@@ -31,6 +31,10 @@ const inspectionViews={
  M18:[['A bênção das crianças',[4,3.2,6],[0,1.2,.1]],['Famílias e círculo de luz',[-6,4.2,6],[0,1.5,0]]],
  M19:[['As dezesseis pedras',[4.2,4.2,5.2],[0,1.9,-.65]],['Encontro sobre o monte',[-6,4.6,6],[0,2,-.3]]],
  M20:[['O registro à luz da lamparina',[3.5,2.8,5],[-.4,1.1,0]],['Recolhimento dos registros',[-5,3.2,5],[.7,.8,.3]]],
+ M21:[['Enos em clamor',[3.8,2.9,5.2],[-.2,1,.3]],['Memória de Jacó e os registros',[-5.5,3.8,6],[.4,1,-.4]]],
+ M22:[['Abinádi diante do trono',[4.8,3.6,6.6],[0,1.2,-.3]],['Alma acolhe a verdade',[-5.6,3.8,6.6],[1.4,1,1.1]]],
+ M23:[['Alma e Amuleque em oração',[4.4,3.4,5.8],[0,1.1,.2]],['Pilares da prisão',[-5.8,4.2,6.8],[0,1.4,-.4]]],
+ M24:[['Helamã e os jovens',[4.8,3.4,6.8],[0,1.1,.8]],['Formação e estandarte',[-6,3.8,6.5],[0,1.2,-.2]]],
 };
 function deterministic(builder, id) {
   return k => {

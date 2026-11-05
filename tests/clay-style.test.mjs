@@ -77,7 +77,7 @@ test('Materiais e luz: grão suave compartilhado preserva os acabamentos narrati
 });
 
 test('72 histórias recebem base, grão e formas de massinha sem perder os contratos de cena', () => {
-  assert.equal(stories.length, 72);
+  assert.equal(stories.length, 88);
   for (const story of stories) {
     const kit = new Kit(story.id);
     try {

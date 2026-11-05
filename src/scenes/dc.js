@@ -161,6 +161,85 @@ export const builders={
   // Merged into primary D10 animate block above.
   k.select(book,'Escrituras em estudo','Meditação em 1918','D&C 138:1–11','Joseph F. Smith ponderava sobre a Expiação e passagens de 1 Pedro antes da visão de 3 de outubro de 1918.');k.finish();
  },
+ D11(k){
+  grove(k);k.water(3.2,10,-3.1,0,{river:true,y:.02,color:'#4c7a86'});for(let i=0;i<12;i++)k.rock(-1.7,-4.4+i*.78,.26+(i%3)*.08);
+  const joseph=k.person('Joseph Smith',-.6,.75,{robe:'#baa582',mantle:'#566670',hair:'#6e4b32',beard:false});
+  const oliver=k.person('Oliver Cowdery',.65,.75,{robe:'#928f75',mantle:'#595447',hair:'#3a2b23',beard:false});
+  const peter=k.person('Pedro',0,-.25,{robe:'#f5ede0',mantle:'#e2d2b0',hair:'#8d7b61',beard:true,scale:1.08});
+  const james=k.person('Tiago',-1.15,-.55,{robe:'#f2e9d8',mantle:'#d8c7a4'.replace('',''),hair:'#735c44',beard:true,scale:1.05});
+  const john=k.person('João',1.15,-.55,{robe:'#f3ebdc',mantle:'#dfd0b0',hair:'#6b533b',beard:false,scale:1.05});
+  const ray=k.ray(0,.05,-.35,5.2);k.label(peter.root,'Pedro, Tiago e João');
+  k.animate(t=>{
+   const appear=ease(t,6,12),ord=ease(t,12,21)*(1-ease(t,24,28)),stand=ease(t,25,30);
+   ray.visible=t>=6;ray.scale.set(appear,1,appear);
+   praying(joseph,t,0,7);praying(oliver,t,0,7);
+   [joseph,oliver].forEach((r,i)=>{r.root.position.y=-.25*(1-stand);r.leftLeg.rotation.x=r.rightLeg.rotation.x=-1.05*(1-stand);r.head.rotation.x=.2*(1-stand)-.16*stand;});
+   reachHead(peter,'L',joseph,ord);reachHead(peter,'R',oliver,ord);
+   james.rightArm.rotation.x=-.85*ord;john.leftArm.rotation.x=-.85*ord;
+   k.light.intensity=2.1+appear*.85;
+  });
+  [peter,james,john].forEach((r,i)=>reveal(k,r.root,t=>ease(t,6+i*.4,11+i*.4)));
+  k.animate(()=>{groundFigure(joseph);groundFigure(oliver);});
+  k.finish({camera:[8.4,5.8,10.4],target:[0,1.2,0]});
+ },
+ D12(k){
+  timberRoom(k,{width:7.8,depth:6.6,wall:'#c2b498'});
+  const table=k.table(0,0,-.5,3.2,1.25);k.book(-.95,1.05,-.5);paper(k,-.15,1.06,-.5);k.vase(.65,1.05,-.55);k.basket(1.2,1.05,-.45);k.tree(4.1,-2.4,.95);
+  for(let i=0;i<5;i++)k.cylinder(.035,.48,'#d4b468',.95+i*.06,1.22,-.45);
+  k.select(table,'Dádivas da terra','Saúde e temperança','D&C 89:10–21','Ervas, frutos e grãos como o trigo representam a provisão do Senhor para a saúde e sabedoria dos santos.');
+  const joseph=k.person('Joseph Smith',-.8,-1.55,{robe:'#b3a182',mantle:'#556270',beard:false});
+  const emma=k.person('Emma Smith',-2.3,.3,{robe:'#799089',mantle:'#e4d6bb',hair:'#3c2a25',beard:false});
+  const brethren=[[-1.1,1.35],[.35,1.45],[1.75,1.3]].map(([x,z],i)=>k.person('Irmãos da Escola dos Profetas',x,z,{robe:['#99886e','#848e81','#a89278'][i],mantle:'#cfc0a2',beard:i%2===0,scale:.94}));
+  k.animate(t=>{
+   const ask=ease(t,6,13),teach=ease(t,14,23),promise=ease(t,23,30);
+   joseph.rightArm.rotation.x=-.75*ask-.25*teach;joseph.leftArm.rotation.z=-.35*teach;joseph.head.rotation.x=.18*(1-teach);
+   emma.root.position.x=lerp(-2.3,-1.75,ask);emma.rightArm.rotation.x=-.55*teach;
+   brethren.forEach((r,i)=>{r.head.rotation.y=(1-i)*.18;r.rightArm.rotation.x=-.65*promise;r.head.rotation.x=-.12*promise;});
+   k.light.intensity=2.2+.35*promise;
+  });
+  k.finish({camera:[8.2,6.2,10.4],target:[0,1.1,0]});
+ },
+ D13(k){
+  k.config.ground='#84915d';
+  k.water(2.6,10,3.1,0,{river:true,y:.02,color:'#4f7c88'});
+  for(const[x,z,s]of[[-3.8,-2.4,1.25],[-1.5,-3.6,1.35],[1.6,-3.4,1.2],[-3.7,1.9,1.05]])k.tree(x,z,s);
+  const fire=k.fire(-.4,.12,.35,.65);
+  const tent=k.mesh(new THREE.ConeGeometry(1.15,1.45,4),k.mat('#c8b693'),-2.2,.72,-1.1);tent.rotation.y=Math.PI/4;
+  k.select(tent,'Acampamento junto ao rio Fishing','Jornada de consagração','D&C 103; 105','O Acampamento de Sião uniu e preparou futuros líderes da Igreja por meio do sacrifício e da fraternidade.');
+  const joseph=k.person('Joseph Smith',-.3,-.65,{robe:'#b5a282',mantle:'#596773',beard:false});
+  const brigham=k.person('Brigham Young',-1.45,.75,{robe:'#9f8a6c',mantle:'#6d5d49',beard:false});
+  const heber=k.person('Heber C. Kimball',.85,.75,{robe:'#8e9278',mantle:'#5f6452',beard:false});
+  k.walk(joseph,[-2.6,1.8],[-.3,-.65],0,7);
+  k.animate(t=>{
+   const share=ease(t,8,16),guard=ease(t,16,23),peace=ease(t,23,30);
+   joseph.rightArm.rotation.x=-.75*share-.25*peace;joseph.leftArm.rotation.z=-.4*peace;
+   brigham.rightArm.rotation.x=-.65*share;heber.leftArm.rotation.x=-.65*share;
+   praying(brigham,t,23,30);praying(heber,t,23,30);
+   fire.scale.setScalar(.6+.12*Math.sin(t*2.4)+.15*guard);
+   k.light.intensity=2.1+.45*peace;
+  });
+  k.finish({camera:[8.8,6.2,10.8],target:[-.2,1.1,0]});
+ },
+ D14(k){
+  k.config.ground='#9b9882';k.config.camera=[9.6,6.8,11.6];k.config.target=[0,1.3,0];
+  const arch=k.mesh(new THREE.TorusGeometry(2.8,.12,10,48,Math.PI),k.mat('#dfd0a8'),0,.2,-1.4);
+  const beam=k.ray(0,.1,-1.1,5.4);
+  const jesus=christ(k,0,-1.1,.35);
+  k.select(arch,'Assembleia no mundo espiritual','Redenção dos mortos','D&C 138:18–19, 30–37','O Salvador Se manifesta aos espíritos justos e organiza mensageiros para proclamar liberdade aos cativos.');
+  const ancients=[[-1.9,-.5],[-1.1,.4],[1.1,.4],[1.9,-.5]].map(([x,z],i)=>k.person('Adão, Eva e Profetas Antigos',x,z,{robe:['#e5dcc6','#dcd3be','#e8dfd0','#d6ceba'][i],mantle:'#efe6d2',beard:i!==1,scale:.95}));
+  const messengers=[[-.8,1.55],[.8,1.55]].map(([x,z],i)=>k.person('Mensageiros da Restauração',x,z,{robe:'#cfd6cc',mantle:'#e7dec8',beard:i===0,scale:.95}));
+  k.walk(messengers[0],[-.8,1.55],[-2.3,2.5],22,30);
+  k.walk(messengers[1],[.8,1.55],[2.3,2.5],22,30);
+  k.animate(t=>{
+   const appear=ease(t,6,14),commission=ease(t,15,22),go=ease(t,22,30);
+   beam.visible=t>=6;beam.scale.set(appear,1,appear);
+   jesus.leftArm.rotation.z=-.65*appear;jesus.rightArm.rotation.z=.65*appear+.2*commission;
+   ancients.forEach((r,i)=>{r.head.rotation.x=-.18*appear;r.rightArm.rotation.x=-.55*appear;});
+   messengers.forEach((r,i)=>{r.rightArm.rotation.x=-.7*commission*(1-go*.4);});
+   k.light.intensity=2+appear*.9;
+  });
+  reveal(k,jesus.root,t=>ease(t,6,13));k.cloud(-2.5,3.8,-2.2,1.35);k.cloud(2.5,3.8,-2.2,1.35);k.finish();
+ },
 };
 
 // Supply scripture-specific metadata for every selectable person, including

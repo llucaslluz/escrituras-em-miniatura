@@ -194,5 +194,29 @@ export const editorial = {
     text: 'Antes de ascender, Jesus promete o poder do Espírito Santo para que os apóstolos sejam Suas testemunhas. A promessa de Seu retorno acompanha uma missão presente: levar o testemunho de Cristo até os confins da terra.',
     reference: 'Atos 1:8–11',
     url: source('nt/acts/1', 'p8-p11')
+  },
+  B33: {
+    title: 'Terra santa e o nome eterno do Senhor',
+    text: 'Ao retirar as sandálias diante da sarça, Moisés reconhece a santidade da presença divina. O Senhor revela Seu nome — Eu Sou o Que Sou — e garante que estará com Seu servo na missão de libertar Israel.',
+    reference: 'Êxodo 3:5, 11–14',
+    url: source('ot/ex/3', 'p5,p11-p14')
+  },
+  B34: {
+    title: 'A palavra de Cristo traz grande bonança',
+    text: 'Em meio ao vendaval no mar da Galileia, Jesus repreende o vento e ordena que as águas se aquietem. Sua autoridade sobre a tempestade convida os discípulos a substituir o temor pela confiança plena Nele.',
+    reference: 'Marcos 4:38–41',
+    url: source('nt/mark/4', 'p38-p41')
+  },
+  B35: {
+    title: 'A misericórdia faz de nós o próximo',
+    text: 'O samaritano interrompe seu caminho, cuida das feridas do homem caído e garante sua recuperação na hospedaria. Jesus ensina que amar o próximo se cumpre na compaixão ativa que socorre quem sofre.',
+    reference: 'Lucas 10:33–37',
+    url: source('nt/luke/10', 'p33-p37')
+  },
+  B36: {
+    title: 'Escolher a boa parte aos pés do Mestre',
+    text: 'Enquanto Marta se inquieta com muitas tarefas, Maria senta-se aos pés de Jesus para ouvir Sua palavra. Com brandura, o Salvador ensina que dar primazia à comunhão com Ele é escolher a boa parte.',
+    reference: 'Lucas 10:39–42',
+    url: source('nt/luke/10', 'p39-p42')
   }
 };

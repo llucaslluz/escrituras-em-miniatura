@@ -116,11 +116,12 @@ export const builders = {
     const ramp = k.box(1.1, .11, 2.3, '#ac885e', -1.3, .25, 1.8); ramp.rotation.x = -.2;
     const noah = k.person('Noé', -2.2, 2.4, { robe: '#ac9e76', mantle: '#816e4a', hair: '#c5bdab' }); staff(k, noah.handR);
     const family = k.person('Família de Noé', -3, 1.2, { robe: '#a6ae91', mantle: '#c6ad80', beard: false });
-    const animals = [['sheep', -1.4, 3, .75], ['sheep', -.55, 3.6, .65], ['donkey', 1, 2.7, .85], ['donkey', 2.2, 3.3, .7]].map(args => k.animal(...args));
-    animals.forEach((a, i) => k.animate(t => { const q = ease(t, 1 + i * .7, 8 + i * .7); a.position.set(mix([-1.4, -.55, 1, 2.2][i], -.8, q), mix(0, .6, q), mix([3, 3.6, 2.7, 3.3][i], -.1, q)); a.visible = q < .98; a.rotation.y = PI; }));
+    const ararat = sculptedMountain(k, 2.8, -2.5, 2.15); k.tree(2.4, -1.7, .68); blossoms(k, -2.8, -1.9, 9);
+    const animals = [['sheep', -1.4, 3, .75], ['sheep', -.55, 3.6, .65], ['donkey', 1, 2.7, .85], ['donkey', 2.2, 3.3, .7], ['lion', -2.35, 3.2, .62], ['lion', -1.75, 3.75, .58]].map(args => k.animal(...args));
+    animals.forEach((a, i) => k.animate(t => { const q = ease(t, 1 + i * .55, 7.5 + i * .55); a.position.set(mix([-1.4, -.55, 1, 2.2, -2.35, -1.75][i], -.8, q), mix(0, .6, q), mix([3, 3.6, 2.7, 3.3, 3.2, 3.75][i], -.1, q)); a.visible = q < .98; a.rotation.y = PI; }));
     const clouds = [k.cloud(-2.8, 4.3, -2, 1.7), k.cloud(2.8, 4.5, -3, 1.6)]; const bird = k.dove(-2, 3.1, -1);
     rain(k, t => ease(t, 5, 11) * (1 - ease(t, 21, 28)));
-    const rainbow = k.groupAt(0, 2.5, -3.1); ['#c9957b', '#d3b675', '#94ad8a', '#92aaa8'].forEach((c, i) => { const o = k.mesh(new THREE.TorusGeometry(2.5 + i * .09, .038, 5, 55, PI), k.mat(c), 0, 0, 0, rainbow); o.rotation.z = 0; });
+    const rainbow = k.groupAt(0, 2.5, -3.1); ['#de6b58', '#eb9c4d', '#f0cf65', '#76ad78', '#6498b8', '#8d7ac0'].forEach((c, i) => { const o = k.mesh(new THREE.TorusGeometry(2.45 + i * .105, .062, 8, 55, PI), k.mat(c, { emissive: c, emissiveIntensity: .12 }), 0, 0, 0, rainbow); o.rotation.z = 0; });
     k.select(ark, 'Arca', 'Abrigo da família e dos animais', 'Gênesis 6–9', 'Construída segundo a orientação recebida por Noé.'); k.label(ark, 'Arca');
     k.animate(t => { const flood = ease(t, 7, 16) * (1 - ease(t, 23, 31)); sea.position.y = -.2 + flood * .65; ark.position.y = flood * .35; ark.rotation.z = flood * Math.sin(t * .8) * .025; noah.rightArm.rotation.x = -ease(t, 0, 5) * .8; noah.head.rotation.y = -.2 + ease(t, 22, 30) * .4; family.head.rotation.y = -.3; noah.root.visible = family.root.visible = t < 10 || t > 27; ramp.visible = t < 10 || t > 27; rainbow.visible = t > 25; clouds.forEach((c, i) => { c.position.x = (i ? 2.8 : -2.8) + (i ? 1 : -1) * ease(t, 22, 32) * 1.4; }); bird.visible = t > 17; const q = ease(t, 17, 29); bird.position.set(mix(-2.8, 2.7, q), 3.1 + Math.sin(q * PI) * .6, -1); k.light.intensity = 2.1 - flood * 1.1 + ease(t, 22, 30) * 1.2; });
     k.config.camera = [9, 7, 11];
@@ -602,6 +603,166 @@ export const builders = {
     k.config.views=[{label:'Vista geral',camera:k.config.camera.slice(),target:k.config.target.slice()},
       {label:'Cristo e os apóstolos',camera:[6,8.5,15],target:[0,2.2,-0.2]},
       {label:'A nuvem e os mensageiros',camera:[-6,9.5,14],target:[0,2.1,-0.5]},
+    ];
+  },
+  B33(k) {
+    k.config.ground = '#b89f78'; k.background.set('#d5c29d');
+    sculptedMountain(k, .8, -2.1, 2.8, 2.6, '#9d8260', 11);
+    sculptedMountain(k, -2.5, -2.5, 1.9, 1.8, '#a68b67', 17);
+    const bush = k.groupAt(.9, .35, -1.1);
+    for (let i = 0; i < 14; i++) {
+      const a = i * .48, r = .2 + (i % 3) * .16;
+      k.mesh(new THREE.DodecahedronGeometry(.24 + (i % 2) * .08, 1), k.mat(i % 2 ? '#62794b' : '#7b8d56'), Math.cos(a) * r, .18 + (i % 4) * .14, Math.sin(a) * r, bush);
+    }
+    const flames = [k.fire(.9, .45, -1.1, 1.15), k.fire(.72, .55, -.95, .75), k.fire(1.08, .52, -1.2, .75)];
+    const ray = k.ray(.9, .1, -1.1, 4.6);
+    k.select(bush, 'Sarça ardente no Horebe', 'Presença do Senhor', 'Êxodo 3:2–14', 'A sarça arde em chama viva sem se consumir enquanto o Senhor chama Moisés pelo nome.');
+    const moses = k.person('Moisés', -1.8, 1.6, { robe: '#b79e7d', mantle: '#7c654d', hair: '#5b4738' });
+    staff(k, moses.handL);
+    const sandals = k.groupAt(-.5, .04, .65);
+    for (const dx of [-.11, .11]) k.box(.12, .035, .24, '#705136', dx, 0, 0);
+    k.select(sandals, 'Sandálias retiradas', 'Reverência em terra santa', 'Êxodo 3:5', 'Moisés retira as sandálias dos pés em sinal de reverência diante da terra santa.');
+    [-3.1, -2.3, -1.5].forEach((x, i) => k.animal('sheep', x, .7 + (i % 2) * .75, .72));
+    k.select(k.group.children.find(o => o.name === 'sheep') || bush, 'Rebanho de Jetro', 'Ovelhas no Horebe', 'Êxodo 3:1', 'Moisés apascentava o rebanho de seu sogro Jetro junto ao monte de Deus.');
+    k.animate(t => {
+      const walk = ease(t, 0, 8), blaze = ease(t, 6, 14), bow = ease(t, 15, 22), call = ease(t, 23, 30);
+      moses.root.position.x = mix(-1.8, -.45, walk);
+      moses.root.position.z = mix(1.6, .55, walk);
+      pacedSteps(moses, walk * 1.7, motion(t, 0, 8));
+      face(moses, .9, -1.1);
+      moses.root.position.y = -.24 * bow;
+      moses.leftLeg.rotation.x = moses.rightLeg.rotation.x = -.95 * bow;
+      moses.head.rotation.x = .28 * bow - .18 * call;
+      moses.rightArm.rotation.x = -.85 * bow - .25 * call;
+      moses.rightForearm.rotation.x = -.9 * bow;
+      flames.forEach((f, i) => f.scale.setScalar(.55 + blaze * .55 + Math.sin(t * 3.2 + i) * .06));
+      k.light.intensity = 2.2 + blaze * .9 + call * .3;
+    });
+    timedReveal(k, ray, 7, 13);
+    timedReveal(k, sandals, 14, 18);
+    k.config.views = [
+      { label: 'Vista geral', camera: [9, 6.8, 11], target: [0, 1.1, -.2] },
+      { label: 'Moisés e a sarça', camera: [4.8, 4.2, 6.8], target: [.2, 1.1, -.4] },
+      { label: 'Rebanho no Horebe', camera: [-6.5, 5.4, 9.5], target: [-.8, 1, 0] },
+    ];
+  },
+  B34(k) {
+    k.config.ground = '#567582'; k.background.set('#8ca1ad');
+    const sea = k.water(11.4, 11.4, 0, 0, { y: .12, color: '#3f6d82' });
+    const boat = k.boat(0, .28, 0);
+    const christ = jesus(k, .75, 0, { y: .46, robe: '#efe6d2', mantle: '#7d95a6' });
+    const peter = k.person('Pedro', -.35, .28, { y: .46, robe: '#a98e6e', mantle: '#6a7b82', scale: .94 });
+    const disciples = [[-1.1, -.22, '#9a8c72'], [-1.55, .2, '#8b9987'], [.1, -.34, '#b8a282']].map(([x, z, c]) =>
+      k.person('Discípulos no barco', x, z, { y: .46, robe: c, scale: .9 })
+    );
+    [christ, peter, ...disciples].forEach(r => attach(boat, r.root, r.root.position.x, .35, r.root.position.z));
+    const clouds = [k.cloud(-2.2, 4.4, -2.2, 1.6), k.cloud(2.1, 4.2, -2.4, 1.7)];
+    const ray = k.ray(.75, .3, 0, 4.5);
+    rain(k, t => ease(t, 0, 6) * (1 - ease(t, 16, 22)), 95);
+    k.select(sea, 'Mar da Galileia', 'Tempestade e bonança', 'Marcos 4:37–39', 'O vento e as ondas se aquietam à voz do Salvador: Cala-te, enmudece.');
+    k.animate(t => {
+      const storm = (1 - ease(t, 17, 24)) * (.55 + .45 * ease(t, 2, 10));
+      const stand = ease(t, 13, 18), calm = ease(t, 18, 26);
+      boat.rotation.z = Math.sin(t * 2.5) * .16 * storm;
+      boat.rotation.x = Math.cos(t * 1.9) * .08 * storm;
+      boat.position.y = .28 + Math.sin(t * 2.2) * .09 * storm;
+      christ.root.position.y = mix(.12, .36, stand);
+      christ.root.rotation.y = -PI / 2;
+      christ.rightArm.rotation.x = -1.15 * stand;
+      christ.rightArm.rotation.z = .35 * stand;
+      christ.leftArm.rotation.z = -.45 * calm;
+      peter.root.rotation.y = PI / 2;
+      peter.rightArm.rotation.x = -.85 * ease(t, 6, 13) * (1 - calm * .5);
+      peter.head.rotation.x = -.18 * calm;
+      disciples.forEach((r, i) => {
+        r.root.rotation.y = PI / 2;
+        r.leftArm.rotation.x = -.6 * storm + (-.45 * calm);
+        r.rightArm.rotation.x = -.5 * storm + (-.45 * calm);
+        r.head.rotation.x = .18 * storm - .16 * calm;
+      });
+      clouds.forEach((c, i) => { c.position.x = (i ? 2.1 : -2.2) + (i ? 1.4 : -1.4) * calm; });
+      k.light.intensity = 1.45 + calm * 1.55;
+      k.light.color.set(calm > .5 ? '#ffe7b8' : '#c6d6e3');
+    });
+    timedReveal(k, ray, 17, 23);
+    k.config.views = [
+      { label: 'Vista geral', camera: [9, 6.6, 11], target: [0, 1.1, 0] },
+      { label: 'Cristo acalma o mar', camera: [4.6, 3.8, 6.4], target: [.3, 1.2, 0] },
+      { label: 'Os discípulos no barco', camera: [-5.4, 4.4, 7.2], target: [-.3, 1.1, 0] },
+    ];
+  },
+  B35(k) {
+    k.config.ground = '#bfa47b'; k.background.set('#dfd1b4');
+    const road = k.box(8.5, .03, 1.9, '#cdb58e', -.2, .025, .2); road.rotation.y = .24;
+    sculptedMountain(k, -2.5, -2.3, 2, 1.8, '#9f825e', 5);
+    for (let i = 0; i < 8; i++) k.rock(-3.6 + i * .95, -1.5 + (i % 2) * .4, .32 + (i % 3) * .1);
+    const inn = gate(k, 3.2, -1.7, 2.2, 1.8); k.tree(3.8, 1.4, .85);
+    k.select(inn, 'Hospedaria no caminho', 'Lugar de acolhimento', 'Lucas 10:34–35', 'O samaritano leva o homem ferido à hospedaria e deixa provisão para seu cuidado.');
+    const samaritan = k.person('Bom Samaritano', -3.4, 1.2, { robe: '#8e6d53', mantle: '#c8a97e', hair: '#4f3b2c' });
+    const wounded = k.person('Viajante ferido', -.5, .65, { robe: '#b9ac92', mantle: '#8a7f6d', beard: true });
+    const host = k.person('Hospedeiro', 2.4, -.85, { robe: '#9e8d74', mantle: '#736552', scale: .94 });
+    const donkey = k.animal('donkey', -2.3, 1.7, .82);
+    const jar = k.vase(-.1, .05, .95);
+    k.select(jar, 'Azeite e vinho', 'Cuidado compassivo', 'Lucas 10:34', 'O bom samaritano ata as feridas do viajante, deitando-lhes azeite e vinho.');
+    k.animate(t => {
+      const approach = ease(t, 0, 8), care = ease(t, 8, 18), lift = ease(t, 18, 24), arrive = ease(t, 24, 31);
+      samaritan.root.position.x = mix(-3.4, -.95, approach) + mix(0, 2.55, arrive);
+      samaritan.root.position.z = mix(1.2, .72, approach) + mix(0, -1.35, arrive);
+      pacedSteps(samaritan, approach * 2.4 + arrive * 2.8, Math.max(motion(t, 0, 8), motion(t, 24, 31)));
+      const kneelAmt = care * (1 - lift);
+      samaritan.root.position.y = -.24 * kneelAmt;
+      samaritan.leftLeg.rotation.x = samaritan.rightLeg.rotation.x = -.9 * kneelAmt;
+      samaritan.rightArm.rotation.x = -.85 * kneelAmt - .5 * lift;
+      samaritan.leftArm.rotation.x = -.7 * kneelAmt - .45 * lift;
+      wounded.root.position.x = mix(-.5, 1.85, arrive);
+      wounded.root.position.z = mix(.65, -.55, arrive);
+      face(samaritan, wounded.root.position.x, wounded.root.position.z);
+      wounded.root.position.y = -.32 * (1 - lift);
+      wounded.root.rotation.z = .65 * (1 - lift);
+      wounded.head.rotation.x = .25 * (1 - lift);
+      donkey.position.x = mix(-2.3, 1.35, arrive);
+      donkey.position.z = mix(1.7, -.2, arrive);
+      face(host, samaritan.root.position.x, samaritan.root.position.z);
+      host.rightArm.rotation.x = -.65 * arrive;
+    });
+    k.config.views = [
+      { label: 'Vista geral', camera: [9, 6.5, 11], target: [0, 1, 0] },
+      { label: 'O socorro no caminho', camera: [3.2, 3.8, 6.6], target: [-.6, .9, .6] },
+      { label: 'Chegada à hospedaria', camera: [6.4, 4.5, 6.8], target: [2.2, 1.1, -.9] },
+    ];
+  },
+  B36(k) {
+    room(k); k.config.ground = '#c4b193'; k.background.set('#dfd1b8');
+    const table = k.table(-2, 0, -.6, 2.2, 1.1);
+    k.vase(-2.4, .92, -.6); k.basket(-1.5, .92, -.55); k.lamp(2.2, .05, -1.5); k.tree(3.8, -2.5, .95);
+    const bench = k.box(1.5, .42, .65, '#8f6d4d', .9, .22, -.5);
+    k.select(table, 'Mesa de hospitalidade', 'Serviço na casa de Betânia', 'Lucas 10:38–40', 'Marta recebe Jesus em sua casa e prepara a mesa com dedicação.');
+    const christ = jesus(k, .9, -.45, { y: -.12, robe: '#f0e7d4', mantle: '#8b9eab' });
+    const mary = k.person('Maria de Betânia', .85, .85, { robe: '#d4c3a3', mantle: '#7c9699', beard: false, scale: .92 });
+    const martha = k.person('Marta de Betânia', -1.8, .45, { robe: '#c2a687', mantle: '#9a7b66', beard: false, scale: .96 });
+    k.animate(t => {
+      const sit = ease(t, 2, 8), serve = ease(t, 8, 17), ask = ease(t, 16, 23), peace = ease(t, 23, 30);
+      christ.leftLeg.rotation.x = christ.rightLeg.rotation.x = -.85;
+      christ.rightArm.rotation.x = -.65 - .2 * peace;
+      christ.leftArm.rotation.z = -.35 * peace;
+      christ.head.rotation.y = mix(0, -.45, ask);
+      mary.root.position.y = -.28 * sit;
+      mary.leftLeg.rotation.x = mary.rightLeg.rotation.x = -1.05 * sit;
+      face(mary, .9, -.45);
+      mary.head.rotation.x = -.18 * sit;
+      martha.root.position.x = mix(-1.8, -.45, ask);
+      martha.root.position.z = mix(.45, .35, ask);
+      pacedSteps(martha, ask * 1.35, motion(t, 16, 23));
+      face(martha, .9, -.45);
+      martha.rightArm.rotation.x = -.7 * serve * (1 - peace * .5);
+      martha.leftArm.rotation.x = -.55 * ask;
+      martha.head.rotation.x = .16 * peace;
+      bench.visible = true;
+    });
+    k.config.views = [
+      { label: 'Vista geral', camera: [8, 5.8, 10], target: [0, 1, 0] },
+      { label: 'Maria aos pés de Jesus', camera: [4.5, 3.6, 5.8], target: [.7, .9, .2] },
+      { label: 'O diálogo com Marta', camera: [-4.8, 4.2, 6.8], target: [-.3, 1, -.1] },
     ];
   },
 };

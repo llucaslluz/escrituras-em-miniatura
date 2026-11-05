@@ -52,7 +52,7 @@ export class Viewer{
   this.views=kit.config.views||[{label:'Vista geral',camera:kit.config.camera,target:kit.config.target},{label:'Personagens',camera:[4,3,5],target:[0,1,0]},{label:'Detalhes',camera:[0,2.6,4],target:[0,1,0]}];this.setView(0);this.playing=!this.preferences.reduced;this.updateScene();this.makeLabels();this.host.dataset.loading='false';this.host.dataset.scene=story.id;this.onUpdate(this);return kit;
  }
  makeLabels(){this.labelLayer.replaceChildren();this.labelNodes=(this.kit?.labels||[]).map(l=>{const node=document.createElement('span');node.className='model-label';node.textContent=l.text;this.labelLayer.append(node);return{...l,node}});this.labelLayer.hidden=!this.names;}
- setView(index){const v=this.views?.[index];if(!v)return;this.viewIndex=index;this.userInteractedCamera=index!==0;this.camera.position.fromArray(v.camera);this.controls?.target.fromArray(v.target||[0,1,0]);this.viewDistanceScale=1;if(index===0){const target=this.controls?.target||new THREE.Vector3().fromArray(v.target||[0,1,0]);this.viewDistanceScale=Math.min(1.3,(this.controls?.maxDistance||25)*.98/Math.max(this.camera.position.distanceTo(target),.1));this.camera.position.sub(target).multiplyScalar(this.viewDistanceScale).add(target);this.baseCameraPos=this.camera.position.clone();this.baseTargetPos=target.clone();}this.controls?.update();this.resize();this.onUpdate(this);}
+ setView(index){const v=this.views?.[index];if(!v)return;this.viewIndex=index;this.userInteractedCamera=index!==0;const rect=this.host?.getBoundingClientRect?.()||{width:800,height:600};const isMobilePortrait=this.immersive&&rect.width>0&&(rect.width<900||rect.height>=rect.width);this.camera.position.fromArray(v.camera);const rawTarget=v.target||[0,1,0];this.controls?.target.fromArray(isMobilePortrait&&index===0?[0,rawTarget[1]??1,0]:rawTarget);this.viewDistanceScale=1;if(index===0){const target=this.controls?.target||new THREE.Vector3().fromArray(rawTarget);const desiredScale=isMobilePortrait?1.12:1.3;this.viewDistanceScale=Math.min(desiredScale,(this.controls?.maxDistance||25)*.98/Math.max(this.camera.position.distanceTo(target),.1));this.camera.position.sub(target).multiplyScalar(this.viewDistanceScale).add(target);this.baseCameraPos=this.camera.position.clone();this.baseTargetPos=target.clone();}this.controls?.update();this.resize();this.onUpdate(this);}
  resize(){
   this.invalidate();
   if(!this.renderer)return;
@@ -62,13 +62,13 @@ export class Viewer{
    const v=this.views?.[this.viewIndex||0];
    if((this.viewIndex||0)===0&&v){
     const distance=new THREE.Vector3().fromArray(v.camera).distanceTo(new THREE.Vector3().fromArray(v.target||[0,1,0]))*(this.viewDistanceScale||1.3);
-    const available=width>=1100?Math.min(width-600,1120):width>760?width-340:height<540?width*.65:width*.94;
-    this.camera.fov=THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(2*Math.atan(height*6/(available*distance))),26,100);
+    const isMobilePortrait=width<900||height>=width;const available=width>=1100?Math.min(width-600,1120):width>=900?width-340:width*.98;
+    if(isMobilePortrait){const framing=this.camera.clone(),target=new THREE.Vector3(0,(v.target?.[1]??1),0);framing.position.fromArray(v.camera).sub(target).multiplyScalar(this.viewDistanceScale||1.12).add(target);framing.lookAt(target);this.camera.fov=THREE.MathUtils.clamp(fitMiniatureBaseFov(framing,{margin:.96})*.94,24,82);}else{this.camera.fov=THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(2*Math.atan(height*6/(available*distance))),26,100);}
    }else{
     this.camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(19))*Math.max(1,1.3/this.camera.aspect)));
    }
-   const horizontalShift=width>=1100?18:width>760?145:height<540?width*.12:0;
-   this.camera.setViewOffset(width,height,-horizontalShift,height*(width>=1100?.025:-.035),width,height);
+   const isMobilePortrait=width<900||height>=width;const horizontalShift=width>=1100?18:width>=900?145:0;
+   if(isMobilePortrait){this.camera.clearViewOffset();}else{this.camera.setViewOffset(width,height,-horizontalShift,height*(width>=1100?.025:-.035),width,height);}
   }else{
    this.camera.clearViewOffset();
    const v=this.views?.[this.viewIndex||0];
@@ -101,7 +101,7 @@ export class Viewer{
   if(typeof document!=='undefined'&&document.visibilityState==='hidden'){
    this.needsRender=true;this.host.dataset.renderMode='hidden';this.raf=requestAnimationFrame(this.tick);return;
   }
-  if(this.playing&&this.kit){this.time+=dt*this.speed;const duration=this.story.duration;if(this.loop!==false&&duration>0&&this.time>=duration)this.time%=duration;if(!this.userInteractedCamera&&(this.viewIndex||0)===0&&this.baseCameraPos&&this.baseTargetPos&&this.camera?.isPerspectiveCamera&&this.controls?.target){const u=THREE.MathUtils.clamp(this.time/Math.max(duration||32,1),0,1),focus=Math.sin(THREE.MathUtils.clamp((u-.08)/.76,0,1)*Math.PI)**1.35,detailTarget=this.views?.[1]?.target?new THREE.Vector3().fromArray(this.views[1].target):this.baseTargetPos;this.controls.target.copy(this.baseTargetPos).lerp(detailTarget,focus*.35);const offset=this.baseCameraPos.clone().sub(this.baseTargetPos).multiplyScalar(1-focus*.16);offset.applyAxisAngle(new THREE.Vector3(0,1,0),Math.sin(u*Math.PI*2)*.055*focus);this.camera.position.copy(this.controls.target).add(offset);}}
+  if(this.playing&&this.kit){this.time+=dt*this.speed;const duration=this.story.duration;if(this.loop!==false&&duration>0&&this.time>=duration)this.time%=duration;if(!this.userInteractedCamera&&(this.viewIndex||0)===0&&this.baseCameraPos&&this.baseTargetPos&&this.camera?.isPerspectiveCamera&&this.controls?.target){const u=THREE.MathUtils.clamp(this.time/Math.max(duration||32,1),0,1),focus=Math.sin(THREE.MathUtils.clamp((u-.08)/.76,0,1)*Math.PI)**1.35,isMobile=(this.host?.clientWidth||800)<900,detailTarget=(!isMobile&&this.views?.[1]?.target)?new THREE.Vector3().fromArray(this.views[1].target):this.baseTargetPos;this.controls.target.copy(this.baseTargetPos).lerp(detailTarget,focus*.35);const offset=this.baseCameraPos.clone().sub(this.baseTargetPos).multiplyScalar(1-focus*.16);offset.applyAxisAngle(new THREE.Vector3(0,1,0),Math.sin(u*Math.PI*2)*(isMobile?.025:.055)*focus);this.camera.position.copy(this.controls.target).add(offset);}}
   const cameraChanged=this.controls?.update();
   const draw=this.kit&&(this.playing||this.needsRender||cameraChanged||this.renderedTime!==this.time||this.renderedNames!==this.names||this.renderedPlaying!==this.playing);
   this.host.dataset.animationTime=this.time.toFixed(3);this.host.dataset.playing=String(this.playing);this.host.dataset.looping=String(this.loop!==false);

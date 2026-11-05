@@ -120,4 +120,28 @@ export const editorial = {
     reference: 'Morôni 10:2–5',
     url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/moro/10?lang=por&id=p2-p5#p2',
   },
+  M21: {
+    title: 'Da remissão pessoal à intercessão',
+    text: 'A fé nas palavras de seu pai conduz Enos a orar até ouvir que seus pecados foram perdoados por Cristo. Quem experimenta a Expiação passa a desejar e suplicar pelo bem espiritual de toda a humanidade.',
+    reference: 'Enos 1:3–9, 13–16',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/enos/1?lang=por&id=p3-p9,p13-p16#p3',
+  },
+  M22: {
+    title: 'Testemunhar a verdade com coragem',
+    text: 'Protegido pelo poder de Deus, Abinádi ensina que a guarda dos mandamentos aponta para a redenção em Jesus Cristo. Sua coragem diante do rei Noé desperta no sacerdote Alma a fé que transforma sua vida.',
+    reference: 'Mosias 13:5, 28, 33–35',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/mosiah/13?lang=por&id=p5,p28,p33-p35#p5',
+  },
+  M23: {
+    title: 'Força segundo a fé que está em Cristo',
+    text: 'No cárcere de Amonia, Alma e Amuleque clamam ao Senhor e recebem força segundo sua fé em Cristo para romper as cordas. A libertação testemunha que o poder de Deus sustenta Seus servos na provação.',
+    reference: 'Alma 14:26–28',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/14?lang=por&id=p26-p28#p26',
+  },
+  M24: {
+    title: 'A certeza ensinada pelas mães fiéis',
+    text: 'Os dois mil jovens guerreiros não duvidam de que Deus os livraria, pois suas mães lhes ensinaram a confiar no Senhor. A fé cultivada no lar torna-se alicerce de coragem, pureza e proteção divina.',
+    reference: 'Alma 53:20–21; 56:47–48',
+    url: 'https://www.churchofjesuschrist.org/study/scriptures/bofm/alma/56?lang=por&id=p47-p48#p47',
+  },
 };

@@ -16,7 +16,7 @@ function wallHouse(k,parent,x,z,color='#c4b797'){const home=k.groupAt(x,0,z);put
 export const builders={
  P01(k){
   k.config.ground='#8f8b73';k.config.camera=[9,7.5,12];k.config.target=[0,2,0];for(let i=0;i<17;i++){const a=i*2.4,r=1+(i%5)*.6;const rock=k.rock(Math.cos(a)*r,Math.sin(a)*r,1.1+(i%3)*.3);rock.position.y=.15+(i%4)*.15;}
-  k.cylinder(1.8,.9,'#9b967c',-.9,.5,-.7);for(let i=0;i<5;i++)k.box(1.25,.2,1,'#a8a184',-.9,.1+i*.18,2.5-i*.7);
+  k.cylinder(2.35,.55,'#8e886f',-.9,.28,-.7);k.cylinder(1.85,.95,'#9b967c',-.9,.62,-.7);k.cylinder(1.25,.55,'#a6a086',-.9,1.05,-.7);for(let i=0;i<5;i++)k.box(1.25,.2,1,'#a8a184',-.9,.1+i*.18,2.5-i*.7);for(let i=0;i<6;i++){const a=i*1.05;k.cloud(Math.cos(a)*3.5,.38+(i%2)*.18,Math.sin(a)*3.5,.58);}for(let i=0;i<8;i++)star(k,-3.8+i*1.1,4.2+(i%3)*.45,-3.2,.42+(i%2)*.15);
   const moses=figure(k,'Moisés',-.9,2.5,{robe:'#c8c2a6',mantle:'#967a50',hair:'#b1a18a',beard:true});const staff=k.cylinder(.035,1.7,'#695137',0,0,0);moses.handL.add(staff);staff.position.set(0,-.2,.08);
   const father=figure(k,'Deus, o Pai',-.9,-1.85,{y:2.45,robe:'#f7f2e7',mantle:'#ebe2cf',hair:'#efebdc',beard:true,scale:1.08});const satan=figure(k,'Satanás',.45,-.3,{y:.95,robe:'#47433e',mantle:'#2e2b28',hair:'#26211d',beard:true,expression:'tristeza'});satan.root.rotation.y=-1.2;
   const light=k.ray(-.9,.9,-.7,5);const worlds=[];for(let i=0;i<5;i++)worlds.push(orb(k,-3+i*1.4,3.3+(i%2)*.75,-2.3-i*.15,.24+(i%3)*.07,['#829da6','#b0aa8c','#879c88'][i%3]));
@@ -27,7 +27,7 @@ export const builders={
  },
  P02(k){
   k.config.ground='#314753';k.config.camera=[10,8,12];k.config.target=[0,1,0];k.water(10.8,10.8,0,0,{y:.12,color:'#466f7b'});const island=k.cylinder(3.7,.28,'#8d9f68',0,.18,0);const earth=k.groupAt();
-  const plants=[];for(const[x,z,s]of[[-2.6,-1.9,1],[-.7,-2.8,1.1],[2,-2,1],[2.8,.7,.8],[-3,1,.7]]){const tree=k.tree(x,z,s);earth.add(tree);plants.push(tree);}for(let i=0;i<4;i++){const f=flowers(k,-2+i*1.2,-.3+(i%2)*1.5,9);earth.add(f);plants.push(f);}const animals=[k.animal('sheep',-2,1.4,.75),k.animal('donkey',1,-1.1,.6),k.animal('lion',2,1.4,.55)];animals.forEach(a=>earth.add(a));const bird=k.dove(-2.5,2.6,-.4);earth.add(bird);
+  const plants=[];for(const [mx,mz,mr,mh] of [[-1.8,-1.8,1.15,1.35],[1.5,-2.0,1.25,1.55],[.1,-2.45,.95,1.15]]){const mt=k.mesh(new THREE.ConeGeometry(mr,mh,9),k.mat('#8c8872',{surface:'stone'}),mx,mh/2+.1,mz,earth);plants.push(mt);}const stream=k.box(.68,.03,4.2,'#66a3a3',.15,.16,.2);stream.rotation.y=.22;earth.add(stream);plants.push(stream);for(const[x,z,s]of[[-2.6,-1.9,1],[-.7,-2.8,1.1],[2,-2,1],[2.8,.7,.8],[-3,1,.7],[1.6,1.8,.85],[-1.8,2.1,.78]]){const tree=k.tree(x,z,s,x>2?'palm':'olive');earth.add(tree);plants.push(tree);}for(let i=0;i<6;i++){const f=flowers(k,-2.4+i*.95,-.4+(i%2)*1.55,11);earth.add(f);plants.push(f);}const animals=[k.animal('sheep',-2,1.4,.75),k.animal('sheep',-1.35,1.75,.62),k.animal('donkey',1,-1.1,.6),k.animal('lion',2,1.4,.55)];animals.forEach(a=>earth.add(a));const bird=k.dove(-2.5,2.6,-.4),bird2=k.dove(1.8,2.85,-.7);earth.add(bird);earth.add(bird2);
   const adam=figure(k,'Adão',-.55,.6,{y:.32,robe:'#cfbf9c',mantle:'#a5a67b'}),eve=figure(k,'Eva',.65,.7,{y:.32,robe:'#d9c6a5',mantle:'#a5ac8a',hair:'#6d4a31',beard:false});const sun=k.sphere(.4,'#f1d892',3.4,4,-2.2),moon=k.sphere(.25,'#d6dee0',-3.5,3.6,-2.6);const stars=k.stars();
   k.animate(t=>{const light=ease(t,1,7),land=ease(t,7,12);island.scale.y=Math.max(.001,land);earth.position.y=.18+.14*island.scale.y;k.light.intensity=.2+light*2.4;k.background.setRGB(lerp(.08,.58,light),lerp(.13,.68,light),lerp(.18,.69,light));plants.forEach((g,i)=>{const v=ease(t,10+i*.35,16+i*.35);g.scale.setScalar(Math.max(.001,v));});animals.forEach((a,i)=>{a.rotation.y=.15*Math.sin(t*.4+i);});bird.position.x=-2.5+2*ease(t,19,26);const greet=ease(t,25,31);adam.rightArm.rotation.z=.4*greet;eve.leftArm.rotation.z=-.4*greet;adam.head.rotation.y=-.2*greet;eve.head.rotation.y=.2*greet;});
   reveal(k,island,t=>ease(t,7,10));plants.forEach((g,i)=>reveal(k,g,t=>ease(t,10+i*.35,13+i*.35)));
@@ -123,6 +123,103 @@ export const builders={
   reveal(k,plates,t=>ease(t,9,12));
   joseph.root.position.y=.10;
   reveal(k,joseph.root,t=>1-ease(t,6,8));reveal(k,angel.root,t=>ease(t,0,3)*(1-ease(t,6,8))+ease(t,18,21));reveal(k,ray,t=>ease(t,0,3)*(1-ease(t,6,8))+ease(t,18,21));reveal(k,hillJoseph.root,t=>ease(t,8,12));
+  k.finish();
+ },
+ P11(k){
+  k.config.ground='#9f996e';tent(k,-3.1,-1.9,'#b7a47d');
+  for(const[x,z,s]of[[-3.6,1.6,.85],[3.4,-2.1,.95],[3.6,1.5,.8]])k.tree(x,z,s);
+  const altar=k.groupAt(.4,0,-.4);
+  for(let row=0;row<3;row++)for(let i=0;i<5;i++){const a=i*Math.PI*.4;put(altar,k.rock(Math.cos(a)*.58,Math.sin(a)*.58,.38));altar.children[altar.children.length-1].position.y=.22+row*.26;}
+  const flame=k.fire(.4,.98,-.4,.65);k.animal('sheep',2.5,1.2,.75);
+  k.select(altar,'Altar de Adão','Obediência e semelhança do Unigênito','Moisés 5:5–8','Quando o anjo pergunta por que oferece sacrifícios, Adão responde: Não sei, a não ser que o Senhor me mandou.');
+  const adam=figure(k,'Adão',-.7,.85,{robe:'#b3a383',mantle:'#8a885f'}),eve=figure(k,'Eva',-1.85,.55,{robe:'#c5b28f',mantle:'#a19373',beard:false});
+  const angel=figure(k,'Anjo do Senhor',1.85,-1.15,{y:.2,robe:'#f3ead4',mantle:'#dfd3ad',hair:'#a3977b',scale:1.06});
+  const ray=k.ray(1.85,.05,-1.15,5);
+  k.animate(t=>{
+   const ask=ease(t,7,14),answer=ease(t,14,22),rejoice=ease(t,22,30);
+   ray.visible=t>=7;ray.scale.set(ask,1,ask);
+   pray(adam,t,0,8);pray(eve,t,0,8);
+   angel.rightArm.rotation.z=.68*ask;angel.leftArm.rotation.z=-.4*rejoice;
+   adam.rightArm.rotation.x=-.75*answer;adam.leftArm.rotation.z=-.35*rejoice;
+   adam.head.rotation.x=.18*(1-answer)-.22*rejoice;eve.head.rotation.x=.18*(1-answer)-.22*rejoice;
+   flame.scale.setScalar(.62+.08*Math.sin(t*1.6));
+   k.light.intensity=2.1+.7*rejoice;
+  });
+  reveal(k,angel.root,t=>ease(t,7,13));
+  k.finish({camera:[8.8,6,10.8],target:[0,1.1,0]});
+ },
+ P12(k){
+  k.config.night=true;k.config.ground='#7d8468';k.config.camera=[9.2,7,11.6];k.config.target=[0,1.8,-.4];k.stars();
+  const mount=k.groupAt(0,0,-1.1);
+  put(mount,k.mesh(new THREE.ConeGeometry(2.6,2.2,9),k.mat('#847d67'),0,1.1,0));
+  put(mount,k.cylinder(1.55,.32,'#9b937a',0,2.1,0));
+  for(let i=0;i<7;i++)star(k,-3.3+i*1.1,3.5+(i%2)*.45,-3.2,.45);
+  const cloud=k.cloud(0,1.55,-.9,1.75);
+  const enoch=figure(k,'Enoque',-.75,-.95,{y:2.25,robe:'#b4b18c',mantle:'#71877c',beard:true});
+  const lord=figure(k,'O Senhor',.75,-1.15,{y:2.45,robe:'#f6efe0',mantle:'#e5d7b4',hair:'#704f38',beard:true,scale:1.1});
+  const ray=k.ray(.75,2.2,-1.15,4.6);
+  k.select(mount,'Monte da visão de Enoque','Compaixão do Criador','Moisés 7:28–41','Enoque contempla o Senhor chorando por Seus filhos e aprende sobre a misericórdia do Cordeiro.');
+  k.animate(t=>{
+   const weep=ease(t,6,15),ask=ease(t,15,23),comfort=ease(t,23,31);
+   ray.visible=t>=4;ray.scale.set(weep,1,weep);
+   lord.head.rotation.x=.26*weep-.14*comfort;
+   lord.rightArm.rotation.x=-.75*weep-.2*comfort;lord.leftArm.rotation.z=-.45*comfort;
+   enoch.head.rotation.x=.22*weep-.25*ask;
+   enoch.rightArm.rotation.x=-.8*ask;enoch.leftArm.rotation.x=-.65*comfort;
+   cloud.position.y=1.55+Math.sin(t*.5)*.06;
+   k.light.intensity=1.25+.95*comfort;
+  });
+  reveal(k,lord.root,t=>ease(t,4,10));
+  k.finish();
+ },
+ P13(k){
+  k.config.night=true;k.config.ground='#7d7e6b';k.config.camera=[9.4,6.9,11.8];k.config.target=[0,2,-.6];k.stars();
+  tent(k,-3.1,-1.8,'#9a8664');k.fire(-2.1,.1,.5,.38);
+  const abraham=figure(k,'Abraão',-.85,.65,{robe:'#c1b08c',mantle:'#8a6a49',hair:'#a3937b'});
+  const lord=figure(k,'O Senhor',.85,-.25,{robe:'#f5ede0',mantle:'#e3d4b0',hair:'#6d4d37',beard:true,scale:1.08});
+  const kolob=star(k,0,3.6,-2.8,1.15);
+  k.select(kolob,'Colobe e a ordem das estrelas','Símbolo da grandeza divina','Abraão 3:2–3, 16–23','Colobe simboliza na revelação a grande estrela próxima do trono de Deus e introduz o ensino sobre as inteligências eternas.');
+  const rings=[];
+  for(let i=0;i<3;i++){
+   const ring=k.mesh(new THREE.TorusGeometry(1.1+i*.65,.02,8,48),k.mat('#d2ba7a'),0,3.6,-2.8);
+   ring.rotation.x=Math.PI/3;rings.push(ring);
+  }
+  k.animate(t=>{
+   const touch=ease(t,4,11),starsOpen=ease(t,10,20),souls=ease(t,21,30);
+   lord.rightArm.rotation.x=-.9*touch;lord.leftArm.rotation.z=-.45*souls;
+   abraham.head.rotation.x=-.48*starsOpen;abraham.rightArm.rotation.x=-.85*starsOpen;abraham.leftArm.rotation.z=-.45*souls;
+   kolob.scale.setScalar(.6+.55*starsOpen);kolob.rotation.z=t*.2;
+   rings.forEach((r,i)=>{r.scale.setScalar(.5+.5*starsOpen);r.rotation.z=t*(.15-i*.04);});
+   k.light.intensity=1.05+.85*starsOpen;
+  });
+  reveal(k,lord.root,t=>ease(t,2,8));
+  rings.forEach((r,i)=>reveal(k,r,t=>ease(t,10+i*1.5,15+i*1.5)));
+  k.finish();
+ },
+ P14(k){
+  k.config.ground='#8d7a5e';k.config.camera=[8.4,6.1,10.4];k.config.target=[0,1.1,0];
+  const room=k.groupAt(0,0,-.2);
+  put(room,k.box(7.2,.16,6,'#8a6548',0,.02,0));
+  put(room,k.box(7.2,3.2,.16,'#bfb196',0,1.6,-3));
+  put(room,k.box(.16,3.2,6,'#bfb196',-3.6,1.6,0));
+  const table=k.table(0,0,-.4,2.8,1.2);
+  const plates=k.plates(-.65,1.06,-.45);
+  const manuscript=k.box(.7,.035,.5,'#f2e4c2',.65,1.06,-.4);
+  k.lamp(0,1.05,-.75);k.tree(4,-2.2,.95);
+  k.select(manuscript,'Manuscrito da tradução','Trabalho de Joseph e Oliver','Joseph Smith—História 1:66–71','Oliver Cowdery escreve dia após dia enquanto Joseph Smith traduz o Livro de Mórmon pelo dom e poder de Deus.');
+  const joseph=figure(k,'Joseph Smith',-.75,-1.25,{y:.1,robe:'#b4a283',mantle:'#596572',beard:false});
+  const oliver=figure(k,'Oliver Cowdery',.75,-1.25,{y:.1,robe:'#968b71',mantle:'#51584d',beard:false});
+  const emma=figure(k,'Emma Smith',-2.2,.65,{y:.1,robe:'#778e87',mantle:'#e4d6bb',hair:'#3c2a25',beard:false});
+  const ray=k.ray(0,.1,-.4,4.4);
+  k.animate(t=>{
+   const write=ease(t,4,16),light=ease(t,16,24),rejoice=ease(t,24,31);
+   joseph.rightArm.rotation.x=-.75*write;joseph.head.rotation.x=.2*(1-light);
+   oliver.rightArm.rotation.x=-.85;oliver.rightForearm.rotation.x=-.65+Math.sin(t*3.5)*.08*write;
+   emma.root.position.x=lerp(-2.2,-1.55,rejoice);emma.rightArm.rotation.x=-.55*rejoice;
+   ray.visible=t>=16;ray.scale.set(light,1,light);
+   plates.visible=true;
+   k.light.intensity=2.1+.65*light;
+  });
   k.finish();
  },
 };

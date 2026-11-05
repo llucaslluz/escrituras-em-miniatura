@@ -2,7 +2,7 @@ import {stories as bible} from './bible.js';
 import {stories as mormon} from './mormon.js';
 import {stories as dc} from './dc.js';
 import {stories as pearl} from './pearl.js';
-export const books=[{id:'bible',name:'Bíblia',short:'Bíblia',count:32,icon:'bible',color:'#b88650',description:'Dos primeiros convênios ao ministério de Jesus Cristo.'},{id:'mormon',name:'Livro de Mórmon',short:'Livro de Mórmon',count:20,icon:'mormon',color:'#76856a',description:'Jornadas de fé e outro testemunho de Jesus Cristo.'},{id:'dc',name:'Doutrina e Convênios',short:'Doutrina e Convênios',count:10,icon:'dc',color:'#7c929b',description:'Revelações, restauração e o plano de nosso Pai Celestial.'},{id:'pearl',name:'Pérola de Grande Valor',short:'Pérola de Grande Valor',count:10,icon:'pearl',color:'#a295b3',description:'Criação, visões e o propósito eterno da vida.'}];
+export const books=[{id:'bible',name:'Bíblia',short:'Bíblia',count:36,icon:'bible',color:'#b88650',description:'Dos primeiros convênios ao ministério de Jesus Cristo.'},{id:'mormon',name:'Livro de Mórmon',short:'Livro de Mórmon',count:24,icon:'mormon',color:'#76856a',description:'Jornadas de fé e outro testemunho de Jesus Cristo.'},{id:'dc',name:'Doutrina e Convênios',short:'Doutrina e Convênios',count:14,icon:'dc',color:'#7c929b',description:'Revelações, restauração e o plano de nosso Pai Celestial.'},{id:'pearl',name:'Pérola de Grande Valor',short:'Pérola de Grande Valor',count:14,icon:'pearl',color:'#a295b3',description:'Criação, visões e o propósito eterno da vida.'}];
 export const stories=[...bible,...mormon,...dc,...pearl];
 export const byId=new Map(stories.map(s=>[s.id,s]));
 export const normalize=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();

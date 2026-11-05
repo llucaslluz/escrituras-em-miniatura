@@ -5,8 +5,8 @@ import {editorial} from '../src/data/editorial.js';
 
 test('as 72 cenas têm um ensinamento próprio, sem texto genérico de reserva',()=>{
  assert.deepEqual(Object.keys(editorial).sort(),stories.map(s=>s.id).sort());
- assert.equal(new Set(Object.values(editorial).map(e=>e.text)).size,72);
- assert.equal(new Set(Object.values(editorial).map(e=>e.title)).size,72);
+ assert.equal(new Set(Object.values(editorial).map(e=>e.text)).size,88);
+ assert.equal(new Set(Object.values(editorial).map(e=>e.title)).size,88);
  for(const s of stories){
   const e=editorial[s.id];
   assert.ok(e.title.length>=8&&e.title.length<=44,`${s.id}: título legível e específico`);
