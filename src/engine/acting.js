@@ -316,7 +316,7 @@ export function applyContextualExpressions(kit, t, duration = 32) {
   }
   const id = kit.id;
   for (const rig of kit.people) {
-    if (!rig.root.visible || !rig.faceParts) continue;
+    if (!rig.faceParts) continue;
     const meta = rig.root.userData.clayPerson;
     if (meta.manualExpressionAt === t) continue;
 

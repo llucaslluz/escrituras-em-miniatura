@@ -88,3 +88,38 @@ test('sleeping disciples receive closed sculpted eyelids without visible pupils'
   assert.equal(eyes(sleeping)[0].parent, sleeping.head, 'closed eyes follow a bowed head');
   kit.dispose();
 });
+
+test('named character profiles and handcrafted objects provide era-authentic anatomy, garments and stop-motion detail', () => {
+  const mortalKit = new Kit('B19');
+  const christMortal = createClayPerson(mortalKit, 'Jesus Cristo', 0, 0);
+  assert.ok(christMortal.head.getObjectByName('Nariz de argila'), 'crafted clay nose');
+  assert.ok(christMortal.head.getObjectByName('Orelha de argila'), 'crafted clay ears');
+  assert.ok(christMortal.head.children.some(o => o.userData.clayEyePart === 'iris'), 'expressive colored iris');
+  assert.ok(christMortal.head.children.some(o => o.userData.clayEye === 'highlight'), 'catchlight highlight');
+  assert.ok(christMortal.handR.getObjectByName('Polegar esculpido'), 'sculpted thumb on hands');
+  assert.ok(christMortal.root.getObjectByName('Faixa transversal do manto'), 'Christ diagonal mantle sash');
+
+  const restorationKit = new Kit('D01');
+  const joseph = createClayPerson(restorationKit, 'Joseph Smith', 0, 0);
+  const emma = createClayPerson(restorationKit, 'Emma Smith', 1, 0);
+  assert.ok(joseph.root.getObjectByName('Camisa do século XIX'), '19th-century shirt and waistcoat for Joseph Smith');
+  assert.ok(emma.root.getObjectByName('Xale histórico'), '19th-century crossed shawl for Emma Smith');
+
+  const mormonKit = new Kit('M12');
+  const moroni = createClayPerson(mormonKit, 'Capitão Morôni', 0, 0);
+  assert.ok(moroni.root.getObjectByName('Couraça esculpida'), 'sculpted breastplate for Captain Moroni');
+  assert.ok(moroni.head.getObjectByName('Faixa frontal'), 'headband on Book of Mormon warrior');
+
+  const plates = mormonKit.plates(0, 0, 0);
+  const boat = mormonKit.boat(0, 0, 1);
+  const vase = mormonKit.vase(0, 0, 0);
+  const book = mormonKit.book(0, 0, 0);
+  assert.ok(plates.getObjectByName('Argola das placas') && plates.getObjectByName('Gravação nas placas'));
+  assert.ok(boat.getObjectByName('Remo esculpido') && boat.getObjectByName('Borda superior do barco'));
+  assert.ok(vase.getObjectByName('Alça da ânfora'));
+  assert.ok(book.getObjectByName('Lombada esculpida') && book.getObjectByName('Fecho do livro'));
+
+  mortalKit.dispose();
+  restorationKit.dispose();
+  mormonKit.dispose();
+});
