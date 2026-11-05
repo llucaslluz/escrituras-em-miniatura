@@ -12,9 +12,12 @@
     "export": "python scripts/export.py"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
     "three": "0.186.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
     "vite": "8.3.4"
   }
 }
