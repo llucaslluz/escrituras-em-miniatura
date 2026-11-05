@@ -40,7 +40,7 @@ function listen(k, rigs, start = 0) {
   k.animate(t => rigs.forEach((r, i) => { r.head.rotation.y = Math.sin(t * .5 + i) * .09; r.head.rotation.x = .06 + Math.sin(t * .6 + i) * .025; r.rightForearm.rotation.x = -.25 - ease(t, start, start + 5) * (.1 + i % 3 * .06); }));
 }
 function staff(k, hand, color = '#776047', height = 1.65) {
-  const o = k.mesh(new THREE.CylinderGeometry(.025, .037, height, 8), k.mat(color)); attach(hand, o, 0, .33, 0); return o;
+  const o = k.mesh(new THREE.CylinderGeometry(.024, .034, height, 8), k.mat(color, { surface: 'wood' })); const crook = k.mesh(new THREE.TorusGeometry(.085, .021, 6, 14, PI * 1.25), k.mat(color, { surface: 'wood' }), -.085, height * .5, 0, o); crook.rotation.z = -.25; attach(hand, o, 0, .33, 0); return o;
 }
 function bread(k, x, y, z, s = 1) {
   const g = k.groupAt(x, y, z); const loaf = k.mesh(new THREE.SphereGeometry(.17, 16, 10), k.mat('#c9a067'), 0, .07, 0, g); loaf.scale.set(1.3 * s, .55 * s, s);
@@ -53,13 +53,11 @@ function cup(k, x, y, z) {
 }
 function bowl(k, x, y, z, color = '#bb9474') { return k.mesh(new THREE.SphereGeometry(.24, 20, 12, 0, TAU, 0, PI * .55), k.mat(color, { side: THREE.DoubleSide }), x, y, z); }
 function stoneAltar(k, x, z, radius = .9) {
-  const g = k.groupAt(x, 0, z);
-  for (let j = 0; j < 12; j++) { const a = j / 12 * TAU; const o = k.rock(x + Math.sin(a) * radius, z + Math.cos(a) * radius, .52); g.attach(o); }
-  for (let j = 0; j < 5; j++) { const wood = k.box(1.3, .09, .1, '#826145', x, .55 + j * .065, z + (j % 2 ? .2 : -.2)); wood.rotation.y = j % 2 ? .8 : -.8; g.attach(wood); }
-  return g;
+  return k.altar(x, 0, z, radius);
 }
 function reeds(k, x, z, count = 7) {
-  const g = k.groupAt(x, 0, z); for (let j = 0; j < count; j++) { const h = .4 + (j % 4) * .12; const stalk = k.mesh(new THREE.CylinderGeometry(.012, .018, h, 5), k.mat('#78845a'), Math.sin(j * 2) * .18, h / 2, Math.cos(j * 3) * .15, g); stalk.rotation.z = Math.sin(j) * .15; const tip = k.mesh(new THREE.SphereGeometry(.06, 6, 6), k.mat('#a69461'), stalk.position.x, h, stalk.position.z, g); tip.scale.set(.5, 1.5, .5); }
+  const g = k.groupAt(x, 0, z);
+ for (let j = 0; j < count; j++) { const h = .4 + (j % 4) * .12; const stalk = k.mesh(new THREE.CylinderGeometry(.012, .018, h, 5), k.mat('#78845a'), Math.sin(j * 2) * .18, h / 2, Math.cos(j * 3) * .15, g); stalk.rotation.z = Math.sin(j) * .15; const tip = k.mesh(new THREE.SphereGeometry(.06, 6, 6), k.mat('#a69461'), stalk.position.x, h, stalk.position.z, g); tip.scale.set(.5, 1.5, .5); }
   k.ambient(t => { g.rotation.z = Math.sin(t * 1.8 + x) * .035; }); return g;
 }
 function blossoms(k, x, z, n = 9) { for (let i = 0; i < n; i++) { const xx = x + Math.sin(i * 2.4) * .45, zz = z + Math.cos(i * 1.8) * .45; k.cylinder(.012, .17, '#7b8c55', xx, .08, zz); const f = k.sphere(.045, i % 2 ? '#e2d3ab' : '#c4b496', xx, .19, zz); f.scale.y = .45; } }
@@ -76,7 +74,7 @@ function room(k, style = 'simple') {
   else { k.box(1.1, 1.1, .28, '#756955', 1.7, 1.6, -2.98); k.box(.06, 1.16, .05, '#dfcfab', 1.7, 1.6, -2.79); k.box(1.15, .06, .05, '#dfcfab', 1.7, 1.6, -2.79); }
 }
 function mountain(k, x, z, h = 2.8) {
-  const o = k.mesh(new THREE.ConeGeometry(2.1, h, 7), k.mat('#a2957d'), x, h / 2, z); o.rotation.y = .3; for (let i = 0; i < 6; i++) k.rock(x + Math.sin(i) * 1.8, z + Math.cos(i) * 1.4, .6); return o;
+  return sculptedMountain(k, x, z, h);
 }
 function rain(k, strength = () => 1, amount = 110) {
   const r = seed(77), geo = new THREE.BufferGeometry(), arr = new Float32Array(amount * 6), starts = [];
@@ -93,8 +91,9 @@ function net(k, x, y, z, w = 2, h = 1.1) {
   for (let i = 0; i < 6; i++) { const strand = k.mesh(new THREE.CylinderGeometry(.009, .009, w, 4), k.mat('#c9b894'), 0, -h / 2 + i * h / 5, 0, g); strand.rotation.z = PI / 2; } return g;
 }
 function gate(k, x = 0, z = -2.4, w = 3.2, h = 2.7) {
-  for (const side of [-1, 1]) { for (let row = 0; row < 5; row++) for (let col = 0; col < 3; col++) k.box(.64, .5, .65, (row + col) % 2 ? '#bcaa83' : '#d0bb92', x + side * (w / 2 + col * .65), .25 + row * .52, z); }
-  k.box(w + 1, .4, .7, '#c9b48e', x, h, z); return k.box(w - .2, h - .3, .12, '#81735b', x, (h - .3) / 2, z - .25);
+  for (const side of [-1, 1]) k.stoneWall(x + side * (w * .5 + .55), z, 1.15, h, .6, { rows: 5, vines: 1 });
+  k.mesh(new THREE.BoxGeometry(w + 1.2, .36, .68), k.mat('#684b32', { surface: 'wood' }), x, h, z);
+  return k.mesh(new THREE.BoxGeometry(w - .2, h - .28, .12), k.mat('#583d28', { surface: 'wood' }), x, (h - .28) / 2, z - .22);
 }
 function angel(k, name, x, z, o = {}) { return k.person(name, x, z, { robe: '#f3edda', mantle: '#dedac0', hair: '#bda578', beard: false, ...o }); }
 
@@ -139,7 +138,7 @@ export const builders = {
   },
   B02(k) {
     k.config.ground = '#bdab83'; mountain(k, -2.8, -2.5, 2.8); stoneAltar(k, .9, -1); const bush = k.tree(2.8, -1.8, .65); const ram = k.animal('sheep', 2.45, -1.2, 1);
-    for (const side of [-1, 1]) { const horn = k.mesh(new THREE.TorusGeometry(.1, .025, 6, 18, PI * 1.6), k.mat('#9d8a64'), 2.45 + side * .16, .87, -.71); horn.rotation.y = PI / 2; }
+    for (const side of [-1, 1]) { const horn = k.mesh(new THREE.TorusGeometry(.1, .025, 6, 18, PI * 1.6), k.mat('#9d8a64'), side * .16, .15, -.08, ram.userData.head); horn.rotation.y = side * .35; horn.rotation.x = .4; }
     const ab = k.person('Abraão', -2, 2.8, { robe: '#b7a280', mantle: '#7e8a72', hair: '#d4cbb4' }); const isaac = k.person('Isaque', -1.1, 3.3, { robe: '#d2b585', scale: .82, beard: false });
     const bundle = k.groupAt(0, 0, 0); for (let i = 0; i < 5; i++) { const w = k.mesh(new THREE.CylinderGeometry(.026, .035, .7, 6), k.mat('#806246'), (i - 2) * .055, 0, 0, bundle); w.rotation.x = PI / 2; } attach(isaac.handR, bundle, 0, .05, .1);
     const msg = angel(k, 'Anjo do Senhor', -.3, -2, { y: 2 }); const ray = k.ray(-.3, 1.6, -2, 3); k.walk(ab, [-2, 2.8], [.1, .4], 0, 8); k.walk(isaac, [-1.1, 3.3], [1.1, .8], 0, 9);
@@ -288,7 +287,7 @@ export const builders = {
   B13(k) {
     k.config.ground = '#b6b497'; jonahSea(k); const boat = k.boat(-2.1, -.5, 1.2); const jo = k.person('Jonas', -2.1, -.4, { y: .5, robe: '#b2a18a', mantle: '#89937c' }); const sailor = k.person('Marinheiros', -2.8, -.3, { y: .5, robe: '#a7b2a0', scale: .9 });
     const {root:fish,body,tail}=greatFish(k);
-    const prayer = k.person('Jonas', 0, 0, { robe: '#b2a18a', mantle: '#89937c', scale: .56 }); attach(fish, prayer.root, 0, .1, .15); kneel(prayer); const dryJonah = k.person('Jonas', 3, 2.9, { robe: '#b2a18a', mantle: '#89937c', scale: .85 }); gate(k, 3.3, -2.7, 1.6, 2.4); jonahShore(k); rain(k, t => ease(t, 4, 8) * (1 - ease(t, 13, 18)), 80);
+    const prayer = k.person('Jonas', 0, 0, { robe: '#b2a18a', mantle: '#89937c', scale: .56 }); attach(fish, prayer.root, 0, .1, .15); kneel(prayer); const dryJonah = k.person('Jonas', 3, 2.9, { robe: '#b2a18a', mantle: '#89937c', scale: .85 }); gate(k, 2.6, -2.3, 1.6, 2.4); jonahShore(k); rain(k, t => ease(t, 4, 8) * (1 - ease(t, 13, 18)), 80);
     k.animate(t => { const storm = ease(t, 3, 8) * (1 - ease(t, 14, 18)); boat.rotation.z = Math.sin(t * 2) * .12 * storm; jo.root.visible = sailor.root.visible = t < 15; jo.root.rotation.z = sailor.root.rotation.z = boat.rotation.z; sailor.leftArm.rotation.z = -.7 * storm; fish.visible = t > 11 && t < 25; fish.position.y = -.5 + Math.sin(ease(t, 11, 23) * PI) * .65; fish.rotation.y = -.7; tail.rotation.y = Math.sin(t * 2) * .2; prayer.root.visible = t > 16 && t < 25; body.material.transparent = true; body.material.opacity = t > 16 ? .46 : 1; pray(prayer, t); dryJonah.root.visible = t > 24; const q = ease(t, 24, 32); dryJonah.root.position.z = mix(2.9, -.9, q); dryJonah.root.rotation.y = PI; dryJonah.leftLeg.rotation.x = t > 24 ? Math.sin(t * 6) * .24 : 0; dryJonah.rightLeg.rotation.x = -dryJonah.leftLeg.rotation.x; k.light.intensity = 2.4 - storm * 1.5; });
     k.select(fish, 'Grande peixe', 'Animal do relato', 'Jonas 1:17; 2', 'O texto não informa a espécie do grande peixe.');
     // Crossfades separate the ship, the fish cutaway, and the shore journey.
@@ -566,12 +565,12 @@ export const builders = {
     k.config.ground = '#a99d83'; k.background.set('#aaaba3'); k.config.camera = [9, 6.8, 11.5]; k.config.target = [0, 1.8, -.4];
     const hill = k.mesh(new THREE.SphereGeometry(3.5, 32, 16), k.mat('#b2a68a'), 0, -.6, -1.3); hill.scale.y = .23;
     const makeCross = (x, z, h, label) => { const cross = k.groupAt(x, 0, z); k.mesh(new THREE.BoxGeometry(.22, h, .2), k.mat('#76573c'), 0, h / 2, 0, cross); k.mesh(new THREE.BoxGeometry(h * .52, .2, .2), k.mat('#896744'), 0, h * .77, .015, cross); const footrest=k.mesh(new THREE.BoxGeometry(.48,.12,.3),k.mat('#856342'),0,h*.53-.065,.08,cross);footrest.name='Apoio dos pés na cruz'; const foot = k.rock(x, z, .5); foot.position.y = .08; k.select(cross, label, 'Cruz firmemente apoiada', 'João 19:17–18; Lucas 23:33', 'A estrutura permanece fixa; somente tecidos, nuvens e gestos discretos se movem.'); k.label(cross, label); return cross; };
-    const central = makeCross(0, -1.6, 4.5, 'Cruz de Jesus'); makeCross(-2.6, -2, 3.6, 'Cruz à esquerda'); makeCross(2.6, -2, 3.6, 'Cruz à direita');
+    const central = makeCross(0, -1.6, 4.5, 'Cruz de Jesus'); makeCross(-2.6, -2, 3.6, 'Cruz à esquerda'); makeCross(2.6, -2, 3.6, 'Cruz à direita'); k.stonePile(0, 0, -1.6, .55, 12); k.stonePile(-2.6, 0, -2, .42, 8); k.stonePile(2.6, 0, -2, .42, 8);
     const christ = jesus(k, 0, -1.44, { y: 2.38, mantle: undefined, robe: '#ded7bf' }); christ.leftArm.rotation.z = -PI / 2; christ.rightArm.rotation.z = PI / 2; christ.leftForearm.rotation.z = .04; christ.rightForearm.rotation.z = -.04;
     [-1, 1].forEach(side => { const r = k.person('Condenados ao lado de Jesus', side * 2.6, -1.85, { y: 1.9, scale: .8, robe: '#a79b84', hair: '#615342' }); r.leftArm.rotation.z = -PI / 2; r.rightArm.rotation.z = PI / 2; r.head.rotation.x = .3; });
-    const sign = k.box(.8, .28, .06, '#bdac86', 0, 4.34, -1.44); k.label(sign, 'Jesus Nazareno'); k.select(sign, 'Inscrição na cruz', 'Título ordenado por Pilatos', 'João 19:19–22', 'O texto de João registra a inscrição que identifica Jesus como nazareno e rei dos judeus.');
+    const sign = k.box(.8, .28, .06, '#bdac86', 0, 4.34, -1.44); k.label(sign, 'Jesus Nazareno'); k.select(sign, 'Inscrição na cruz', 'Título ordenado por Pilatos', 'João 19:19–22', 'O texto de João registra a inscrição que identifica Jesus como nazareno e rei dos judeus.'); for (let i = 0; i < 2; i++) k.mesh(new THREE.BoxGeometry(.52, .014, .01), k.mat('#785d42', { surface: 'wood' }), 0, 4.34 + (i - .5) * .08, -1.41);
     const mother = k.person('Maria, mãe de Jesus', -1.9, 1.5, { robe: '#bfc1ab', mantle: '#8eaaa9', beard: false }); const mag = k.person('Maria Madalena', -2.7, 1.1, { robe: '#c6b59b', mantle: '#a49685', beard: false }); const beloved = k.person('Discípulo amado', -.8, 1.8, { robe: '#b9ac8d', mantle: '#8b9f95', beard: false }); const cent = k.person('Centurião', 2.9, 1.9, { robe: '#ae9274', mantle: '#886a5d' }); const soldiers = [k.person('Soldados romanos', 1.8, .3, { robe: '#aa8f73', mantle: '#9a6b59' }), k.person('Soldados romanos', 3.4, -.1, { robe: '#a6a18d', mantle: '#92745e' })];
-    [cent, ...soldiers].forEach(r => { const helmet = k.mesh(new THREE.SphereGeometry(.395, 24, 14, 0, TAU, 0, PI * .5), k.mat('#a5a38d', { metalness: .25 }), 0, .06, 0, r.head); helmet.scale.y = .91; helmet.name = 'Capacete romano de argila'; helmet.userData.clayHelmet = true; const shield = k.mesh(new THREE.CylinderGeometry(.25, .25, .07, 20), k.mat('#a28b62')); shield.rotation.x = PI / 2; attach(r.handL, shield, 0, 0, .12); }); staff(k, cent.handR, '#826b4e', 2);
+    [cent, ...soldiers].forEach(r => { attach(r.handL, k.romanShield(), 0, 0, .13); }); attach(cent.handR, k.spear(2.05), 0, 0, .06); soldiers.forEach(s => attach(s.handR, k.spear(1.95), 0, 0, .06));
     const garments = ['#baa989', '#918d76', '#b9b39a'].map((c, i) => { const geo = new THREE.PlaneGeometry(.7, .6, 12, 9); geo.rotateX(-PI / 2); const cloth = k.mesh(geo, k.mat(c, { side: THREE.DoubleSide }), 1.8 + i * .45, .1, 1); return { cloth, base: new Float32Array(geo.attributes.position.array) }; });
     const clouds = [k.cloud(-2.3, 5, -3, 1.8), k.cloud(2.8, 4.7, -2.7, 1.9)]; const windCloth = k.flag(-4, 0, -.1, '#aa9380'); windCloth.scale.set(.55, .65, .6);
     k.ambient(t => { garments.forEach(({ cloth, base }, j) => { const p = cloth.geometry.attributes.position; for (let i = 0; i < p.count; i++) p.setY(i, base[i * 3 + 1] + Math.sin(base[i * 3] * 5 + t * 2 + j) * .018); p.needsUpdate = true; }); });
@@ -607,8 +606,8 @@ export const builders = {
   },
   B33(k) {
     k.config.ground = '#b89f78'; k.background.set('#d5c29d');
-    sculptedMountain(k, .8, -2.1, 2.8, 2.6, '#9d8260', 11);
-    sculptedMountain(k, -2.5, -2.5, 1.9, 1.8, '#a68b67', 17);
+    sculptedMountain(k, .8, -2.1, 2.8);
+    sculptedMountain(k, -2.5, -2.5, 1.9);
     const bush = k.groupAt(.9, .35, -1.1);
     for (let i = 0; i < 14; i++) {
       const a = i * .48, r = .2 + (i % 3) * .16;
@@ -620,18 +619,17 @@ export const builders = {
     const moses = k.person('Moisés', -1.8, 1.6, { robe: '#b79e7d', mantle: '#7c654d', hair: '#5b4738' });
     staff(k, moses.handL);
     const sandals = k.groupAt(-.5, .04, .65);
-    for (const dx of [-.11, .11]) k.box(.12, .035, .24, '#705136', dx, 0, 0);
+    for (const dx of [-.11, .11]) k.mesh(new THREE.BoxGeometry(.12, .035, .24), k.mat('#705136', { surface: 'cloth' }), dx, 0, 0, sandals);
     k.select(sandals, 'Sandálias retiradas', 'Reverência em terra santa', 'Êxodo 3:5', 'Moisés retira as sandálias dos pés em sinal de reverência diante da terra santa.');
-    [-3.1, -2.3, -1.5].forEach((x, i) => k.animal('sheep', x, .7 + (i % 2) * .75, .72));
-    k.select(k.group.children.find(o => o.name === 'sheep') || bush, 'Rebanho de Jetro', 'Ovelhas no Horebe', 'Êxodo 3:1', 'Moisés apascentava o rebanho de seu sogro Jetro junto ao monte de Deus.');
+    const sheep = [-3.1, -2.3, -1.5].map((x, i) => k.animal('sheep', x, .7 + (i % 2) * .75, .72));
+    k.select(sheep[0], 'Rebanho de Jetro', 'Ovelhas no Horebe', 'Êxodo 3:1', 'Moisés apascentava o rebanho de seu sogro Jetro junto ao monte de Deus.');
     k.animate(t => {
       const walk = ease(t, 0, 8), blaze = ease(t, 6, 14), bow = ease(t, 15, 22), call = ease(t, 23, 30);
       moses.root.position.x = mix(-1.8, -.45, walk);
       moses.root.position.z = mix(1.6, .55, walk);
       pacedSteps(moses, walk * 1.7, motion(t, 0, 8));
       face(moses, .9, -1.1);
-      moses.root.position.y = -.24 * bow;
-      moses.leftLeg.rotation.x = moses.rightLeg.rotation.x = -.95 * bow;
+      kneel(moses, bow);
       moses.head.rotation.x = .28 * bow - .18 * call;
       moses.rightArm.rotation.x = -.85 * bow - .25 * call;
       moses.rightForearm.rotation.x = -.9 * bow;
@@ -649,7 +647,7 @@ export const builders = {
   B34(k) {
     k.config.ground = '#567582'; k.background.set('#8ca1ad');
     const sea = k.water(11.4, 11.4, 0, 0, { y: .12, color: '#3f6d82' });
-    const boat = k.boat(0, .28, 0);
+    const boat = k.boat(0, 0, 1.55); boat.position.y = .28;
     const christ = jesus(k, .75, 0, { y: .46, robe: '#efe6d2', mantle: '#7d95a6' });
     const peter = k.person('Pedro', -.35, .28, { y: .46, robe: '#a98e6e', mantle: '#6a7b82', scale: .94 });
     const disciples = [[-1.1, -.22, '#9a8c72'], [-1.55, .2, '#8b9987'], [.1, -.34, '#b8a282']].map(([x, z, c]) =>
@@ -694,9 +692,9 @@ export const builders = {
   B35(k) {
     k.config.ground = '#bfa47b'; k.background.set('#dfd1b4');
     const road = k.box(8.5, .03, 1.9, '#cdb58e', -.2, .025, .2); road.rotation.y = .24;
-    sculptedMountain(k, -2.5, -2.3, 2, 1.8, '#9f825e', 5);
+    sculptedMountain(k, -2.5, -2.3, 2);
     for (let i = 0; i < 8; i++) k.rock(-3.6 + i * .95, -1.5 + (i % 2) * .4, .32 + (i % 3) * .1);
-    const inn = gate(k, 3.2, -1.7, 2.2, 1.8); k.tree(3.8, 1.4, .85);
+    const inn = gate(k, 2.4, -1.6, 2.0, 1.8); k.tree(3.8, 1.4, .85);
     k.select(inn, 'Hospedaria no caminho', 'Lugar de acolhimento', 'Lucas 10:34–35', 'O samaritano leva o homem ferido à hospedaria e deixa provisão para seu cuidado.');
     const samaritan = k.person('Bom Samaritano', -3.4, 1.2, { robe: '#8e6d53', mantle: '#c8a97e', hair: '#4f3b2c' });
     const wounded = k.person('Viajante ferido', -.5, .65, { robe: '#b9ac92', mantle: '#8a7f6d', beard: true });
@@ -710,8 +708,7 @@ export const builders = {
       samaritan.root.position.z = mix(1.2, .72, approach) + mix(0, -1.35, arrive);
       pacedSteps(samaritan, approach * 2.4 + arrive * 2.8, Math.max(motion(t, 0, 8), motion(t, 24, 31)));
       const kneelAmt = care * (1 - lift);
-      samaritan.root.position.y = -.24 * kneelAmt;
-      samaritan.leftLeg.rotation.x = samaritan.rightLeg.rotation.x = -.9 * kneelAmt;
+      kneel(samaritan, kneelAmt);
       samaritan.rightArm.rotation.x = -.85 * kneelAmt - .5 * lift;
       samaritan.leftArm.rotation.x = -.7 * kneelAmt - .45 * lift;
       wounded.root.position.x = mix(-.5, 1.85, arrive);
@@ -746,8 +743,7 @@ export const builders = {
       christ.rightArm.rotation.x = -.65 - .2 * peace;
       christ.leftArm.rotation.z = -.35 * peace;
       christ.head.rotation.y = mix(0, -.45, ask);
-      mary.root.position.y = -.28 * sit;
-      mary.leftLeg.rotation.x = mary.rightLeg.rotation.x = -1.05 * sit;
+      kneel(mary, sit);
       face(mary, .9, -.45);
       mary.head.rotation.x = -.18 * sit;
       martha.root.position.x = mix(-1.8, -.45, ask);

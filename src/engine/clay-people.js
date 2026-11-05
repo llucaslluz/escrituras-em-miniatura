@@ -39,22 +39,74 @@ function robeGeometry(kit, variant) {
 }
 
 /**
+ * Manto / sobretudo aberto na frente (+Z) que envolve suavemente costas, laterais
+ * e ombros sem criar volumes cilíndricos frontais nem abas abauladas nas costas.
+ */
+function mantleGeometry(kit, variant) {
+  const key = `person-mantle-coat-${variant}`;
+  if (kit.geometryCache.has(key)) return kit.geometryCache.get(key);
+  const flare = variant === 2 ? .012 : variant === 1 ? .004 : .008;
+  const outer = [
+    [.344 + flare, .24],
+    [.354 + flare, .36],
+    [.336 + flare * .6, .56],
+    [.309, .78],
+    [.296, .96],
+    [.272, 1.075],
+    [.214, 1.132],
+  ];
+  const inner = [
+    [.198, 1.124],
+    [.255, 1.065],
+    [.279, .955],
+    [.292, .775],
+    [.319 + flare * .5, .56],
+    [.336 + flare, .36],
+    [.327 + flare, .24],
+    [.344 + flare, .24],
+  ];
+  const pts = [...outer, ...inner].map(([r, y]) => new THREE.Vector2(r, y));
+  const geometry = new THREE.LatheGeometry(pts, 26, .52, TAU - 1.04);
+  geometry.computeVertexNormals();
+  kit.geometryCache.set(key, geometry);
+  return geometry;
+}
+
+function instancedSymmetric(geometry, material, transforms, parent) {
+  const mesh = new THREE.InstancedMesh(geometry, material, transforms.length);
+  const dummy = new THREE.Object3D();
+  transforms.forEach(({ pos, scale = [1, 1, 1], rot = [0, 0, 0] }, idx) => {
+    dummy.position.set(...pos);
+    dummy.scale.set(...scale);
+    dummy.rotation.set(...rot);
+    dummy.updateMatrix();
+    mesh.setMatrixAt(idx, dummy.matrix);
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  mesh.computeBoundingBox();
+  mesh.computeBoundingSphere();
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+/**
  * Escultura artesanal stop-motion / claymation com identidade cultural e histórica
  * por personagem, preservando todos os pivôs de animação (ombro .31, antebraço .27,
  * cabeça 1.37 e coroa .39) e orçamento enxuto de malhas para cenas com multidão.
  */
 export function createClayPerson(kit, name, x, z, rawOptions = {}) {
   const profile = getCharacterProfile(kit.id, name, rawOptions);
+  const lockProfileGarment =
+    profile.garmentStyle === 'restoration-man' ||
+    profile.garmentStyle === 'christ-resurrected' ||
+    profile.garmentStyle === 'roman-soldier';
   const mergedOptions = {
     ...profile,
     ...rawOptions,
-    // Se o perfil nominal define cores históricas para personagens recorrentes,
-    // usamos o perfil nominal, exceto quando rawOptions traz customização específica
-    // que não conflita com trajes da Restauração ou de Cristo.
-    robe: profile.garmentStyle === 'restoration-man' || profile.garmentStyle === 'christ-resurrected'
-      ? profile.robe
-      : (rawOptions.robe || profile.robe),
-    mantle: profile.garmentStyle === 'restoration-man' || profile.garmentStyle === 'christ-resurrected'
+    robe: lockProfileGarment ? profile.robe : (rawOptions.robe || profile.robe),
+    mantle: lockProfileGarment
       ? profile.mantle
       : (rawOptions.mantle !== undefined ? rawOptions.mantle : profile.mantle),
     hair: rawOptions.hair || profile.hair,
@@ -118,29 +170,64 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
     sideMark.name = 'Marca da lança no lado';
   }
 
-  // 2. Camadas de Roupa por Época (Restauração séc. XIX, Guerreiro/Armadura, Cristo, Bíblico)
+  // 2. Camadas de Roupa por Época (Restauração séc. XIX, Romano, Guerreiro, Mulher)
   if (o.garmentStyle === 'restoration-man') {
-    // Colete do séc. XIX, camisa branca com colarinho e gravata-fita (cravat)
     const vest = capsule(.145, .28, o.vestColor || '#7d6e56', 0, .86, .165, root);
     vest.scale.set(1.05, 1, .48);
     const shirt = ball(.115, o.shirtColor || '#f4eee1', 0, 1.01, .215, root, [.88, .95, .42]);
     shirt.name = 'Camisa do século XIX';
     const cravat = capsule(.022, .075, o.cravatColor || '#2b2522', 0, 1.03, .258, root);
     cravat.rotation.z = Math.PI / 2;
-    for (const side of [-1, 1]) {
-      const lapel = capsule(.032, .28, tone(cloth, '#1e242b', .28), side * .115, .91, .235, root);
-      lapel.rotation.z = side * .22;
-      lapel.scale.z = .45;
-    }
-  } else if (o.armor) {
-    // Couraça / Peitoral esculpido para Capitão Morôni, Helamã, Jovens Guerreiros, Golias e Soldados
-    const armorColor = o.accentColor || '#9e8455';
-    const cuirass = ball(.285, armorColor, 0, .86, .065, root, [1.02, .92, .88], { metalness: .28, roughness: .52 });
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.032, .28, 5, 10),
+      kit.mat(tone(cloth, '#1e242b', .28), { surface: 'cloth' }),
+      [
+        { pos: [-.115, .91, .235], scale: [1, 1, .45], rot: [0, 0, -.22] },
+        { pos: [.115, .91, .235], scale: [1, 1, .45], rot: [0, 0, .22] },
+      ],
+      root,
+    );
+  } else if (o.garmentStyle === 'roman-soldier') {
+    // Lorica segmentata de aço escovado + ombreiras + tiras de couro (pteruges)
+    const steelMatOpts = { metalness: .44, roughness: .42 };
+    const cuirass = ball(.292, '#99a0a8', 0, .87, .035, root, [1.03, .92, .93], steelMatOpts);
     cuirass.name = 'Couraça esculpida';
-    const chestPlate = local(new THREE.TorusGeometry(.278, .018, 6, 28), tone(armorColor, '#e0c684', .3), 0, .71, .01, root, { metalness: .32, roughness: .48 });
+    for (const [bandY, bandR] of [[.94, .272], [.80, .284]]) {
+      const segBand = local(new THREE.TorusGeometry(bandR, .016, 6, 26), '#b0b7bf', 0, bandY, .02, root, steelMatOpts);
+      segBand.rotation.x = Math.PI / 2;
+    }
+    instancedSymmetric(
+      new THREE.SphereGeometry(.125, 14, 10),
+      kit.mat('#a3aab2', { surface: 'cloth', ...steelMatOpts }),
+      [
+        { pos: [-.225, 1.055, 0], scale: [.92, .68, 1.05], rot: [0, 0, .26] },
+        { pos: [.225, 1.055, 0], scale: [.92, .68, 1.05], rot: [0, 0, -.26] },
+      ],
+      root,
+    );
+    const pteruges = [];
+    for (let i = 0; i < 10; i++) {
+      const ang = (i / 10) * TAU + .31;
+      pteruges.push({
+        pos: [Math.sin(ang) * .312, .495, Math.cos(ang) * .312],
+        scale: [.92, 1, .34],
+        rot: [0, ang, 0],
+      });
+    }
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.038, .17, 4, 8),
+      kit.mat('#613c24', { surface: 'cloth', roughness: .76 }),
+      pteruges,
+      root,
+    );
+  } else if (o.armor) {
+    // Couraça esculpida para Capitão Morôni, Helamã, Jovens Guerreiros e Golias
+    const armorColor = o.accentColor || '#9e8455';
+    const cuirass = ball(.285, armorColor, 0, .86, .065, root, [1.02, .92, .88], { metalness: .30, roughness: .50 });
+    cuirass.name = 'Couraça esculpida';
+    const chestPlate = local(new THREE.TorusGeometry(.278, .018, 6, 28), tone(armorColor, '#e0c684', .3), 0, .71, .01, root, { metalness: .34, roughness: .46 });
     chestPlate.rotation.x = Math.PI / 2;
   } else if (o.garmentStyle === 'restoration-woman') {
-    // Xale cruzado e camafeu/colarinho histórico do séc. XIX (Emma Smith)
     const shawl = ball(.285, o.mantle || '#e6d8be', 0, .96, .04, root, [1.06, .62, .92]);
     shawl.name = 'Xale histórico';
     ball(.032, o.accentColor || '#d4b475', 0, 1.03, .265, root, [.9, 1.1, .5]);
@@ -150,14 +237,25 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
   const belt = local(new THREE.TorusGeometry(.307, .024, 7, 32), beltColor, 0, .65, 0);
   belt.rotation.x = Math.PI / 2;
   ball(.042, beltColor, -.025, .648, .303, root, [.8, .85, .7]);
-  for (const side of [-1, 1]) {
-    const cord = capsule(.013, .16, beltColor, -.025 + side * .025, .55, .31);
-    cord.rotation.z = side * .16;
-    const fold = capsule(.016, .36, clothShade, side * .215, .41, .233);
-    fold.rotation.z = -side * .12;
-    fold.scale.z = .45;
-    fold.scale.x = variant === 2 ? 1.8 : variant === 1 ? 1.35 : 1;
-  }
+  instancedSymmetric(
+    new THREE.CapsuleGeometry(.013, .16, 4, 8),
+    kit.mat(beltColor, { surface: 'cloth' }),
+    [
+      { pos: [-.05, .55, .31], rot: [0, 0, -.16] },
+      { pos: [0, .55, .31], rot: [0, 0, .16] },
+    ],
+    root,
+  );
+  const foldScaleX = variant === 2 ? 1.8 : variant === 1 ? 1.35 : 1;
+  instancedSymmetric(
+    new THREE.CapsuleGeometry(.016, .36, 4, 8),
+    kit.mat(clothShade, { surface: 'cloth' }),
+    [
+      { pos: [-.215, .41, .233], scale: [foldScaleX, 1, .45], rot: [0, 0, .12] },
+      { pos: [.215, .41, .233], scale: [foldScaleX, 1, .45], rot: [0, 0, -.12] },
+    ],
+    root,
+  );
   const hem = local(new THREE.TorusGeometry(.326, .013, 6, 32), o.accentColor || clothShade, 0, .208, 0, root, clothGlow);
   hem.rotation.x = Math.PI / 2;
   hem.scale.setScalar([1, .97, .94][variant]);
@@ -198,34 +296,40 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
   const face = ball(.36, skin, 0, 0, 0, head, [.97, 1, .91], skinOptions);
   face.name = 'Rosto de argila';
 
-  // Cabelos Esculpidos por Estilo + Véus / Faixas / Coroas (sempre respeitando max y <= .385)
+  // Cabelos Esculpidos por Estilo + Véus / Faixas / Coroas / Elmos
   const hairOptions = { surface: 'hair' };
   const hStyle = o.hairStyle || hairNames[hairVariant];
   ball(.35, hair, 0, .012, -.12, head, hairVariant === 2 ? [.94, 1.02, .67] : hairVariant === 1 ? [.94, .98, .65] : [.98, .98, .67], hairOptions);
   const cap = local(new THREE.SphereGeometry(.365, 24, 14, 0, TAU, 0, Math.PI * .46), hair, 0, .025, -.018, head, hairOptions);
   cap.scale.z = .94;
 
-  for (const [px, py, pz, size, tilt] of [
-    [-.225, .194, .202, .116, -.50], [-.105, .247, .265, .133, -.30],
-    [.065, .26, .275, .139, .25], [.215, .213, .215, .11, .55],
-  ]) {
-    const parted = hStyle === 'bun-veil' || hStyle === 'shoulder-waves' || hairVariant === 2;
-    const swept = hairVariant === 1;
-    const lock = ball(size, hair, px * (parted ? 1.08 : .96), py - (swept ? .018 : 0), pz, head, [parted ? 1.04 : 1.16, swept ? .55 : .61, .60], hairOptions);
-    lock.rotation.z = tilt + (swept ? -.23 : parted ? Math.sign(px) * .12 : 0);
-  }
-
-  // Mechas nos ombros para Jesus Cristo, Profetas e cabelos longos/tranças
-  if (hStyle === 'shoulder-waves' || hStyle === 'patriarch-long' || hStyle === 'braided') {
-    for (const side of [-1, 1]) {
-      const wave = capsule(.058, .19, hair, side * .285, -.165, -.055, head, hairOptions);
-      wave.rotation.z = -side * .16;
-      wave.rotation.x = .12;
+  if (!o.helmet) {
+    for (const [px, py, pz, size, tilt] of [
+      [-.225, .194, .202, .116, -.50], [-.105, .247, .265, .133, -.30],
+      [.065, .26, .275, .139, .25], [.215, .213, .215, .11, .55],
+    ]) {
+      const parted = hStyle === 'bun-veil' || hStyle === 'shoulder-waves' || hairVariant === 2;
+      const swept = hairVariant === 1;
+      const lock = ball(size, hair, px * (parted ? 1.08 : .96), py - (swept ? .018 : 0), pz, head, [parted ? 1.04 : 1.16, swept ? .55 : .61, .60], hairOptions);
+      lock.rotation.z = tilt + (swept ? -.23 : parted ? Math.sign(px) * .12 : 0);
     }
   }
 
+  // Mechas nos ombros para Jesus Cristo, Profetas e cabelos longos/tranças
+  if (!o.helmet && (hStyle === 'shoulder-waves' || hStyle === 'patriarch-long' || hStyle === 'braided')) {
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.058, .19, 5, 10),
+      kit.mat(hair, hairOptions),
+      [
+        { pos: [-.285, -.165, -.055], rot: [.12, 0, .16] },
+        { pos: [.285, -.165, -.055], rot: [.12, 0, -.16] },
+      ],
+      head,
+    );
+  }
+
   // Coque traseiro e véu fluido para mulheres das escrituras
-  if (hStyle === 'bun-veil') {
+  if (hStyle === 'bun-veil' && !o.helmet) {
     ball(.135, hair, 0, -.04, -.34, head, [1, .92, .85], hairOptions);
     if (o.veil && o.mantle) {
       const veilCap = local(new THREE.SphereGeometry(.374, 20, 12, 0, TAU, 0, Math.PI * .52), o.mantle, 0, .01, -.045, head, clothGlow);
@@ -234,19 +338,74 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
     }
   }
 
+  // Elmo Romano (galea com protetores faciais e crista vermelha) ou Elmo de Bronze (Golias)
+  if (o.helmet === 'roman') {
+    const steelOpts = { metalness: .44, roughness: .42 };
+    const brassOpts = { metalness: .46, roughness: .38 };
+    const galea = local(new THREE.SphereGeometry(.396, 24, 14, 0, TAU, 0, Math.PI * .52), '#989fa7', 0, .058, 0, head, steelOpts);
+    galea.scale.set(1.01, .92, 1.01);
+    galea.name = 'Capacete romano de argila';
+    galea.userData.clayHelmet = true;
+
+    const browBand = local(new THREE.TorusGeometry(.384, .018, 6, 24), '#c9a356', 0, .072, -.005, head, brassOpts);
+    browBand.rotation.x = Math.PI / 2 - .06;
+
+    const neckGuard = ball(.24, '#8d949c', 0, -.055, -.28, head, [1.22, .26, .62], steelOpts);
+    neckGuard.rotation.x = .32;
+
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.044, .11, 4, 8),
+      kit.mat('#959ca4', { surface: 'cloth', ...steelOpts }),
+      [
+        { pos: [-.324, -.068, .112], scale: [.52, 1, .95], rot: [.18, .28, .16] },
+        { pos: [.324, -.068, .112], scale: [.52, 1, .95], rot: [.18, -.28, -.16] },
+      ],
+      head,
+    );
+
+    const crestHolder = capsule(.02, .11, '#c8a255', 0, .41, -.018, head, brassOpts);
+    crestHolder.name = 'Suporte da crista romana';
+    const crestScale = o.crest === 'transverse' ? [1.22, .58, .32] : [.32, .60, 1.24];
+    const plume = ball(.17, '#bd2826', 0, .475, -.02, head, crestScale, { roughness: .78 });
+    plume.name = 'Crista romana vermelha';
+  } else if (o.helmet === 'bronze') {
+    const bronzeOpts = { metalness: .42, roughness: .44 };
+    const helm = local(new THREE.SphereGeometry(.396, 22, 14, 0, TAU, 0, Math.PI * .51), '#a17e49', 0, .058, 0, head, bronzeOpts);
+    helm.scale.set(1.01, .92, 1.01);
+    helm.name = 'Elmo de bronze esculpido';
+    const rim = local(new THREE.TorusGeometry(.384, .019, 6, 24), '#bd9858', 0, .072, 0, head, bronzeOpts);
+    rim.rotation.x = Math.PI / 2 - .05;
+  }
+
   // Faixa de testa (headband) para jovens e guerreiros do Livro de Mórmon / Davi
-  if (o.headband) {
+  if (o.headband && !o.helmet) {
     const band = local(new THREE.TorusGeometry(.348, .018, 6, 28), o.accentColor || '#9c6b43', 0, .145, -.01, head);
     band.rotation.x = Math.PI / 2 - .08;
     band.scale.z = .94;
     band.name = 'Faixa frontal';
   }
 
-  // Coroa real ou toucado egípcio (mantendo altura abaixo de .385 para preservar enquadramentos)
+  // Coroa real com pontas douradas esculpidas ou toucado egípcio (abaixo de .385)
   if (o.crown === 'gold') {
-    const crownBand = local(new THREE.TorusGeometry(.31, .022, 6, 26), '#d9b45b', 0, .23, -.01, head, { metalness: .45, roughness: .38 });
+    const goldOpts = { metalness: .46, roughness: .36 };
+    const crownBand = local(new THREE.TorusGeometry(.31, .022, 6, 26), '#d9b45b', 0, .23, -.01, head, goldOpts);
     crownBand.rotation.x = Math.PI / 2 - .06;
     crownBand.name = 'Coroa real';
+    const peaks = [];
+    for (let i = 0; i < 5; i++) {
+      const ang = -1.1 + i * .55;
+      peaks.push({
+        pos: [Math.sin(ang) * .292, .274, Math.cos(ang) * .285 - .01],
+        scale: [1, 1, .82],
+        rot: [.06, ang, 0],
+      });
+    }
+    instancedSymmetric(
+      new THREE.ConeGeometry(.028, .068, 6),
+      kit.mat('#e2bf66', { surface: 'cloth', ...goldOpts }),
+      peaks,
+      head,
+    );
   } else if (o.crown === 'egyptian') {
     const diadem = local(new THREE.TorusGeometry(.345, .02, 6, 26), '#d4af59', 0, .16, -.005, head, { metalness: .42, roughness: .4 });
     diadem.rotation.x = Math.PI / 2 - .05;
@@ -256,9 +415,26 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
   // Orelhas laterais com cavidade interna e costeletas
   for (const side of [-1, 1]) {
     ball(.073, skin, side * .337, -.018, -.002, head, [.76, .95, .67], skinOptions).name = 'Orelha de argila';
-    ball(.036, tone(skin, '#9e664c', .28), side * .352, -.02, .006, head, [.48, .72, .42], skinOptions);
-    const sideburn = ball(.092, hair, side * .316, .036, -.024, head, [.43, hairVariant === 2 ? 1.2 : 1.3, .85], hairOptions);
-    sideburn.rotation.z = side * .13;
+  }
+  instancedSymmetric(
+    new THREE.SphereGeometry(.036, 10, 8),
+    kit.mat(tone(skin, '#9e664c', .28), skinOptions),
+    [
+      { pos: [-.352, -.02, .006], scale: [.48, .72, .42] },
+      { pos: [.352, -.02, .006], scale: [.48, .72, .42] },
+    ],
+    head,
+  );
+  if (!o.helmet) {
+    instancedSymmetric(
+      new THREE.SphereGeometry(.092, 12, 10),
+      kit.mat(hair, hairOptions),
+      [
+        { pos: [-.316, .036, -.024], scale: [.43, hairVariant === 2 ? 1.2 : 1.3, .85], rot: [0, 0, -.13] },
+        { pos: [.316, .036, -.024], scale: [.43, hairVariant === 2 ? 1.2 : 1.3, .85], rot: [0, 0, .13] },
+      ],
+      head,
+    );
   }
 
   // 5. Olhos Expressivos (Esclera sutil, Íris colorida, Pupila escura, Pálpebra superior e Catchlight)
@@ -305,9 +481,16 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
     tear.visible = false;
     tear.name = side < 0 ? 'Lágrima esquerda' : 'Lágrima direita';
     tears[side < 0 ? 'L' : 'R'] = tear;
-
-    ball(.044, tone(skin, '#e68a80', .36), side * .216, -.068, .254, head, [1.1, .63, .20], skinOptions);
   }
+  instancedSymmetric(
+    new THREE.SphereGeometry(.044, 12, 10),
+    kit.mat(tone(skin, '#e68a80', .36), skinOptions),
+    [
+      { pos: [-.216, -.068, .254], scale: [1.1, .63, .20] },
+      { pos: [.216, -.068, .254], scale: [1.1, .63, .20] },
+    ],
+    head,
+  );
 
   // Nariz esculpido em massinha (ponte + ponta arredondada)
   capsule(.015, .042, tone(skin, '#e3ad93', .10), 0, -.024, .326, head, skinOptions);
@@ -334,47 +517,103 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
       const lowerBeard = ball(.145, hair, 0, -.34, .11, head, [.88, .95, .78], hairOptions);
       lowerBeard.name = 'Pontas da barba longa';
     }
-    for (const side of [-1, 1]) {
-      const mustache = capsule(.027, .05, hair, side * .047, -.096, .312, head, hairOptions);
-      mustache.rotation.z = side * 1.18;
-      mustache.scale.z = .60;
-    }
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.027, .05, 4, 8),
+      kit.mat(hair, hairOptions),
+      [
+        { pos: [-.047, -.096, .312], scale: [1, 1, .60], rot: [0, 0, -1.18] },
+        { pos: [.047, -.096, .312], scale: [1, 1, .60], rot: [0, 0, 1.18] },
+      ],
+      head,
+    );
   }
 
-  // 7. Manto Sobreposto e Faixa Transversal (Jesus Cristo, Profetas e Mulheres)
-  if (o.mantle) {
-    ball(.34, o.mantle, 0, .70, -.168, root, [[1.08, 1.45, .44], [1, 1.35, .42], [1.08, 1.25, .44]][mantleVariant], clothGlow);
-    for (const side of [-1, 1]) {
-      const shoulderFold = ball(.17, o.mantle, side * .221, .985, -.04, root, [.65, 1.25, .60], clothGlow);
-      shoulderFold.rotation.z = -side * [.24, .17, .30][mantleVariant];
-    }
-    const drape = capsule(.083, .48, o.mantle, -.218, .715, .245, root, clothGlow);
-    drape.rotation.z = -.13;
-    drape.scale.x = [1, .90, 1.08][mantleVariant];
-    const mantleFold = capsule(.013, .37, tone(o.mantle, '#817668', .19), -.237, .704, .318);
-    mantleFold.rotation.z = -.13;
+  // 7. Manto Sobreposto Fluido (aberto na frente, sem cilindros/baguetes nem abas de besouro)
+  // Suprimido em soldados/guerreiros com armadura para exibir couraça limpa.
+  if (o.mantle && !o.armor && o.garmentStyle !== 'roman-soldier' && o.garmentStyle !== 'restoration-woman') {
+    const mantleShell = local(mantleGeometry(kit, mantleVariant), o.mantle, 0, 0, 0, root, clothGlow);
+    mantleShell.name = 'Manto envolvente esculpido';
+    instancedSymmetric(
+      new THREE.CapsuleGeometry(.016, .62, 5, 10),
+      kit.mat(tone(o.mantle, '#5e5044', .14), { surface: 'cloth', ...clothGlow }),
+      [
+        { pos: [-.154, .64, .265], scale: [.92, 1, .46], rot: [0, .48, .05] },
+        { pos: [.154, .64, .265], scale: [.92, 1, .46], rot: [0, -.48, -.05] },
+      ],
+      root,
+    );
+  }
+  if (o.mantle && (o.garmentStyle === 'christ-mortal' || o.garmentStyle === 'christ-resurrected')) {
+    const sash = capsule(.052, .46, o.sashColor || o.mantle, -.02, .86, .248, root, clothGlow);
+    sash.rotation.z = -.58;
+    sash.scale.z = .36;
+    sash.name = 'Faixa transversal do manto';
+  }
 
-    if (o.garmentStyle === 'christ-mortal' || o.garmentStyle === 'christ-resurrected') {
-      const sash = capsule(.055, .46, o.sashColor || o.mantle, -.02, .86, .245, root, clothGlow);
-      sash.rotation.z = -.58;
-      sash.scale.z = .42;
-      sash.name = 'Faixa transversal do manto';
+  // 7B. Asas Emplumadas Esculpidas e Auréola Luminosa (Anjos celestiais)
+  const angelWings = [];
+  if (o.angelWings) {
+    const featherGeo = kit.geometryCache.get('angel-feather-sphere') || (() => {
+      const g = new THREE.SphereGeometry(1, 12, 9);
+      kit.geometryCache.set('angel-feather-sphere', g);
+      return g;
+    })();
+    const featherMat = kit.mat('#f6f0e2', { surface: 'cloth', emissive: '#fff4d6', emissiveIntensity: .18, roughness: .82 });
+    for (const side of [-1, 1]) {
+      const wing = new THREE.Group();
+      wing.name = side < 0 ? 'Asa esquerda de argila' : 'Asa direita de argila';
+      wing.position.set(side * .20, 1.02, -.175);
+      root.add(wing);
+      const feathers = [];
+      for (let i = 0; i < 6; i++) {
+        const tier = i < 4 ? i : i - 3.5;
+        const rowY = i < 4 ? .09 + i * .062 : -.02 + (i - 4) * .055;
+        feathers.push({
+          pos: [side * (.11 + tier * .088), rowY, i < 4 ? -.02 : -.045],
+          scale: [.112, (.265 - tier * .02), .062],
+          rot: [0, -side * .12, -side * (.52 + tier * .17)],
+        });
+      }
+      instancedSymmetric(featherGeo, featherMat, feathers, wing);
+      angelWings.push({ wing, side });
     }
+  }
+  if (o.angelHalo) {
+    const halo = local(
+      new THREE.TorusGeometry(.22, .021, 7, 32),
+      '#f6df9e',
+      0,
+      1.89,
+      -.01,
+      root,
+      { emissive: '#e8be68', emissiveIntensity: 1.55, roughness: .34, bumpScale: 0 },
+    );
+    halo.rotation.x = Math.PI / 2;
+    halo.name = 'Auréola luminosa';
   }
 
   // 8. Braços, Braceletes e Mãos com Polegar Destacado
+  const sleeveColor = o.garmentStyle === 'roman-soldier' ? cloth : cloth;
   const arms = {};
   for (const [side, key] of [[-1, 'L'], [1, 'R']]) {
     const shoulder = new THREE.Group();
     shoulder.position.set(side * .24, 1.08, 0);
     root.add(shoulder);
-    const upper = capsule(.119, .11, cloth, 0, -.14, 0, shoulder, clothGlow);
+    const upper = capsule(.119, .11, sleeveColor, 0, -.14, 0, shoulder, clothGlow);
     upper.scale.z = .95;
     const elbow = new THREE.Group();
     elbow.position.y = -.31;
     shoulder.add(elbow);
-    capsule(.094, .10, cloth, 0, -.108, 0, elbow, clothGlow);
-    const cuffColor = o.bracers ? (o.accentColor || '#8c6239') : o.garmentStyle === 'restoration-man' ? '#f4eee1' : clothShade;
+    const forearmCloth = o.garmentStyle === 'roman-soldier' ? skin : sleeveColor;
+    const forearmOpts = o.garmentStyle === 'roman-soldier' ? skinOptions : clothGlow;
+    capsule(.094, .10, forearmCloth, 0, -.108, 0, elbow, forearmOpts);
+    const cuffColor = o.garmentStyle === 'roman-soldier'
+      ? '#664028'
+      : o.bracers
+        ? (o.accentColor || '#8c6239')
+        : o.garmentStyle === 'restoration-man'
+          ? '#f4eee1'
+          : clothShade;
     const cuff = local(new THREE.TorusGeometry(.085, o.bracers ? .018 : .012, 6, 20), cuffColor, 0, -.225, 0, elbow);
     cuff.rotation.x = Math.PI / 2;
     const hand = new THREE.Group();
@@ -416,6 +655,9 @@ export function createClayPerson(kit, name, x, z, rawOptions = {}) {
     robe.scale.x = 1 + Math.sin(t * 1.5 + motionPhase) * .006;
     robe.scale.z = 1 + Math.sin(t * 1.5 + motionPhase) * .008;
     head.rotation.z = Math.sin(t * .8 + motionPhase) * .009;
+    for (const { wing, side } of angelWings) {
+      wing.rotation.y = side * (.08 + Math.sin(t * 1.4 + motionPhase) * .05);
+    }
     const blinkPhase = ((t + motionPhase) % 5.7 + 5.7) % 5.7;
     const openness = 1 - .94 * Math.exp(-(((blinkPhase - 2.85) / .075) ** 2));
     rig.faceParts.lastBlinkOpenness = openness;

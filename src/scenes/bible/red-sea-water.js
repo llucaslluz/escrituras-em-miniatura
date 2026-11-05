@@ -36,8 +36,8 @@ function waveProfile() {
 export function createPartedSea(kit) {
   const root = kit.groupAt(0, 0, 0); root.name = 'Mar Vermelho · ondas de massinha'; root.userData.redSea = true;
   const profile = waveProfile(), surfaceAcross = 24, depthSegments = 64, wallAcross = profile.length - 1;
-  const surfaceMaterial = kit.mat('#6ed0ce', { roughness: .32, metalness: 0, transparent: false, opacity: 1, clearcoat: .27, clearcoatRoughness: .3, bumpScale: .008, side: THREE.DoubleSide });
-  const wallMaterial = kit.mat('#f1ffff', { vertexColors: true, roughness: .29, metalness: 0, transparent: true, opacity: .89, transmission: 0, clearcoat: .34, clearcoatRoughness: .26, bumpScale: .009, side: THREE.DoubleSide });
+  const surfaceMaterial = kit.mat('#58c6c6', { roughness: .22, metalness: 0, transparent: false, opacity: 1, clearcoat: .50, clearcoatRoughness: .18, ior: 1.34, bumpScale: .008, side: THREE.DoubleSide });
+  const wallMaterial = kit.mat('#e9ffff', { vertexColors: true, roughness: .21, metalness: 0, transparent: true, opacity: .90, transmission: .24, thickness: .68, ior: 1.35, attenuationColor: '#0e697c', attenuationDistance: 1.5, clearcoat: .58, clearcoatRoughness: .15, bumpScale: .009, side: THREE.DoubleSide });
   const foamMaterial = kit.mat('#fff5db', { roughness: .58, bumpScale: .006, clearcoat: .06 });
   const foamHighlight = kit.mat('#fffced', { roughness: .5, bumpScale: .004 });
   const dropletMaterial = kit.mat('#a5ece5', { roughness: .21, transparent: true, opacity: .86, clearcoat: .4, bumpScale: 0 });

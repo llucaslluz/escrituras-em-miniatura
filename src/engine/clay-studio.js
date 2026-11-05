@@ -6,8 +6,8 @@ import {FullScreenQuad} from 'three/addons/postprocessing/Pass.js';
 // pass through the miniature lens and remain sharp at every text size.
 const profiles=Object.freeze({
  low:Object.freeze({enabled:false,maxEdge:0,samples:0,blur:0,occlusion:0}),
- medium:Object.freeze({enabled:true,maxEdge:1800,samples:2,blur:1.1,occlusion:.24}),
- high:Object.freeze({enabled:true,maxEdge:2560,samples:4,blur:1.55,occlusion:.3})
+ medium:Object.freeze({enabled:true,maxEdge:1800,samples:2,blur:1.15,occlusion:.34}),
+ high:Object.freeze({enabled:true,maxEdge:2560,samples:4,blur:1.6,occlusion:.42})
 });
 export const opticsProfile=quality=>profiles[quality]||profiles.medium;
 
@@ -44,12 +44,15 @@ const fragmentShader=/* glsl */`
    float gap=viewDepth-distanceAt(aoUv);
    // Only close surfaces occlude. This avoids dark silhouettes and prevents
    // distant walls, the transparent sky or luminous beams becoming an outline.
-   contact+=smoothstep(.018,.075,gap)*(1.-smoothstep(.13,.7,gap));
+   contact+=smoothstep(.012,.068,gap)*(1.-smoothstep(.14,.75,gap));
+   vec2 tightAoUv=clamp(vUv+direction*(radius*.42)/resolution,vec2(0.),vec2(1.));
+   float tightGap=viewDepth-distanceAt(tightAoUv);
+   contact+=.55*smoothstep(.008,.042,tightGap)*(1.-smoothstep(.09,.38,tightGap));
   }
   softened/=12.;
   vec3 color=softened.rgb/max(softened.a,.0001);
-  color*=1.-contactStrength*contact*.125*step(viewDepth,cameraFar*.96);
-  color+=glow*.006;
+  color*=1.-contactStrength*contact*.135*step(viewDepth,cameraFar*.96);
+  color+=glow*.009;
   gl_FragColor=vec4(color,center.a);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -117,9 +120,9 @@ export function prepareStudio(kit,quality='medium'){
 export function updateStudio(kit,atmosphere){
  if(!kit.studio)return;
  const {rim,bounce}=kit.studio;
- if(atmosphere==='night'){rim.color.set('#9dbbe6');rim.intensity=.54;bounce.color.set('#ffdcaf');bounce.intensity=.38;}
- else if(atmosphere==='sunset'){rim.color.set('#c6ccef');rim.intensity=.50;bounce.color.set('#ffd0a3');bounce.intensity=.3;}
- else{rim.color.set('#d0e3f3');rim.intensity=.70;bounce.color.set('#ffe4c7');bounce.intensity=.30;}
+ if(atmosphere==='night'){rim.color.set('#a2c2ee');rim.intensity=.56;bounce.color.set('#ffdcaf');bounce.intensity=.38;}
+ else if(atmosphere==='sunset'){rim.color.set('#c8d0f2');rim.intensity=.52;bounce.color.set('#ffd0a3');bounce.intensity=.3;}
+ else{rim.color.set('#d5e8f8');rim.intensity=.82;bounce.color.set('#ffe4c7');bounce.intensity=.30;}
 }
 
 export function disposeShadows(kit){kit?.group.traverse(object=>object.shadow?.dispose());}

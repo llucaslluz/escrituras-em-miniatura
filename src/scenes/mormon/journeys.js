@@ -109,7 +109,7 @@ export const builders = {
   M06(k) {
     k.finish({ground:'#6d7d57',camera:[8,6.5,10],target:[0,1,0]});k.background.set('#c5d1b5');
     [[-4,-2,1.2],[-2.4,-3.3,1.4],[.1,-3.9,1.1],[2.9,-3.1,1.3],[4.2,-.7,1.15],[-4,1.5,.9],[3.4,3,.8]].forEach(([x,z,s])=>k.tree(x,z,s));
-    for(let i=0;i<18;i++)grass(k,Math.sin(i*2.4)*4.8,Math.cos(i*1.7)*4.5,.8);k.rock(.9,0,1.3);k.rock(1.6,-.5,.7);dust(k,0,.5,'#d9dfb0');
+    for(let i=0;i<18;i++){const gx=Math.sin(i*2.4)*4.2,gz=Math.cos(i*1.7)*3.8,rad=Math.hypot(gx,gz);const s=rad>5.2?5.2/rad:1;grass(k,gx*s,gz*s,.8);}k.rock(.9,0,1.3);k.rock(1.6,-.5,.7);dust(k,0,.5,'#d9dfb0');
     const enos=k.person('Enos',-.45,.2,{robe:'#b7a17a',mantle:'#788367'}),arc=new THREE.EllipseCurve(0,0,.28,.7,-Math.PI/2,Math.PI/2,false,0);
     const pts=arc.getPoints(25).map(p=>new THREE.Vector3(p.x,p.y,0));const bow=k.mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,.025,6),k.mat('#7a5637'),-1.4,.75,.3);beam(k,[-1.4,.05,.3],[-1.4,1.45,.3],.007,'#d1b88c');
     token(k,bow,'Arco em repouso','Contexto da caçada','Enos 1:3','Enos sai para caçar e recorda o ensino de seu pai.');

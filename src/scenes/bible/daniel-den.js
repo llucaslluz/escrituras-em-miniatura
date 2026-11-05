@@ -109,7 +109,7 @@ export function buildDanielDen(k){
     details('#647657', jointMoss); details('#8a9568', paleMoss);
     const pebbles = [];
     for (let i = 0; i < 23; i++) { const a = i / 23 * TAU, r = 4.1 + Math.sin(i * 3) * .6; pebbles.push([Math.sin(a) * r, .045, Math.cos(a) * r, .05 + i % 3 * .025, .04 + i % 2 * .02, .065]); }
-    details('#c4b8a1', pebbles);
+    details('#c4b8a1', pebbles); const bones = []; for (const [bx, bz, ang, len] of [[-3.15, 2.05, .45, .24], [-3.42, 2.28, -.65, .19], [3.32, 1.98, -.52, .23], [-2.55, -1.55, .82, .21]]) { const ca = Math.cos(ang), sa = Math.sin(ang); bones.push([bx, .048, bz, len, .036, .044, 0, ang]); for (const end of [-1, 1]) for (const lobe of [-1, 1]) bones.push([bx + ca * len * .92 * end - sa * .028 * lobe, .052, bz - sa * len * .92 * end - ca * .028 * lobe, .048, .042, .046, 0, ang]); } details('#ded4be', bones);
     const da=kneelingDaniel(k);
     const positions = [[-2.75, .9, 1.18, .65, false], [2.65, .8, 1.2, -.9, false], [-1.9, 3.3, 1.13, -.25, true], [1.65, 3.6, 1.13, -.1, true], [2, -1.8, 1.02, 2.4, false]];
     const lions = positions.map(([x, z, s, turn, resting]) => { const lion = k.animal('lion', x, z, s); lion.rotation.y = turn; lion.userData.resting = resting; return lion; });

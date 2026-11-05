@@ -135,6 +135,9 @@ export function buildRedSea(k){
   const shell=k.mesh(new THREE.SphereGeometry(.09,12,8,0,PI*2,0,PI*.56),k.mat('#efdbb7',{roughness:.73}),x,.035,z);shell.scale.set(1.15,.5,.85);shell.rotation.y=z;
  }
  const jar=k.vase(-.2,0,4.75);jar.scale.setScalar(.55);jar.name='Pequeno jarro na margem';
+ for(const [bx,bz,bc,bs]of[[.12,0,4.28,'#9d754e'],[2.98,0,3.82,'#8b6643'],[2.42,0,4.55,'#ad855c']]){
+  const bag=k.travelBag(bx,bz,bc,'#9d754e',decor);bag.position.set(bx,.01,bc);bag.scale.setScalar(.88);bag.children[0].material=k.mat(bs,{surface:'cloth'});
+ }
  const seaDecor=k.groupAt();seaDecor.name='Algas de massinha junto à água';const leaves=[];
  for(const [x,z]of[[-4.8,.9],[-4.35,2.0],[4.8,.4],[4.45,1.75]])for(let n=0;n<5;n++){
   const h=.16+n%3*.065;leaves.push([x+Math.sin(n*2.2)*.09,.14+h*.42,z+Math.cos(n*2.2)*.1,.038,h,.06,n*.8]);
@@ -160,7 +163,7 @@ export function buildRedSea(k){
   const startX=((i%3)-1)*.8,startZ=-3.45-Math.floor(i/3)*.7;
   const rig=k.person('Povo de Israel',startX,startZ,o);
   rig.root.userData.redSeaTraveler=true;rig.root.userData.redSeaFamily=true;rig.root.userData.redSeaArrival=[o.x,o.z];
-  return{rig,end:o,startX,startZ,index:i};
+  if(i===3||i===6||i===9)k.mesh(new THREE.CylinderGeometry(.016,.02,1.18,8),k.mat('#7d5636',{surface:'wood'}),0,.18,.03,rig.handR); return{rig,end:o,startX,startZ,index:i};
  });
  const paths=familyPaths(families);
 

@@ -49,15 +49,17 @@ export const CHARACTER_PROFILES = {
     eraStyle: 'celestial',
     garmentStyle: 'christ-resurrected',
     skin: '#d2a382',
-    hair: '#8c7252',
+    hair: '#cbb17a',
     robe: '#f7f1e3',
-    mantle: '#e6d7b2',
+    mantle: '#eae0c4',
     accentColor: '#dfc078',
     hairStyle: 'shoulder-waves',
     beardStyle: 'none',
     beard: false,
     footwear: 'sandals',
     heavenlyGlow: true,
+    angelWings: true,
+    angelHalo: true,
   },
   'João Batista': {
     eraStyle: 'biblical',
@@ -219,7 +221,9 @@ export const CHARACTER_PROFILES = {
     skin: '#b88360',
     hair: '#3a2a1e',
     robe: '#7c6a55',
-    mantle: '#6b4438',
+    mantle: '',
+    accentColor: '#a3804c',
+    helmet: 'bronze',
     armor: true,
     bracers: true,
     hairStyle: 'curly-short',
@@ -684,8 +688,8 @@ export const CHARACTER_PROFILES = {
     garmentStyle: 'scripture-woman',
     skin: '#cf9d7b',
     hair: '#4f392b',
-    robe: '#e5d8bc',
-    mantle: '#6f929c',
+    robe: '#e8dfd0',
+    mantle: '#466c95',
     veil: true,
     hairStyle: 'bun-veil',
     beardStyle: 'none',
@@ -923,13 +927,140 @@ export const CHARACTER_PROFILES = {
     beard: true,
     footwear: 'sandals',
   },
+  'Dario': {
+    eraStyle: 'royal',
+    garmentStyle: 'royal',
+    skin: '#c38f6b',
+    hair: '#5b4737',
+    robe: '#bfa36c',
+    mantle: '#6a5b73',
+    accentColor: '#dbb968',
+    crown: 'gold',
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'royal-beard',
+    beard: true,
+    footwear: 'sandals',
+  },
+  'Lamôni': {
+    eraStyle: 'royal',
+    garmentStyle: 'royal',
+    skin: '#b57d58',
+    hair: '#2d2018',
+    robe: '#c2a67d',
+    mantle: '#8a5643',
+    accentColor: '#cfa758',
+    crown: 'gold',
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'sandals',
+  },
+  'Rei Ânti-Néfi-Leí': {
+    eraStyle: 'royal',
+    garmentStyle: 'royal',
+    skin: '#b77f59',
+    hair: '#36271d',
+    robe: '#c8b08a',
+    mantle: '#6d7e66',
+    accentColor: '#cfa85c',
+    crown: 'gold',
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'sandals',
+  },
+  'Mosias': {
+    eraStyle: 'royal',
+    garmentStyle: 'royal',
+    skin: '#c28d68',
+    hair: '#5c4837',
+    robe: '#d4c39e',
+    mantle: '#6a7c66',
+    accentColor: '#cfa85c',
+    crown: 'gold',
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'short-beard',
+    beard: true,
+    footwear: 'sandals',
+  },
+  'Samuel': {
+    eraStyle: 'mormon',
+    garmentStyle: 'mormon-youth',
+    skin: '#b47c56',
+    hair: '#302219',
+    robe: '#b7a17e',
+    mantle: '#7b634b',
+    headband: true,
+    bracers: true,
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'sandals',
+  },
+  'Discípulo amado': {
+    eraStyle: 'biblical',
+    garmentStyle: 'mormon-youth',
+    skin: '#ca9673',
+    hair: '#5b412e',
+    robe: '#cfc0a2',
+    mantle: '#7a9188',
+    hairStyle: 'shoulder-waves',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'sandals',
+  },
+  'Condenados ao lado de Jesus': {
+    eraStyle: 'biblical',
+    garmentStyle: 'mormon-youth',
+    skin: '#c48f6c',
+    hair: '#4d3828',
+    robe: '#cab99c',
+    mantle: '',
+    hairStyle: 'curly-short',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'sandals',
+  },
+  'Opositor com arco': {
+    eraStyle: 'mormon-warrior',
+    garmentStyle: 'mormon-warrior',
+    skin: '#bc8660',
+    hair: '#3a291e',
+    robe: '#a68b6c',
+    mantle: '',
+    armor: true,
+    headband: true,
+    bracers: true,
+    hairStyle: 'curly-short',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'boots',
+  },
+  'Opositor com pedras': {
+    eraStyle: 'mormon-warrior',
+    garmentStyle: 'mormon-warrior',
+    skin: '#bd8761',
+    hair: '#422f22',
+    robe: '#ab9173',
+    mantle: '',
+    armor: true,
+    headband: true,
+    bracers: true,
+    hairStyle: 'curly-short',
+    beardStyle: 'none',
+    beard: false,
+    footwear: 'boots',
+  },
   'Centurião': {
     eraStyle: 'roman',
-    garmentStyle: 'mormon-warrior',
+    garmentStyle: 'roman-soldier',
     skin: '#c4906c',
     hair: '#4c3829',
-    robe: '#a6896b',
-    mantle: '#8a4338',
+    robe: '#94352c',
+    mantle: '',
+    accentColor: '#c9a356',
+    helmet: 'roman',
+    crest: 'transverse',
     armor: true,
     bracers: true,
     hairStyle: 'curly-short',
@@ -939,11 +1070,14 @@ export const CHARACTER_PROFILES = {
   },
   'Soldados romanos': {
     eraStyle: 'roman',
-    garmentStyle: 'mormon-warrior',
+    garmentStyle: 'roman-soldier',
     skin: '#c38f6b',
     hair: '#4a3728',
-    robe: '#a2886c',
-    mantle: '#824b3d',
+    robe: '#8a322a',
+    mantle: '',
+    accentColor: '#b8944f',
+    helmet: 'roman',
+    crest: 'longitudinal',
     armor: true,
     bracers: true,
     hairStyle: 'curly-short',
@@ -969,6 +1103,8 @@ export function getCharacterProfile(sceneId = '', name = '', rawOptions = {}) {
       base = CHARACTER_PROFILES['Jesus Cristo'];
     } else if (/^(anjo|anjos|mensageiro|mensageiros)/i.test(cleanName)) {
       base = CHARACTER_PROFILES['Gabriel'];
+    } else if (/^(soldado|soldados|guarda|guardas)/i.test(cleanName) && /^B(1[4-9]|[23]\d)$/.test(sceneId)) {
+      base = CHARACTER_PROFILES['Soldados romanos'];
     } else if (/^(soldado|guarda|guerreiro)/i.test(cleanName)) {
       base = CHARACTER_PROFILES['Jovens guerreiros'];
     } else if (/^(maria|marta|rute|noemi|saria|eva|mulher|cantora|filha|mãe)/i.test(cleanName)) {
@@ -977,7 +1113,7 @@ export function getCharacterProfile(sceneId = '', name = '', rawOptions = {}) {
       base = {
         eraStyle: 'restoration',
         garmentStyle: 'restoration-man',
-         footwear: 'shoes',
+        footwear: 'shoes',
         hairStyle: 'curly-short',
         beardStyle: rawOptions.beard ? 'short-beard' : 'none',
       };
@@ -985,6 +1121,21 @@ export function getCharacterProfile(sceneId = '', name = '', rawOptions = {}) {
   }
 
   const profile = { ...(base || {}) };
+
+  // Anjos das escrituras recebem asas emplumadas esculpidas e auréola luminosa
+  // (em B11, daniel-den.js constrói suas próprias asas/auréola dedicadas; seres
+  // ressurretos como Cristo, Pai, Morôni, João Batista e Pedro/Tiago/João não usam asas).
+  if (cleanName === 'Gabriel' || /^(anjo|anjos)\b/i.test(cleanName)) {
+    profile.angelWings = sceneId !== 'B11';
+    profile.angelHalo = sceneId !== 'B11';
+    if (!/^(anjo|anjos)\b/i.test(cleanName) && cleanName !== 'Gabriel') {
+      profile.angelWings = false;
+      profile.angelHalo = false;
+    }
+  } else {
+    profile.angelWings = false;
+    profile.angelHalo = false;
+  }
 
   // Cristo Ressurreto / Celestial vs. Ministério Mortal
   if (cleanName === 'Jesus Cristo' || cleanName === 'Senhor' || cleanName === 'O Senhor') {
@@ -1026,6 +1177,16 @@ export function getCharacterProfile(sceneId = '', name = '', rawOptions = {}) {
     profile.garmentStyle = 'christ-resurrected';
     profile.robe = '#f6efe0';
     profile.mantle = '#e6d8b8';
+    profile.heavenlyGlow = true;
+  }
+
+  // Pedro, Tiago e João como mensageiros celestes na restauração do Sacerdócio de Melquisedeque (D11)
+  if ((cleanName === 'Pedro' || cleanName === 'Tiago' || cleanName === 'João') && sceneId === 'D11') {
+    profile.eraStyle = 'celestial';
+    profile.garmentStyle = 'christ-resurrected';
+    profile.robe = '#f7f0e2';
+    profile.mantle = '#e8dab8';
+    profile.sashColor = '#dfc792';
     profile.heavenlyGlow = true;
   }
 

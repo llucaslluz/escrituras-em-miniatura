@@ -75,7 +75,10 @@ export function jonahSea(k){
  }
  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));geometry.setIndex(indices);geometry.computeVertexNormals();
  geometry.userData.clayWaterSurface=true;geometry.userData.plinthRadius=5.76;
- const water=k.mesh(geometry,k.mat('#70969d',{transparent:true,opacity:.85,metalness:.18,roughness:.38,bumpScale:.018,side:THREE.DoubleSide}),0,0,0,root);water.name='Agua de margem curva';
+ const water=k.mesh(geometry,k.mat('#2d8694',{transparent:true,opacity:.90,transmission:.32,thickness:.58,ior:1.33,attenuationColor:'#0f5c6e',attenuationDistance:1.4,clearcoat:.52,clearcoatRoughness:.18,metalness:.03,roughness:.22,bumpScale:.012,side:THREE.DoubleSide}),0,0,0,root);water.name='Agua de margem curva';
+ const foamBeads=new THREE.InstancedMesh(new THREE.SphereGeometry(1,10,8),k.mat('#f8f4e8',{roughness:.62,bumpScale:.006}),26),foamPose=new THREE.Object3D();
+ for(let i=0;i<26;i++){const zz=-4.1+i*.305,xx=1.42+Math.sin(zz*1.6)*.14;foamPose.position.set(xx-root.position.x,.03,zz-root.position.z);foamPose.scale.set(.10+(i%3)*.03,.04,.13+(i%2)*.03);foamPose.rotation.y=Math.sin(i)*.3;foamPose.updateMatrix();foamBeads.setMatrixAt(i,foamPose.matrix);}
+ foamBeads.castShadow=false;foamBeads.receiveShadow=true;root.add(foamBeads);
  const waves=new THREE.InstancedMesh(new THREE.TorusGeometry(.25,.008,3,22,Math.PI*1.3),k.mat('#c9d9cb',{transparent:true,opacity:.43,depthWrite:false}),28),pose=new THREE.Object3D();waves.castShadow=false;waves.receiveShadow=true;root.add(waves);
  const position=geometry.attributes.position;
  k.ambient(t=>{

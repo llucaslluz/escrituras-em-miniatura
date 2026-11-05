@@ -79,7 +79,7 @@ export const builders = {
   M17(k) {
     k.finish({ground:'#acb28b',camera:[9,6.7,11],target:[0,1,0]});k.background.set('#d9e2cd');
     // An intimate garden edge is deliberately separate from the descent and children's compositions.
-    temple(k,1.8,-4);k.tree(-3.8,-2.1,1.25);k.tree(4.3,-.8,1);k.tree(-4.3,2,.8);
+    temple(k,1.1,-3.4);k.tree(-3.8,-2.1,1.25);k.tree(4.3,-.8,1);k.tree(-4.3,2,.8);
     for(let i=0;i<7;i++){const b=k.box(.8,.05,.7,i%2?'#c9bea0':'#c1b18c',-.6+i*.35,.025,-2.6+i*.8);b.rotation.y=-.25;}
     k.rock(-1.8,-2.6,.8);k.rock(3.9,2.7,.65);for(let i=0;i<8;i++)grass(k,-3.1+(i%2)*.3,-1.6+i*.55,1.1);
     const christ=k.person('Jesus Cristo',.3,-.8,{robe:'#f2ecd7',mantle:'#dfd6ba',hair:'#67513b'});

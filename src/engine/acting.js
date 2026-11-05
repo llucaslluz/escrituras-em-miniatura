@@ -11,9 +11,12 @@ export const DIVINE_NAMES = new Set([
 
 export const HEAVENLY_MESSENGER_NAMES = new Set([
   'Anjo',
+  'Anjos',
   'Anjo do Senhor',
+  'Anjo de proteção',
   'Anjo fortalecedor',
   'Anjo querubim',
+  'Anjos no sepulcro',
   'Gabriel',
   'Homem de branco',
   'Dois mensageiros de branco',
@@ -51,7 +54,8 @@ export function resolveFigureStyling(sceneId, name, options = {}) {
   const isChrist = name === 'Jesus Cristo' || name === 'Senhor' || options.divine === 'christ';
   const isFather = name === 'Deus, o Pai' || options.divine === 'father';
   const isMessenger = HEAVENLY_MESSENGER_NAMES.has(name) ||
-    ((name === 'Morôni' || name === 'João Batista') && sceneId !== 'M20');
+    ((name === 'Morôni' || name === 'João Batista') && sceneId !== 'M20') ||
+    (sceneId === 'D11' && (name === 'Pedro' || name === 'Tiago' || name === 'João'));
 
   const styled = { ...options };
   if (isChrist) {

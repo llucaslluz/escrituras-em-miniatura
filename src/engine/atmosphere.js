@@ -1,9 +1,9 @@
 import {updateStudio} from './clay-studio.js';
 
 const presets = Object.freeze({
-  morning: Object.freeze({background:'#dce2d2',key:'#fff0d3',intensity:3.25,position:[-5,9,6],sky:'#e8f2f3',ground:'#a08869',fill:2.05,exposure:1.1}),
-  sunset: Object.freeze({background:'#70584d',key:'#ffc388',intensity:2.7,position:[-7,3,-4],sky:'#d9b4a1',ground:'#65525a',fill:1.6,exposure:1.05}),
-  night: Object.freeze({background:'#202d3e',key:'#bbd1f4',intensity:1.6,position:[4,8,-5],sky:'#8faccd',ground:'#414b65',fill:1.15,exposure:1.08})
+  morning: Object.freeze({background:'#d6e3df',key:'#fff1d2',intensity:3.45,position:[-5.2,9.2,5.8],sky:'#e5f2f5',ground:'#9b8162',fill:1.85,exposure:1.12}),
+  sunset: Object.freeze({background:'#644c44',key:'#ffbe7d',intensity:2.95,position:[-7.2,3.6,-3.8],sky:'#d9ae98',ground:'#5d4951',fill:1.45,exposure:1.06}),
+  night: Object.freeze({background:'#1c2838',key:'#b6cff5',intensity:1.65,position:[4.2,8.4,-4.8],sky:'#85a4c8',ground:'#38435c',fill:1.05,exposure:1.08})
 });
 
 export const normalizeAtmosphere = value => Object.hasOwn(presets,value) ? value : 'original';
