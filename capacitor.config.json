@@ -1,0 +1,9 @@
+{
+  "appId": "org.escrituras.miniatura",
+  "appName": "Escrituras em Miniatura",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

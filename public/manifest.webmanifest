@@ -1,0 +1,20 @@
+{
+  "name": "Escrituras em Miniatura",
+  "short_name": "Escrituras 3D",
+  "description": "Explore 72 histórias das escrituras (Bíblia, Livro de Mórmon, Doutrina e Convênios e Pérola de Grande Valor) em dioramas 3D contemplativos.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#151a22",
+  "theme_color": "#284d40",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

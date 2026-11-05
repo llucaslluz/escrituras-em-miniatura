@@ -3,6 +3,7 @@ import {makeClayTexture,clayColor,clayGeometry,clayPlinth,clayBeamTexture,clipWa
 import {createClayPerson} from './clay-people.js';
 import {createClayAnimal,createClayDove} from './clay-animals.js';
 import {applyGroundedGait,gaitEnvelope} from './clay-gait.js';
+import {resetActingFrame,applyContextualExpressions} from './acting.js';
 
 const TAU=Math.PI*2;
 const surfaceProfiles={cloth:{roughness:.85,bumpScale:.009,clearcoat:.015},skin:{roughness:.64,bumpScale:.007,clearcoat:.025},hair:{roughness:.76,bumpScale:.009,clearcoat:.025},stone:{roughness:.86,bumpScale:.01,clearcoat:.01},wood:{roughness:.79,bumpScale:.01,clearcoat:.02},leaf:{roughness:.83,bumpScale:.009,clearcoat:.015}};
@@ -98,6 +99,6 @@ export class Kit{
  book(x,y,z){const g=this.groupAt(x,y,z);this.mesh(new THREE.BoxGeometry(.54,.08,.39),this.mat('#dcd1ad'),0,.06,0,g);this.mesh(new THREE.BoxGeometry(.58,.025,.42),this.mat('#665344'),0,.01,0,g);this.mesh(new THREE.BoxGeometry(.58,.025,.42),this.mat('#665344'),0,.11,0,g);return g}
  plates(x,y,z){const g=this.groupAt(x,y,z);for(let i=0;i<5;i++)this.mesh(new THREE.BoxGeometry(.52,.022,.36),this.mat('#c9a25b',{metalness:.55,roughness:.48}),0,.02+i*.027,0,g);for(let j=0;j<3;j++){const ring=this.mesh(new THREE.TorusGeometry(.06,.013,6,16),this.mat('#ddbd72',{metalness:.6}),-.22,.08,j*.12-.12,g);ring.rotation.x=Math.PI/2;}return g}
  finish(config={}){Object.assign(this.config,config);return this}
- update(t,duration=32){const p=Math.min(t/duration,1);for(const f of this.ambients)f(t,p);for(const f of this.animations)f(Math.min(t,duration),p);}
+ update(t,duration=32){const p=Math.min(t/duration,1),clamped=Math.min(t,duration);for(const f of this.ambients)f(t,p);resetActingFrame(this);for(const f of this.animations)f(clamped,p);applyContextualExpressions(this,clamped,duration);}
  dispose(){const geos=new Set(),mats=new Set();this.group.traverse(o=>{if(o.geometry)geos.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>mats.add(m));});geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());this.animations.length=this.ambients.length=this.people.length=this.labels.length=this.selectables.length=0;this.geometryCache.clear();this.materials.clear();this.group.clear();}
 }

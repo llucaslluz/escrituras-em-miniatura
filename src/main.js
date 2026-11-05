@@ -7,6 +7,7 @@ import {stories,books,byId,characters,searchStories,neighbors,normalize,characte
 import {state,saveState,favorite,visit} from './storage.js';
 import {icon,mark} from './icons.js';
 import {Viewer} from './engine/viewer.js';
+import {soundscape} from './engine/audio.js';
 
 const app=document.querySelector('#app'),dialogs=document.querySelector('#dialogs');let viewer=null,routeToken=0,currentStory=null,lastSaved=-1,scenePanels=null,releaseSceneCopy=()=>{};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -15,7 +16,8 @@ const bookName=id=>books.find(b=>b.id===id)?.name||'';
 const types={relato:'Relato',parábola:'Parábola',visão:'Visão',doutrina:'Doutrina'};
 const btn=(action,label,name,extra='')=>`<button class="icon-button" data-action="${action}" aria-label="${label}" title="${label}" ${extra}>${icon(name)}</button>`;
 function toast(message){const el=document.querySelector('#toast');el.textContent=message;el.classList.add('visible');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('visible'),3200)}
-function preferences(){document.documentElement.dataset.text=state.preferences.text;document.documentElement.dataset.reduced=state.preferences.reduced;viewer?.applyPreferences(state.preferences)}
+function preferences(){document.documentElement.dataset.text=state.preferences.text;document.documentElement.dataset.reduced=state.preferences.reduced;viewer?.applyPreferences(state.preferences);soundscape.setEnabled(Boolean(state.preferences.sound));syncSoundUI();}
+function syncSoundUI(){const on=Boolean(state.preferences.sound);const btnEl=document.querySelector('[data-action="toggle-sound"]');if(btnEl){btnEl.setAttribute('aria-pressed',String(on));btnEl.setAttribute('aria-label',on?'Desligar som contemplativo':'Ligar som contemplativo');btnEl.innerHTML=`${icon(on?'sound':'mute')}<span class="sound-label">Som</span>`;}const sw=document.querySelector('#sound-scene');if(sw)sw.checked=on;}
 function shell(content,active='inicio'){
  document.body.classList.remove('immersive-mode');
  app.innerHTML=`<header class="site-header"><div class="header-inner"><a href="#inicio" class="brand" aria-label="Escrituras em Miniatura, início">${mark}<span>Escrituras <i>em Miniatura</i><small>HISTÓRIAS DE FÉ EM MOVIMENTO</small></span></a><nav class="desktop-nav" aria-label="Navegação principal"><a ${active==='inicio'?'aria-current="page"':''} href="#inicio">Início</a><a ${active==='biblioteca'?'aria-current="page"':''} href="#biblioteca">Biblioteca</a><a ${active==='tempo'?'aria-current="page"':''} href="#tempo">Linha do tempo</a><a ${active==='personagens'?'aria-current="page"':''} href="#personagens">Personagens</a><a ${active==='sobre'?'aria-current="page"':''} href="#sobre">Sobre</a></nav><div class="header-actions"><a href="#biblioteca?favoritos=1" class="icon-button" aria-label="Meus favoritos" title="Meus favoritos">${icon('heart')}</a>${btn('preferences','Abrir preferências','settings')}${btn('mobile-menu','Abrir navegação','menu','class="mobile-toggle" aria-expanded="false" aria-controls="editorial-mobile-nav"')}</div></div><nav class="mobile-nav" id="editorial-mobile-nav" aria-label="Navegação móvel" hidden><a href="#inicio">Início</a><a href="#biblioteca">Biblioteca</a><a href="#tempo">Linha do tempo</a><a href="#personagens">Personagens</a><a href="#sobre">Sobre o projeto</a></nav></header><main id="main" tabindex="-1">${content}</main><footer><a href="#inicio" class="footer-brand">${mark}<span>Escrituras em Miniatura<small>Um convite para olhar com calma.</small></span></a><p>Uma interpretação artística e independente.<br>As escrituras são a fonte; a miniatura, um convite.</p><div><a href="#sobre">Fontes e créditos</a><a href="#biblioteca">Explorar histórias ${icon('arrow')}</a></div></footer>`;
@@ -35,12 +37,13 @@ function library(params){const obra=params.get('obra')||'',fav=params.get('favor
 }
 async function storyPage(id){
  const s=byId.get(id);if(!s){shell('<section class="page-heading wrap"><h1>História não encontrada</h1><a href="#biblioteca" class="button primary">Voltar à biblioteca</a></section>');return;}
- currentStory=s;const resume=state.last?.id===s.id?state.last.time:0;visit(s.id);document.body.classList.add('immersive-mode');app.innerHTML=renderImmersive(s,state);preferences();scenePanels=createScenePanels(app.querySelector('.immersive-page'));releaseSceneCopy=observeSceneCopy(app.querySelector('.immersive-page'));
+ currentStory=s;soundscape.setStory(s);const resume=state.last?.id===s.id?state.last.time:0;visit(s.id);document.body.classList.add('immersive-mode');app.innerHTML=renderImmersive(s,state);preferences();scenePanels=createScenePanels(app.querySelector('.immersive-page'));releaseSceneCopy=observeSceneCopy(app.querySelector('.immersive-page'));
  const host=document.querySelector('#story-stage'),token=routeToken;const ownViewer=new Viewer(host,{...state.preferences,immersive:true},updatePlayback,selectEntry);viewer=ownViewer;
  document.querySelector('#story-select').addEventListener('change',e=>{location.hash='historia/'+e.target.value});
  document.querySelector('#show-names').addEventListener('change',e=>{if(ownViewer.labelLayer){ownViewer.names=e.target.checked;ownViewer.labelLayer.hidden=!ownViewer.names;}});
  document.querySelector('#animate-scene').addEventListener('change',e=>{ownViewer.playing=e.target.checked;updatePlayback(ownViewer)});
  document.querySelector('#loop-scene').addEventListener('change',e=>{state.preferences.loop=e.target.checked;saveState();ownViewer.setLoop(e.target.checked);updatePlayback(ownViewer)});
+ document.querySelector('#sound-scene')?.addEventListener('change',e=>{state.preferences.sound=e.target.checked;saveState();soundscape.setEnabled(e.target.checked);syncSoundUI()});
  document.querySelector('#zoom-level').addEventListener('input',e=>ownViewer.setZoomPercent?.(Number(e.target.value)));
  document.querySelector('#progress').addEventListener('input',e=>ownViewer.seek(Number(e.target.value)));
  document.querySelector('#speed').addEventListener('change',e=>{ownViewer.speed=Number(e.target.value)});
@@ -83,6 +86,7 @@ document.addEventListener('click',async e=>{if(e.target.closest('.skip')){e.prev
  else if(action==='toggle-controls')scenePanels?.toggle('controls');
  else if(['close-settings','close-navigation','close-controls'].includes(action))scenePanels?.close(true);
  else if(action==='toggle-study'||action==='toggle-info')openStudy();
+ else if(action==='toggle-sound'){state.preferences.sound=!state.preferences.sound;saveState();soundscape.setEnabled(state.preferences.sound);syncSoundUI();toast(state.preferences.sound?'Som contemplativo ativado.':'Som contemplativo desligado.');}
  else if(action==='close-study')document.querySelector('#scene-study')?.close();
  else if(action==='mobile-menu'){const n=document.querySelector('.mobile-nav');n.hidden=!n.hidden;b.setAttribute('aria-expanded',!n.hidden);}
  else if(action==='play')viewer?.toggle();else if(action==='replay')viewer?.replay();else if(action==='zoom-in')viewer?.zoom(.8);else if(action==='zoom-out')viewer?.zoom(1.25);else if(action==='reset-camera'){viewer?.setView(0);document.querySelectorAll('[data-view]').forEach(el=>{const active=el.dataset.view==='0';el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active))});}
@@ -92,3 +96,4 @@ document.addEventListener('click',async e=>{if(e.target.closest('.skip')){e.prev
 window.addEventListener('hashchange',route);window.addEventListener('pagehide',()=>{if(viewer&&currentStory){state.last={id:currentStory.id,time:Math.min(viewer.time,currentStory.duration)};saveState();}});
 window.__miniatures={get viewer(){return viewer},stories,byId,route,selectEntry};
 route();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}

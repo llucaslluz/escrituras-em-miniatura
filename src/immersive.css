@@ -1,4 +1,4 @@
-/* The scene is the page. The interface stays light enough to leave it room. */
+﻿/* The scene is the page. The interface stays light enough to leave it room. */
 body.immersive-mode{overflow:hidden;background:#e7e8da}
 .immersive-page:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.1;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='felt'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch' seed='19'/%3E%3C/filter%3E%3Cpath fill='%23888888' filter='url(%23felt)' d='M0 0h160v160H0z'/%3E%3C/svg%3E");background-size:160px 160px}
 .immersive-page{--scene-ink:#344437;--scene-muted:#596856;--scene-faint:#66735f;--scene-line:#52664c32;--scene-glass:#f3f1e6e8;--scene-soft:#fbf8ef70;--scene-active:#3c5643;--scene-active-ink:#fffdf2;--scene-shadow:#384b2415;--scene-focus:#8f703e;position:relative;isolation:isolate;width:100%;height:100vh;height:100dvh;min-height:0;overflow:hidden;color:var(--scene-ink);background:#e7e8da;font-family:'Segoe UI',Arial,sans-serif}
@@ -202,7 +202,7 @@ body.immersive-mode{overflow:hidden;background:#e7e8da}
 @media print{.scene-copy{position:relative;inset:auto;width:auto;overflow:visible;display:block}.scene-copy .scene-character-intro{display:block}body.immersive-mode{overflow:visible}.immersive-page{height:auto;min-height:100vh;overflow:visible}.scene-navigator,.scene-settings,.scene-toolbar,.scene-touch-hint,.scene-panel-toggle,.scene-topbar{display:none}.scene-editorial,.scene-character-intro{position:relative;left:auto;top:auto;bottom:auto;margin:30px;width:auto}.scene-description,.scene-character-intro{display:block}.scene-craft-note{display:none}.scene-poetic-title{font-size:40pt;max-width:none}.immersive-canvas{position:relative;height:450px;z-index:auto}}
 
 /* Compact disclosures keep the miniature in view until a control is needed. */
-.scene-history-toggle,.scene-controls-toggle,.scene-panel-toggle{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;min-width:128px;width:auto;padding:10px 16px;border:1px solid var(--scene-line);border-radius:28px;background:var(--scene-glass);color:var(--scene-ink);box-shadow:0 5px 24px var(--scene-shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:.8rem;line-height:1.4}
+.scene-history-toggle,.scene-controls-toggle,.scene-panel-toggle{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;min-width:128px;width:auto;padding:10px 16px;box-sizing:border-box;white-space:nowrap;border:1px solid var(--scene-line);border-radius:28px;background:var(--scene-glass);color:var(--scene-ink);box-shadow:0 5px 24px var(--scene-shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-size:.8rem;line-height:1.4}
 .scene-history-toggle{top:30px;left:50%;transform:translateX(-50%)}
 .scene-controls-toggle{bottom:28px;left:50%;transform:translateX(-50%)}
 .scene-panel-toggle{top:112px;right:3.2%;border-radius:28px}
@@ -286,17 +286,17 @@ body.immersive-mode .skip:not(:focus){transform:translateY(-200%)}
  .scene-copy[data-reading-expanded=true]{width:min(58vw,38rem);bottom:150px}
 }
 @media(max-width:760px) and (min-height:541px){
- .scene-history-toggle,.scene-panel-toggle{top:calc(max(14px,env(safe-area-inset-top)) + max(58px,4.2rem));width:calc((100% - 48px)/2);min-width:0;gap:6px;padding:8px;overflow-wrap:anywhere}
+ .scene-history-toggle,.scene-panel-toggle{top:calc(max(14px,env(safe-area-inset-top)) + max(56px,3.9rem));width:calc((100% - 44px)/2);min-width:0;gap:6px;padding:8px 10px;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
  .scene-history-toggle{left:18px;transform:none}
  .scene-history-toggle>.icon:last-child{display:none}
  .scene-panel-toggle{right:18px}
- .scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + max(117px,7.3rem));bottom:auto;left:18px;width:calc(100% - 36px);height:min(36dvh,calc(100dvh - max(14px,env(safe-area-inset-top)) - max(117px,7.3rem) - 90px - env(safe-area-inset-bottom)));gap:8px}
+ .scene-copy{top:calc(max(14px,env(safe-area-inset-top)) + max(110px,6.9rem));bottom:auto;left:16px;width:calc(100% - 32px);height:min(28dvh,220px);gap:8px}
  .immersive-page .scene-copy .scene-poetic-title,.immersive-page .scene-copy .scene-poetic-title.compact-title,.immersive-page .scene-copy .scene-poetic-title.long-title{font-size:clamp(2rem,8vw,2.6rem);line-height:1.1}
  .scene-copy-body{gap:20px}
  .scene-copy[data-reading-expanded=true]{width:calc(100% - 36px);height:auto;bottom:calc(90px + env(safe-area-inset-bottom));padding:12px}
  .immersive-page[data-open-panel=controls] .scene-copy{max-height:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(117px,7.3rem) - 144px - env(safe-area-inset-bottom))}
  .immersive-page[data-open-panel=controls] .scene-copy[data-reading-expanded=true]{bottom:calc(144px + env(safe-area-inset-bottom))}
- .immersive-canvas{top:max(44%,calc(max(14px,env(safe-area-inset-top)) + 114px + 36dvh));bottom:76px}
+ .immersive-canvas{top:max(36%,calc(max(14px,env(safe-area-inset-top)) + 102px + 25dvh));bottom:68px}
 }
 @media(max-height:540px){
  .scene-copy{top:76px;left:18px;bottom:80px;width:min(40vw,26rem);max-width:none;gap:8px}
@@ -311,3 +311,7 @@ body.immersive-mode .skip:not(:focus){transform:translateY(-200%)}
  .immersive-page .scene-copy .scene-editorial,.immersive-page .scene-copy .scene-character-intro{display:block;margin:24px 0}
  .immersive-page .scene-copy .scene-poetic-title{font-size:2.6rem}
 }
+.scene-sound-btn[aria-pressed=true]{color:var(--scene-active-ink);background:var(--scene-active);border-radius:20px;padding-inline:12px}
+.family-question-list{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:.95rem;line-height:1.55;color:var(--scene-ink)}
+.family-detail .family-question-list{font-size:.82rem;color:#3f4d41;margin-top:8px}
+@media(max-width:760px){.scene-meta{gap:6px}.scene-sound-btn .sound-label{display:none}.scene-meta>.scene-sound-btn{min-width:40px;max-width:40px;padding:8px;justify-content:center}}

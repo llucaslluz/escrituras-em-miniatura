@@ -67,12 +67,11 @@ export const builders = {
     const witnesses=[nephi];for(let i=0;i<7;i++){const a=(i/7)*Math.PI*1.5-Math.PI*.25;const r=k.person('Povo de Néfi',Math.sin(a)*3.15,Math.cos(a)*2+1,{robe:colors[i%6],beard:i%2===0,scale:i===5?.7:1,rotation:Math.atan2(-Math.sin(a)*3.15,-Math.cos(a)*2-1)});witnesses.push(r);}
     const points=witnesses.map(r=>r.root.position.clone()),showChrist=fade(christ.root),showRay=fade(ray);
     k.animate(t=>{
-      const descend=ease(8,16,t);christ.root.position.y=mix(5.6,0,descend);showChrist(ease(7,9,t));christ.leftArm.rotation.z=-.5*descend;christ.rightArm.rotation.z=.6*descend;
-      if(t>16)teaching(christ,t,.8);
+      const descend=ease(8,16,t),invite=ease(16,20,t);christ.root.position.y=mix(5.6,0,descend);showChrist(ease(7,9,t));christ.leftArm.rotation.z=-.5*descend-.12*invite;christ.rightArm.rotation.z=.6*descend+.05*invite;christ.leftArm.rotation.x=-.55*invite;christ.rightArm.rotation.x=-.55*invite;christ.leftForearm.rotation.x=-.35*invite;christ.rightForearm.rotation.x=-.35*invite;christ.head.rotation.x=.12*invite;christ.head.rotation.y=Math.sin(t*.35)*.1*invite;
       cloudL.position.x=-1-ease(4,13,t)*1.7;cloudR.position.x=1+ease(4,13,t)*1.7;showRay(ease(4,7,t));k.light.intensity=2.4+ease(5,16,t)*1.2;
-      witnesses.forEach((r,i)=>{r.head.rotation.x=-.35*ease(1,5,t)*(1-ease(15,18,t));const bow=ease(17,20,t)*(1-ease(23,26,t));kneel(r,bow);r.leftForearm.rotation.x=-.6*bow;r.rightForearm.rotation.x=-.6*bow;if(t>23){r.head.rotation.x=.08;}
-        if(i===0){const approach=ease(24,29,t);r.root.position.x=mix(points[i].x,-.65,approach);r.root.position.z=mix(points[i].z,.5,approach);r.rightArm.rotation.x=-.8*approach;r.rightForearm.rotation.x=-.7*approach;if(t>=24)walking(r,[points[i].x,points[i].z],[-.65,.5],24,29,t,.2);}
-        if(i===1){const approach=ease(28,32,t);r.root.position.x=mix(points[i].x,.75,approach);r.root.position.z=mix(points[i].z,.7,approach);r.leftArm.rotation.x=-.65*approach;if(t>=28)walking(r,[points[i].x,points[i].z],[.75,.7],28,32,t,.2);}
+      const targets=[[-.65,.55],[.68,.6],[-1.15,.95],[1.15,1.0]];
+      witnesses.forEach((r,i)=>{r.head.rotation.x=-.35*ease(1,5,t)*(1-ease(15,18,t));const bow=ease(16.5,19,t)*(1-ease(20,22,t));kneel(r,bow);r.leftForearm.rotation.x=-.6*bow;r.rightForearm.rotation.x=-.6*bow;
+        if(i<4){const start=20+i*1.8,end=start+3.2,approach=ease(start,end,t),dest=targets[i];r.root.position.x=mix(points[i].x,dest[0],approach);r.root.position.z=mix(points[i].z,dest[1],approach);if(t>=start&&t<=end)walking(r,[points[i].x,points[i].z],dest,start,end,t,.2);const touch=ease(end-.6,end+.6,t)*(1-ease(end+1.2,end+2.2,t)),worship=ease(end+1.2,end+2.5,t);r.rightArm.rotation.x=-.95*touch;r.rightForearm.rotation.x=-.55*touch;if(worship>0){kneel(r,worship*.85);prayer(r,worship);}}
       });
     });
   },
@@ -147,7 +146,7 @@ export const builders = {
       const touch=Math.max(0,Math.min(15,(t-14)/.82)),index=Math.min(15,Math.floor(touch)),fraction=touch-index,next=Math.min(15,index+1);
       stones.forEach((s,i)=>{const power=ease(14+i*.82,14.2+i*.82,t);s.material.emissiveIntensity=power*2.4;s.material.color.setRGB(mix(.75,1,power),mix(.8,.95,power),mix(.78,.78,power));});
       const a=stones[index].position,b=stones[next].position,smooth=ease(0,1,fraction);handTip.position.set(mix(a.x,b.x,smooth),1.76+.11+.1+Math.sin(smooth*Math.PI)*.15,-.8+mix(a.z,b.z,smooth));showHand(ease(12.8,13.4,t)*(1-ease(26.8,27.4,t)));
-      const reveal=ease(27,31,t);showLord(.8*reveal);lord.root.position.y=1.75;lord.rightArm.rotation.x=-.9;lord.rightForearm.rotation.x=-.6;lord.leftArm.rotation.z=-.35;
+      const reveal=ease(27,31,t);showLord(reveal);lord.root.position.y=1.75;lord.rightArm.rotation.x=-.9;lord.rightForearm.rotation.x=-.6;lord.leftArm.rotation.z=-.35;
       const fall=ease(26,28,t)*(1-ease(29,31,t));brother.root.rotation.x=.35*fall;brother.root.position.y=1.75-.095*pray;brother.head.rotation.x=.28+.3*fall;
       pool.intensity=ease(14,28,t)*3;k.light.intensity=.75+ease(14,28,t)*.55;showVeil(ease(12.8,14,t));
     });

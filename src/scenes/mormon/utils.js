@@ -130,10 +130,11 @@ export function prayer(rig, amount = 1) {
   rig.head.rotation.x=.18*amount;
 }
 export function teaching(rig, t, amount = 1) {
-  rig.rightArm.rotation.z=(1.25+Math.sin(t*1.6)*.12)*amount;
-  rig.rightForearm.rotation.x=-.55*amount;
-  rig.leftArm.rotation.z=-.25*amount;
-  rig.head.rotation.y=Math.sin(t*.55)*.16;
+  rig.rightArm.rotation.z=(1.05+Math.sin(t*.75)*.06)*amount;
+  rig.rightForearm.rotation.x=-.5*amount;
+  rig.leftArm.rotation.z=-.28*amount;
+  rig.leftForearm.rotation.x=-.25*amount;
+  rig.head.rotation.y=Math.sin(t*.4)*.11;
 }
 export function kneel(rig, u, baseY = 0) {
   prepareRigPose(rig);const q=clamp(u),s=Math.abs(rig.root.scale.y),compression=mix(1,.69,q);

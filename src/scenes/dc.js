@@ -68,10 +68,10 @@ export const builders={
   const lightA=k.ray(-2,.05,-.5,5),lightB=k.ray(2.8,.05,-.5,5);k.label(plates,'Placas mostradas às testemunhas');
   k.select(plates,'Placas','Registro apresentado pelo mensageiro','D&C 17; Depoimento de Três Testemunhas','As testemunhas declaram ter visto as placas pelo poder de Deus. As duas manifestações são encenadas em sequência.');
   k.walk(joseph,[-1.8,.8],[2,.8],17,23);
-  k.animate(t=>{const first=t>=7&&t<17,second=t>=24;angel.root.visible=first||second;angel.root.position.x=second?2.8:-2;lightA.visible=first;lightB.visible=second;angel.rightArm.rotation.x=-1.15;angel.rightForearm.rotation.x=-.3;angel.leftArm.rotation.z=-.55*ease(t,8,13);angel.head.rotation.y=.2*Math.sin(t*.45);[oliver,david].forEach((r,i)=>{praying(r,t,0,5);r.head.rotation.x=-.25*ease(t,8,12);r.rightArm.rotation.z=.5*ease(t,9+i,14+i);});praying(martin,t,0,6);martin.head.rotation.x=.3-.6*ease(t,24,28);martin.rightArm.rotation.z=.45+ease(t,25,29)*.25;martin.leftArm.rotation.z=-.45-ease(t,25,29)*.25;joseph.head.rotation.x=-.2*(first||second?1:0);joseph.leftArm.rotation.z=-.55*(first||second?1:0);joseph.rightArm.rotation.z=.55*(first||second?1:0);joseph.root.rotation.y=t>17?-.5:0;});
+  k.animate(t=>{const second=t>=24,witness=ease(t,7,10)*(1-ease(t,15,17))+ease(t,24,27);angel.root.position.x=second?2.8:-2;angel.rightArm.rotation.x=-1.15;angel.rightForearm.rotation.x=-.3;angel.leftArm.rotation.z=-.55*ease(t,8,13);angel.head.rotation.y=.12*Math.sin(t*.35);[oliver,david].forEach((r,i)=>{praying(r,t,0,5);r.head.rotation.x=-.25*ease(t,8,12);r.rightArm.rotation.z=.5*ease(t,9+i,14+i);});praying(martin,t,0,6);martin.head.rotation.x=.3-.6*ease(t,24,28);martin.rightArm.rotation.z=.45+ease(t,25,29)*.25;martin.leftArm.rotation.z=-.45-ease(t,25,29)*.25;joseph.head.rotation.x=-.2*witness;joseph.leftArm.rotation.z=-.55*witness;joseph.rightArm.rotation.z=.55*witness;joseph.root.rotation.y=-.5*ease(t,17,19);});
   reveal(k,angel.root,t=>ease(t,7,9)*(1-ease(t,15,17))+ease(t,24,27));
   reveal(k,lightA,t=>ease(t,7,9)*(1-ease(t,15,17)));reveal(k,lightB,t=>ease(t,24,27));
-  k.animate(t=>{const witness=ease(t,7,10)*(1-ease(t,15,17))+ease(t,24,27);joseph.head.rotation.x=-.2*witness;joseph.leftArm.rotation.z=-.55*witness;joseph.rightArm.rotation.z=.55*witness;joseph.root.rotation.y=-.5*ease(t,17,19);});
+  // Merged into primary D02 animate block above.
   k.finish({camera:[10,6,11],target:[0,1,0]});
  },
  D03(k){
@@ -94,18 +94,18 @@ export const builders={
   const page=paper(k,0,0,0);emma.handR.add(page);page.position.set(0,-.02,.13);page.scale.setScalar(.6);const pen=k.cylinder(.015,.4,'#503a26',0,0,0);emma.handL.add(pen);pen.position.set(0,-.06,.04);pen.rotation.z=.5;
   const singers=[k.person('Cantores',1.3,1.3,{robe:'#b89c79',mantle:'#7f6c6b',beard:false}),k.person('Cantora',2.8,.2,{robe:'#8a797e',mantle:'#d7c39d',beard:false})];
   const notes=[];for(let i=0;i<7;i++){const g=k.groupAt(1+i*.25,2.1+(i%3)*.2,.5);attach(g,k.sphere(.07,'#b99853',0,0,0));attach(g,k.box(.025,.32,.025,'#b99853',.055,.16,0));notes.push(g);}
-  k.animate(t=>{const choose=ease(t,7,14),sing=ease(t,16,23);emma.rightArm.rotation.x=-.75-.35*choose;emma.rightForearm.rotation.x=-.6;emma.leftArm.rotation.x=-.85;emma.leftForearm.rotation.x=-.8+.08*Math.sin(t*3)*(1-choose);emma.head.rotation.x=.22-.18*sing;joseph.head.rotation.y=-.4;emma.root.rotation.y=.12*sing;singers.forEach((r,i)=>{r.leftArm.rotation.x=-.5*sing;r.rightArm.rotation.x=-.5*sing;r.head.rotation.x=-.06*sing+Math.sin(t*.6+i)*.025;});notes.forEach((n,i)=>{n.visible=t>16;n.position.y=2.1+(i%3)*.2+Math.sin(t*.7+i)*.12;});k.light.intensity=2.2+.3*sing;});
+  k.animate(t=>{const choose=ease(t,7,14),sing=ease(t,16,23);emma.rightArm.rotation.x=-.75-.35*choose;emma.rightForearm.rotation.x=-.6;emma.leftArm.rotation.x=-.85;emma.leftForearm.rotation.x=-.8+.08*Math.sin(t*3)*(1-choose);emma.head.rotation.x=.22-.18*sing;joseph.head.rotation.y=-.4;emma.root.rotation.y=.12*sing;singers.forEach((r,i)=>{r.leftArm.rotation.x=-.5*sing;r.rightArm.rotation.x=-.5*sing;r.head.rotation.x=-.06*sing+Math.sin(t*.6+i)*.025;});notes.forEach((n,i)=>{n.position.y=2.1+(i%3)*.2+Math.sin(t*.7+i)*.12;});k.light.intensity=2.2+.3*sing;});
   notes.forEach((note,i)=>reveal(k,note,t=>ease(t,16+i*.18,18+i*.18)));
   k.finish({camera:[8,6.2,10],target:[0,1,0]});
  },
  D05(k){
   timberRoom(k,{width:7.5,depth:6.4,wall:'#b7ad94'});k.table(-1.7,0,.3,2.8,1.2);k.book(-1.7,1.05,.2);k.lamp(-2.6,1.05,.3);
   const joseph=k.person('Joseph Smith',-2.6,-.7,{robe:'#aaa080',mantle:'#58657a',beard:false});const sidney=k.person('Sidney Rigdon',-.8,-.7,{robe:'#c2ac8a',mantle:'#746751',hair:'#4b3424',beard:false});
-  const jesus=christ(k,1.6,-1.9,1);const light=k.ray(1.6,1,-1.9,5);const symbols=[emblem(k,'sun',3.2,2.8,-1.8,'#efd17c'),emblem(k,'moon',3.3,1.9,-.6,'#cfdae3'),emblem(k,'star',3.3,1,1,'#b7b9d3')];
+  const father=k.person('Deus, o Pai',.75,-2,{y:1,robe:'#f7f2e7',mantle:'#ebe2cf',hair:'#efebdc',beard:true,scale:1.12});const jesus=christ(k,1.6,-1.9,1);const light=k.ray(1.2,1,-1.9,5);const symbols=[emblem(k,'sun',3.2,2.8,-1.8,'#efd17c'),emblem(k,'moon',3.3,1.9,-.6,'#cfdae3'),emblem(k,'star',3.3,1,1,'#b7b9d3')];
   symbols.forEach((g,i)=>k.select(g,['Reino celestial','Reino terrestre','Reino telestial'][i],'Comparação de glória','D&C 76','Sol, lua e estrelas são comparações da glória na visão, não um mapa de mundos físicos.'));
-  k.animate(t=>{const open=ease(t,8,15),glory=ease(t,23,30);jesus.root.visible=t>10;jesus.root.scale.setScalar(1.12*open);light.visible=t>8;light.scale.set(open,1,open);joseph.head.rotation.x=.3-.65*open;sidney.head.rotation.x=.3-.6*open;joseph.head.rotation.y=-.3*open;sidney.head.rotation.y=-.4*open;joseph.rightArm.rotation.z=.65*open;sidney.leftArm.rotation.z=-.65*open;jesus.rightArm.rotation.z=.65;jesus.leftArm.rotation.z=-.65;symbols.forEach((g,i)=>{g.visible=t>23;g.scale.setScalar(glory);g.rotation.y=.1*Math.sin(t*.4+i);});k.light.intensity=2+open;});
-  reveal(k,jesus.root,t=>ease(t,10,15));
-  k.animate(t=>{jesus.root.scale.setScalar(1.12);const turn=ease(t,10,17);joseph.root.rotation.y=1.8*turn;sidney.root.rotation.y=2*turn;});
+  k.animate(t=>{const open=ease(t,8,15),glory=ease(t,21,27),turn=ease(t,10,17);father.root.scale.setScalar(1.12);jesus.root.scale.setScalar(1.12);light.visible=t>8;light.scale.set(open,1,open);joseph.head.rotation.x=.3-.65*open;sidney.head.rotation.x=.3-.6*open;joseph.head.rotation.y=-.3*open;sidney.head.rotation.y=-.4*open;joseph.rightArm.rotation.z=.65*open;sidney.leftArm.rotation.z=-.65*open;joseph.root.rotation.y=1.8*turn;sidney.root.rotation.y=2*turn;father.rightArm.rotation.z=.45;father.leftArm.rotation.z=-.35;jesus.rightArm.rotation.z=.65;jesus.leftArm.rotation.z=-.65;symbols.forEach((g,i)=>{g.scale.setScalar(.3+.7*glory);g.rotation.y=.1*Math.sin(t*.4+i);});k.light.intensity=2+open;});
+  reveal(k,father.root,t=>ease(t,10,15));reveal(k,jesus.root,t=>ease(t,10,15));symbols.forEach((g,i)=>reveal(k,g,t=>ease(t,21+i*.4,25+i*.4)));
+  // Merged into primary D05 animate block above.
   k.finish({camera:[9,6.5,11],target:[0,1.8,-.5]});
  },
  D06(k){
@@ -117,7 +117,7 @@ export const builders={
  D07(k){
   temple(k);const left=k.box(2.6,3,.05,'#a48973',-1.3,2,-1.9),right=k.box(2.6,3,.05,'#a48973',1.3,2,-1.9);left.name='Véu esquerdo';right.name='Véu direito';for(let i=0;i<12;i++){const fold=k.box(.025,3,.07,'#c5ae92',-2.5+i*.45,2,-1.85);(i<6?left:right).attach(fold);}
   const joseph=k.person('Joseph Smith',-.9,.4,{robe:'#b9ac8b',mantle:'#586676',beard:false});const oliver=k.person('Oliver Cowdery',.9,.4,{robe:'#a49d83',mantle:'#616451',beard:false});const jesus=k.person('Jesus Cristo',0,-2.5,{y:1.5,robe:'#f6efdf',mantle:'#e7d9b2',hair:'#efebdc',beard:true,scale:1.12});const ray=k.ray(0,1.45,-2.5,4.5);const paving=k.box(3,.04,1.3,'#d6b969',0,1.45,-2.55);k.select(paving,'Piso luminoso','Elemento da visão','D&C 110:2–3','A revelação descreve o Salvador sobre o parapeito do púlpito e um pavimento semelhante a ouro puro. A miniatura traduz a descrição simbolicamente.');
-  k.animate(t=>{const v=ease(t,8,16),joy=ease(t,22,29);left.position.x=-1.3-v*1.8;right.position.x=1.3+v*1.8;left.scale.x=right.scale.x=1-.7*v;jesus.root.visible=t>10;ray.visible=t>9;ray.scale.set(v,1,v);paving.visible=t>10;praying(joseph,t,0,7);praying(oliver,t,0,7);joseph.head.rotation.x=.2-.65*joy;oliver.head.rotation.x=.2-.65*joy;jesus.rightArm.rotation.z=.55;jesus.leftArm.rotation.z=-.55;joseph.rightArm.rotation.z=.5+.2*joy;oliver.leftArm.rotation.z=-.5-.2*joy;k.light.intensity=1.8+v;});
+  k.animate(t=>{const v=ease(t,8,16),joy=ease(t,22,29);left.position.x=-1.3-v*1.8;right.position.x=1.3+v*1.8;left.scale.x=right.scale.x=1-.7*v;ray.visible=t>9;ray.scale.set(v,1,v);praying(joseph,t,0,7);praying(oliver,t,0,7);joseph.head.rotation.x=.2-.65*joy;oliver.head.rotation.x=.2-.65*joy;jesus.rightArm.rotation.z=.55;jesus.leftArm.rotation.z=-.55;joseph.rightArm.rotation.z=.5+.2*joy;oliver.leftArm.rotation.z=-.5-.2*joy;k.light.intensity=1.8+v;});
   reveal(k,jesus.root,t=>ease(t,10,16));reveal(k,paving,t=>ease(t,10,14));
   k.finish({camera:[8,6,10],target:[0,2,-1]});
  },
@@ -148,7 +148,7 @@ export const builders={
   for(let i=6;i<9;i++){const b=planStages[i].position;arrow(k,[3.7,.42,-1.5],[b[0],b[1]+.28,b[2]],'#c7b788');}
   for(let i=0;i<6;i++){const [x,y,z]=planStages[i].position;const curve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(0,.18,-.5),new THREE.Vector3(x*.5,.2,z*.5),new THREE.Vector3(x,.18,z));k.mesh(new THREE.TubeGeometry(curve,20,.018,5,false),k.mat('#d6b467'),0,0,0);}
   const traveler=k.sphere(.12,'#fff0b4',-4,.5,-2);k.label(traveler,'Percurso didático');
-  k.animate(t=>{let idx=Math.min(5,Math.floor(t/4.3)),f=ease(t,idx*4.3,(idx+1)*4.3);const a=planStages[idx].position,b=planStages[Math.min(5,idx+1)].position;traveler.position.set(lerp(a[0],b[0],f),.5,lerp(a[2],b[2],f));nodes.forEach(({group,base},i)=>{const active=i===9||i===Math.min(8,Math.floor(t/3.6));base.material.emissive.set(active?'#665535':'#000000');const glow=i===9?1:ease(t,i*3.6,i*3.6+.9)*(1-ease(t,(i+1)*3.6-.9,(i+1)*3.6));base.material.emissive.set('#665535');base.material.emissiveIntensity=.28*glow;});});
+  k.animate(t=>{let idx=Math.min(5,Math.floor(t/3.6)),f=ease(t,idx*3.6,(idx+1)*3.6);const a=planStages[idx].position,b=planStages[Math.min(5,idx+1)].position;traveler.position.set(lerp(a[0],b[0],f),.5,lerp(a[2],b[2],f));nodes.forEach(({group,base},i)=>{const glow=i===9?1:ease(t,i*3.6,i*3.6+.9)*(1-ease(t,(i+1)*3.6-.9,(i+1)*3.6));base.material.emissive.set('#665535');base.material.emissiveIntensity=.28*glow;});});
   k.finish();
  },
  D10(k){
@@ -156,9 +156,9 @@ export const builders={
   const joseph=k.person('Joseph F. Smith',-1.7,2.3,{robe:'#555650',mantle:'#303c3f',hair:'#e0d9c6',beard:true,age:1});k.label(joseph.root,'Joseph F. Smith · 1918');
   const vision=k.groupAt(0,0,0);const jesus=christ(k,1,-2,1);vision.add(jesus.root);const beam=k.ray(1,.2,-2,5);vision.add(beam);const crowd=[];for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const r=k.person(i===0?'Mensageiros':`Justo ${i}`,1+Math.sin(a)*2.3,-2+Math.cos(a)*1.6,{robe:['#d2cbb6','#b5c2b8','#e2d3b9'][i%3],mantle:'#e7dbc3',hair:i%2?'#8f7f61':'#baaf94',scale:.9});vision.add(r.root);crowd.push(r);}
   k.walk(crowd[1],[2.8,-1],[3.8,.4],23,31);k.walk(crowd[5],[-1,-2],[-2,-2.9],23,31);
-  k.animate(t=>{const v=ease(t,8,17),mission=ease(t,23,30);vision.visible=t>8;vision.scale.setScalar(.2+.8*v);joseph.head.rotation.x=.3-.25*v;joseph.leftArm.rotation.x=-.9;joseph.rightArm.rotation.x=-.85;joseph.leftForearm.rotation.x=-.6;joseph.rightForearm.rotation.x=-.7;jesus.leftArm.rotation.z=-.65;jesus.rightArm.rotation.z=.55+.2*mission;crowd.forEach((r,i)=>{r.head.rotation.y=(i-3)*-.16;r.head.rotation.x=-.15*v;r.rightArm.rotation.z=.3*v;r.leftArm.rotation.z=-.18*v;});k.light.intensity=1.8+v*.8;});
+  k.animate(t=>{const v=ease(t,8,17),mission=ease(t,22,27);vision.scale.setScalar(1);joseph.head.rotation.x=.3-.25*v;joseph.leftArm.rotation.x=-.9;joseph.rightArm.rotation.x=-.85;joseph.leftForearm.rotation.x=-.6;joseph.rightForearm.rotation.x=-.7;jesus.leftArm.rotation.z=-.65;jesus.rightArm.rotation.z=.55+.2*mission;crowd.forEach((r,i)=>{r.head.rotation.y=(i-3)*-.16;r.head.rotation.x=-.15*v;r.rightArm.rotation.z=.3*v;r.leftArm.rotation.z=-.18*v;});k.light.intensity=1.8+v*.8;});
   reveal(k,vision,t=>ease(t,8,17));
-  k.animate(()=>vision.scale.setScalar(1));
+  // Merged into primary D10 animate block above.
   k.select(book,'Escrituras em estudo','Meditação em 1918','D&C 138:1–11','Joseph F. Smith ponderava sobre a Expiação e passagens de 1 Pedro antes da visão de 3 de outubro de 1918.');k.finish();
  },
 };

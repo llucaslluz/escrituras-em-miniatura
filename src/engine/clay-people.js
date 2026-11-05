@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { resolveFigureStyling, setExpression } from './acting.js';
 
 const TAU = Math.PI * 2;
 const tone = (color, target, amount) => `#${new THREE.Color(color).lerp(new THREE.Color(target), amount).getHexString()}`;
@@ -21,7 +22,8 @@ function robeGeometry(kit,variant){
  * shoulder, elbow and hand pivots (.31 + .27) also preserves the scene IK.
  * Head height stays 1.37 so authored kneeling poses and prop contacts survive.
  */
-export function createClayPerson(kit, name, x, z, o = {}) {
+export function createClayPerson(kit, name, x, z, rawOptions = {}) {
+  const o = resolveFigureStyling(kit.id, name, rawOptions);
   const root = kit.groupAt(x, o.y || 0, z);
   const seed=identitySeed(`${kit.id}/${name}/${x}/${z}`);
   const explicitSilhouette=silhouetteNames.indexOf(o.silhouette),variant=explicitSilhouette<0?seed%3:explicitSilhouette;
@@ -30,10 +32,21 @@ export function createClayPerson(kit, name, x, z, o = {}) {
   const skin = o.skin || '#c99572', cloth = o.robe || '#e3d5b4', hair = o.hair || '#594035';
   const clothShade = tone(cloth, '#8f786a', .17);
   const beltColor = tone(cloth, '#896c50', .48);
+  const clothGlow = o.heavenlyGlow ? { emissive: '#fff2d0', emissiveIntensity: .15 } : {};
   root.rotation.y = o.rotation || 0;
   root.scale.setScalar(o.scale || 1);
   root.name = `Miniatura em argila · ${name}`;
-  root.userData.clayPerson = { style: 'plasticine-chibi', headRadius: .36, crownOffset: .39, upperArm: .31, forearm: .27, eyesClosed: !!o.eyesClosed };
+  root.userData.clayPerson = {
+    style: 'plasticine-chibi',
+    headRadius: .36,
+    crownOffset: .39,
+    upperArm: .31,
+    forearm: .27,
+    eyesClosed: !!o.eyesClosed,
+    baseExpression: o.expression || 'sereno',
+    crucifixionMarks: !!o.crucifixionMarks,
+    heavenlyGlow: !!o.heavenlyGlow,
+  };
   Object.assign(root.userData.clayPerson,{silhouette:silhouetteNames[variant],hairStyle:hairNames[hairVariant],mantleVariant});
 
   const local = (geometry, color, px, py, pz, parent = root, options = {}) =>
@@ -47,8 +60,13 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     local(new THREE.CapsuleGeometry(radius, length, 5, 12), color, px, py, pz, parent, options);
 
   // The broad, softly pinched silhouette reads as a hand-shaped clay robe.
-  const robe = local(robeGeometry(kit,variant), cloth, 0, 0, 0);
+  const robe = local(robeGeometry(kit,variant), cloth, 0, 0, 0, root, clothGlow);
   robe.name = 'Túnica modelada em argila';
+  if (o.crucifixionMarks && kit.id !== 'B30') {
+    const sideMark = capsule(.0075, .034, '#9b4d45', .168, .78, .238, robe, { roughness: .74, bumpScale: 0 });
+    sideMark.rotation.z = .38;
+    sideMark.name = 'Marca da lança no lado';
+  }
   const belt = local(new THREE.TorusGeometry(.307, .024, 7, 32), beltColor, 0, .65, 0);
   belt.rotation.x = Math.PI / 2;
   ball(.042, beltColor, -.025, .648, .303, root, [.8, .85, .7]);
@@ -73,8 +91,12 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     leg.name = side < 0 ? 'Perna esquerda' : 'Perna direita';
     leg.position.set(side * .115, .42, 0);
     root.add(leg);
-    capsule(.074, .24, cloth, 0, -.16, 0, leg);
+    capsule(.074, .24, cloth, 0, -.16, 0, leg, clothGlow);
     ball(.12, '#806249', 0, -.365, .061, leg, [.86, .43, 1.25]);
+    if (o.crucifixionMarks) {
+      const footMark = capsule(.009, .016, '#9b4d45', 0, -.315, .095, leg, { surface: 'skin', roughness: .72, bumpScale: 0 });
+      footMark.name = 'Marca dos cravos no pé';
+    }
     legs[key] = root.userData[key] = leg;
   }
 
@@ -106,6 +128,8 @@ export function createClayPerson(kit, name, x, z, o = {}) {
   }
 
   const animatedEyes = [];
+  const brows = {};
+  const tears = {};
   for (const side of [-1, 1]) {
     if (o.eyesClosed) {
       // Follow the enlarged face surface, so sleeping eyes remain sculpted
@@ -129,16 +153,22 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     }
     const brow = capsule(.009, .046, hair, side * .114, .065, .305, head,hairOptions);
     brow.rotation.z = Math.PI / 2 + side * .07;
+    brows[side < 0 ? 'L' : 'R'] = brow;
+    const tear = ball(.0105, '#b9d8e8', side * .125, -.044, .312, head, [.62, 1.35, .42], { roughness: .2, bumpScale: 0 });
+    tear.visible = false;
+    tear.name = side < 0 ? 'Lágrima esquerda' : 'Lágrima direita';
+    tears[side < 0 ? 'L' : 'R'] = tear;
     ball(.043, tone(skin, '#e68a80', .36), side * .216, -.068, .254, head, [1.1, .63, .20], skinOptions);
   }
   ball(.045, tone(skin, '#e9b298', .12), 0, -.056, .337, head, [.78, .80, .72], skinOptions);
-  // A quiet closed smile remains appropriate to prayer and solemn episodes.
+  // Centered mouth curve allows dynamic morphing between smile, calm prayer, and sorrow without new geometry.
   const smileCurve = new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(-.037, -.127, .308),
-    new THREE.Vector3(0, -.143, .321),
-    new THREE.Vector3(.037, -.127, .308),
+    new THREE.Vector3(-.037, .008, -.006),
+    new THREE.Vector3(0, -.008, .007),
+    new THREE.Vector3(.037, .008, -.006),
   );
-  local(new THREE.TubeGeometry(smileCurve, 10, .0055, 5, false), tone(skin, '#744c40', .52), 0, 0, 0, head, { bumpScale: 0 });
+  const mouth = local(new THREE.TubeGeometry(smileCurve, 10, .0055, 5, false), tone(skin, '#744c40', .52), 0, -.135, .314, head, { bumpScale: 0 });
+  mouth.name = 'Boca articulada';
   if (o.beard !== false) {
     const beard = ball(.218, hair, 0, -.223, .076, head, [.96, .72, .91],hairOptions);
     beard.name = 'Barba esculpida';
@@ -150,12 +180,12 @@ export function createClayPerson(kit, name, x, z, o = {}) {
   }
 
   if (o.mantle) {
-    ball(.34, o.mantle, 0, .70, -.168, root, [[1.08,1.45,.44],[1,1.35,.42],[1.08,1.25,.44]][mantleVariant]);
+    ball(.34, o.mantle, 0, .70, -.168, root, [[1.08,1.45,.44],[1,1.35,.42],[1.08,1.25,.44]][mantleVariant], clothGlow);
     for (const side of [-1, 1]) {
-      const shoulderFold = ball(.17, o.mantle, side * .221, .985, -.04, root, [.65, 1.25, .60]);
+      const shoulderFold = ball(.17, o.mantle, side * .221, .985, -.04, root, [.65, 1.25, .60], clothGlow);
       shoulderFold.rotation.z = -side * [.24,.17,.30][mantleVariant];
     }
-    const drape = capsule(.083, .48, o.mantle, -.218, .715, .245);
+    const drape = capsule(.083, .48, o.mantle, -.218, .715, .245, root, clothGlow);
     drape.rotation.z = -.13;
     drape.scale.x=[1,.90,1.08][mantleVariant];
     const mantleFold = capsule(.013, .37, tone(o.mantle, '#817668', .19), -.237, .704, .318);
@@ -167,12 +197,12 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     const shoulder = new THREE.Group();
     shoulder.position.set(side * .24, 1.08, 0);
     root.add(shoulder);
-    const upper = capsule(.119, .11, cloth, 0, -.14, 0, shoulder);
+    const upper = capsule(.119, .11, cloth, 0, -.14, 0, shoulder, clothGlow);
     upper.scale.z = .95;
     const elbow = new THREE.Group();
     elbow.position.y = -.31;
     shoulder.add(elbow);
-    capsule(.094, .10, cloth, 0, -.108, 0, elbow);
+    capsule(.094, .10, cloth, 0, -.108, 0, elbow, clothGlow);
     const cuff = local(new THREE.TorusGeometry(.085, .012, 6, 20), clothShade, 0, -.225, 0, elbow);
     cuff.rotation.x = Math.PI / 2;
     const hand = new THREE.Group();
@@ -180,6 +210,11 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     elbow.add(hand);
     ball(.09, skin, 0, 0, .004, hand, [.90, 1.06, .84], skinOptions);
     ball(.036, skin, -side * .058, .024, .043, hand, [.82, 1.05, .88], skinOptions);
+    if (o.crucifixionMarks) {
+      const handMark = capsule(.011, .132, '#9b4d45', 0, -.004, .004, hand, { surface: 'skin', roughness: .72, bumpScale: 0 });
+      handMark.rotation.x = Math.PI / 2;
+      handMark.name = 'Marca dos cravos na mão';
+    }
     arms[key] = { shoulder, elbow, hand };
   }
 
@@ -189,18 +224,31 @@ export function createClayPerson(kit, name, x, z, o = {}) {
     leftForearm: arms.L.elbow, rightForearm: arms.R.elbow,
     handL: arms.L.hand, handR: arms.R.hand,
     leftLeg: legs.leftLeg, rightLeg: legs.rightLeg,
+    faceParts: {
+      browL: brows.L,
+      browR: brows.R,
+      mouth,
+      tearL: tears.L,
+      tearR: tears.R,
+      animatedEyes,
+      lastBlinkOpenness: 1,
+    },
   };
+  setExpression(rig, o.expression || 'sereno', 1, 1);
   kit.people.push(rig);
   kit.select(root, name, 'Personagem deste episódio', '', 'Selecione o nome na lista para ler o contexto e as referências.');
   kit.label(root, name);
   const motionPhase=seed/4294967296*TAU;
   kit.ambient(t => {
     robe.scale.x = 1 + Math.sin(t * 1.5 + motionPhase) * .006;
+    robe.scale.z = 1 + Math.sin(t * 1.5 + motionPhase) * .008;
     head.rotation.z = Math.sin(t * .8 + motionPhase) * .009;
     // Shape existing eyes only: no timers, new geometry, or authored arm poses.
     const blinkPhase=((t+motionPhase)%5.7+5.7)%5.7;
     const openness=1-.94*Math.exp(-(((blinkPhase-2.85)/.075)**2));
+    rig.faceParts.lastBlinkOpenness = openness;
     for(const {mesh,height}of animatedEyes)mesh.scale.y=height*openness;
+    setExpression(rig, root.userData.clayPerson.baseExpression || 'sereno', 1, openness);
   });
   return rig;
 }
